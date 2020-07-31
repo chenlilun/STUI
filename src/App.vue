@@ -1,26 +1,45 @@
 <template>
   <div id="app">
-    <img src="./assets/logo.png">
+    <img src="./assets/logo.png" />
     <div>
       <p>
-        If iView is successfully added to this project, you'll see an
+        aaa
         <code v-text="'<Button>'"></code>
         below
       </p>
       <van-button type="primary">Button</van-button>
+      <van-cell-group>
+        <van-cell title="选择单个日期" :value="date" @click="show = true" />
+        <van-calendar v-model="show" @confirm="onConfirm" />
+      </van-cell-group>
     </div>
     <HelloWorld msg="Welcome to Your Vue.js App" />
   </div>
 </template>
 
 <script>
-import HelloWorld from '@/components/HelloWorld.vue'
+import HelloWorld from "@/components/HelloWorld.vue";
 export default {
-  name: 'app',
+  name: "app",
   components: {
-    HelloWorld
-  }
-}
+    HelloWorld,
+  },
+  data() {
+    return {
+      date: "",
+      show: false,
+    };
+  },
+  methods: {
+    formatDate(date) {
+      return `${date.getMonth() + 1}/${date.getDate()}`;
+    },
+    onConfirm(date) {
+      this.show = false;
+      this.date = this.formatDate(date);
+    },
+  },
+};
 </script>
 
 <style>

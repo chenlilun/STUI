@@ -35,10 +35,11 @@
         <section class="item">
           <!-- <div class="left"></div> -->
           <div class="right" >
-            <a @click.prevent>批号:</a>
+            <a @click.prevent>数量:{{item.silkCarRowColList.length}}</a>
             <a @click.prevent>{{item.batch}}</a>
-            <a @click.prevent>等级:</a>
+            <a @click.prevent>{{item.line+'/'+item.machine+'/'+item.doffNum}}</a>
             <a @click.prevent>{{item.grade}}</a>
+
           </div>
         </section>
       </main>
@@ -68,7 +69,7 @@ export default {
       date: "",
       capacity: "",
       show: false,
-      silkCarCode: "9700P00007",
+      silkCarCode: "9700P00006",
       list: [],
       loading: false,
       finished: true,
@@ -98,38 +99,29 @@ export default {
     },
     getSilkcarDetails(code) {
       this.$api.getSilkss(code).then((res) => {
-        console.log(res.data.data.spindleLists);
-      });
-    },
-    onLoad() {
-      if (this.silkCarCode) {
-        console.log("sbb");
-        this.$api.getSilkss(this.silkCarCode).then((res) => {
-          // console.log(res.data.data);
-          // if (this.refreshing) {
-          //   this.list = [];
-          //   this.refreshing = false;
-          // }
-          // console.log(  JSON.stringify( res.data.data.spindleLists[0]));
-
-          // this.list.push(res.data.data.spindleLists);
+        console.log(res.data);
+        if(res.data.status=='200'){
+          this.list = []
           res.data.data.spindleLists.forEach((e) => {
             this.list.push(e);
           });
           this.capacity = res.data.data.silkCarRowColList.length;
           if (res.data.data.silkCarOnLinePositions.length > 0) {
             this.lineWeiDoff = this.getDoff(
-              res.data.data.silkCarOnLinePositions
+                    res.data.data.silkCarOnLinePositions
             );
           }
           this.showDoff =
-            res.data.data.doffType === "MANUAL" ||
-            res.data.data.doffType === "AUTO";
+                  res.data.data.doffType === "MANUAL" ||
+                  res.data.data.doffType === "AUTO";
           this.loading = false;
           this.finished = true;
-        });
-      }
+        }else {
+          Toast(res.data.msg)
+        }
+      });
     },
+
     getDoff(arr) {
       let s = "";
       arr.forEach((e) => {
@@ -145,12 +137,11 @@ export default {
       // 重新加载数据
       // 将 loading 设置为 true，表示处于加载状态
       this.loading = true;
-      this.onLoad();
+
     },
   },
   created() {
-    // alert("code")
-    this.onLoad();
+
   },
   mounted() {
     window.callByAndroid = this.callByAndroid;
@@ -201,7 +192,7 @@ main {
 }
 main > .item {
   width: 100%;
-  height: 100px;
+  height: 150px;
   background-color: #57c3ae;
   border-radius: 10px;
   margin-top: 10px;
@@ -229,7 +220,7 @@ main > .item > .right {
 }
 main > .item > .right > a {
   /*如果想让子元素换行显示，必须为子元素设置宽度*/
-  width: 50%;
+  width: 25%;
   box-sizing: border-box;
   border-left: 1px solid #fff;
   border-bottom: 1px solid #fff;
@@ -239,7 +230,7 @@ main > .item > .right > a {
   text-align: center;
   text-decoration: none;
 }
-main > .item > .right > a:nth-last-of-type(-n + 2) {
+main > .item > .right > a:nth-last-of-type(-n + 1) {
   border-bottom: none;
 }
 main > .extra {
@@ -252,29 +243,5 @@ main > .extra > a {
 main > .extra > a > img {
   width: 100%;
 }
-/*底部块样式*/
-footer {
-  width: 100%;
-  font-size: 13px;
-}
-footer > nav {
-  width: 100%;
-  display: flex;
-  border-top: 1px solid #ccc;
-  border-bottom: 1px solid #ccc;
-}
-footer > nav > a {
-  flex: 1;
-  line-height: 30px;
-  text-align: center;
-  color: #888;
-  text-decoration: none;
-}
-footer > .link {
-  text-align: center;
-  line-height: 25px;
-}
-footer > .copyRight {
-  text-align: center;
-}
+
 </style>

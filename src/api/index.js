@@ -312,4 +312,49 @@ export default {
         // console.log("data" +  data.toString())
         return axios.post(baseUrl + '/api/silkCarOnline/get/' + code)
     },
+    // 丝车: 解绑
+    silkUnbind(data) {
+        // console.log("data" +  data.toString())
+        return axios.post(baseUrl + '/api/silkCarOnline/separate' , data)
+    },
+    // 丝车: 定等
+    dingDeng(data) {
+        // console.log("data" +  data.toString())
+        return axios.post(baseUrl + '/api/silkCarOnline/graded' , data)
+    },
+    // 丝车: 拼车
+    poolSilkCar(data) {
+        // console.log("data" +  data.toString())
+        return axios.post(baseUrl + '/api/carPool/silkCarPooling' , data)
+    },
+    // 落筒: 自动线人工落筒 扫机台
+    getSilkCarDoff(data) {
+        // console.log("data" +  data.toString())
+        return axios.post(baseUrl + '/api/doff/getSilkCarDoffSpec' , data)
+    },
+    // 落筒: 扫完机台获取位数
+    getMqDoffMessage(data) {
+        // console.log("data" +  data.toString())
+        return axios.post(baseUrl + '/api/doff/getMqDoffMessage' , data)
+    },
+    // 落筒确定
+    manualDoff(data) {
+        // console.log("data" +  data.toString())
+        return axios.post(baseUrl + '/api/doff/manualDoff' , data)
+    } ,
+    // 丝车: 人工打包
+    handPack(data) {
+        // console.log("data" +  data.toString())
+        return axios.post(baseUrl + '/api/pack/handPack' , data)
+    },
+    // 丝车: 暂存箱打包
+    temporaryPack(data) {
+        // console.log("data" +  data.toString())
+        return axios.post(baseUrl + '/api/pack/temporaryPack' , data)
+    },
+    // 入暂存箱
+    packInTemBox(data) {
+        // console.log("data" +  data.toString())
+        return axios.post(baseUrl + '/api/pack/inTemporaryBox' , data)
+    },
 }

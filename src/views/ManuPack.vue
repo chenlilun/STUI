@@ -1,41 +1,46 @@
 <template>
     <div id="app">
         <van-nav-bar
-                title="丝车解绑"
+                title="人工打包"
                 left-text="返回"
                 right-text=""
                 left-arrow
                 @click-left="onClickLeft"
                 @click-right="onClickRight"
         />
-        <div style="margin: 10px;">
-            <!-- <van-button round block plain hairline type="primary">{{silkCarCode}}</van-button> -->
-            <van-field v-model="silkCarCode" center clearable label="丝车条码" placeholder="请扫描丝车条码">
-                <template #button>
-                    <van-button size="small" type="primary" @click="find">查询</van-button>
-                </template>
-            </van-field>
-        </div>
 
-        <div class="main"  v-for="(item, index ) in silkCodeList" :key="index">
-            <div class="left">{{item}}</div>
-            <div class="right" @click="deleteSilk(index)">
-              删除
+
+        <a @.prevent.click style="color: #1989fa;line-height: 55px"> 打包颗数：</a>
+        <van-button type="info" style="width: 120px" @click="show = true">{{this.silkNums}}</van-button>
+        <p style="color: red;line-height: 40px">***请扫描丝车二维码***</p>
+        <div style="text-align: left;">
+            <div class="main" v-for="(item, index ) in silkCodeList" :key="index">
+                <div class="left">{{item}}</div>
+                <div class="right" @click="deleteSilk(index)">
+                    删除
+                </div>
             </div>
+
         </div>
-        <van-button type="danger" block  hairline="hairline" v-if="hairline" style="margin: 15px" @click="jieBang">解绑</van-button>
-<!--        <a v-for="(item, index ) in gradeData" :key="index" @click.prevent="chooseOne(index)">
-            <van-button :type="item.type" style="margin : 5px;width: 60px ; float: left">{{item.name}}</van-button>
-        </a>-->
+        <van-button type="danger" block hairline="hairline" v-if="hairline"
+                    style="margin:  15px auto;overflow: hidden ;display: inline" @click="dingDeng">确定
+        </van-button>
+
+        <van-number-keyboard
+                v-model="silkNums"
+                :show="show"
+                :maxlength="3"
+                @blur="show = false"
+        />
 
     </div>
 </template>
 
 <script>
-    Array.prototype.pushNoRepeat = function(){
-        for(let i=0; i<arguments.length; i++){
+    Array.prototype.pushNoRepeat = function () {
+        for (let i = 0; i < arguments.length; i++) {
             let ele = arguments[i];
-            if(this.indexOf(ele) == -1){
+            if (this.indexOf(ele) == -1) {
                 this.push(ele);
             }
         }
@@ -43,9 +48,11 @@
     // import HelloWorld from "@/components/HelloWorld.vue";
     import {Toast} from "vant";
 
-    import { Swipe, SwipeItem, Row, Col } from "vant";
+    import {Swipe, SwipeItem, Row, Col} from "vant";
+
     export default {
-        name: "SilkUnbind",
+        name: "ManuPack",
+
         components: {
             [Swipe.name]: Swipe,
             [SwipeItem.name]: SwipeItem,
@@ -55,10 +62,13 @@
         },
         data() {
             return {
-                userId : '' ,
-                hairline : this.silkCodeList&&this.silkCodeList.length>0 ,
-                name : '' ,
-                silkCodeList: [] ,
+                silkNums: '80',
+                weiPosition: -1,
+
+                userId: '',
+                hairline: this.silkCodeList && this.silkCodeList.length > 0,
+                name: '',
+                silkCodeList: [],
                 data: '',
                 gradeData: [],
                 radio: '1',
@@ -66,8 +76,8 @@
                 lineWeiDoff: "",
                 date: "",
                 capacity: "",
-                show: false,
-                silkCarCode: "",
+                show: true,
+                silkCarCode: "9700P00006",
                 list: [],
                 loading: false,
                 finished: true,
@@ -75,18 +85,13 @@
             };
         },
         methods: {
-            jieBang(){
-                let arr = []
 
-                this.silkCodeList.forEach(a=>{
-                    arr.push({silkCode:a})
-                })
-                this.$api.silkUnbind({
-                    post : this.name ,
-                    id:this.data.id,
-                    silkCarCode : this.silkCarCode ,
-                    modifier:this.userId ,
-                    silkCarRowColList : arr ,
+            dingDeng() {
+
+                this.$api.handPack({
+                    silkCarCodes: this.silkCodeList,
+                    silkCount: this.silkNums,
+                    operator: this.userId,
                 }).then((res) => {
                     if (res.data.status === '200') {
                         this.silkCodeList = []
@@ -94,24 +99,41 @@
                         this.data = ''
                         this.silkCarCode = ''
 
-                        Toast("解绑成功")
+                        this.weiPosition = 0
+
+                        Toast(res.data.msg)
                     } else {
                         Toast(res.data.msg)
                     }
                 });
             },
-            deleteSilk(index){
-                this.silkCodeList.splice(index,1)
+            deleteSilk(index) {
+                this.silkCodeList.splice(index, 1)
+                console.log(this.silkCodeList, "444232")
             },
             chooseOne(clickIndex) {
                 this.gradeData.forEach((e, index) => {
                     if (index === clickIndex) {
-                        this.gradeData[index].type = 'warning'
+                        this.gradeData[index].firstRate = true
                     } else {
-                        this.gradeData[index].type = 'primary'
+                        this.gradeData[index].firstRate = false
                     }
 
                 })
+
+            },
+            chooseWei(clickIndex) {
+                this.weiPosition = clickIndex
+                this.silkCodeList = []
+                if (clickIndex === 0) {
+                    this.data.silkCarRowColList.forEach(b => {
+                        this.silkCodeList.pushNoRepeat(b.silkCode)
+                    })
+                } else {
+
+                }
+
+                this.hairline = true
             },
             find() {
                 if (this.silkCarCode) {
@@ -128,24 +150,8 @@
                 // Toast("对了？" + code)
                 if (code) {
                     if (code.length === 10) { // 丝车
-                        this.silkCarCode = code;
-                        this.getSilkcarDetails(code);
-                    } else if (code.length == 14) { //丝锭
-                        if (this.data) {
-                        // Toast(JSON.stringify(this.data.silkCarRowColList+'sssss' ))
-                            if (this.isContentThisSilk(code,this.data.silkCarRowColList)) {
-                                // 解绑的丝锭数组
-
-
-                            this.silkCodeList.pushNoRepeat(code)
-
-                                this.hairline = true
-                            } else {
-                                Toast("请扫描正确丝锭")
-                            }
-                        } else {
-                            Toast('请先扫描丝车')
-                        }
+                        this.silkCodeList.pushNoRepeat(code)
+                        this.hairline = true
                     } else {
                         Toast('不符合规则')
                     }
@@ -153,20 +159,21 @@
 
             },
             isContentThisSilk(silk, list) {
-                if(!(list instanceof Array))  return  false
+                if (!(list instanceof Array)) return false
                 let is = false
                 list.forEach(a => {
                     if (a.silkCode === silk) {
-                        is= true
+                        is = true
                     }
                 })
                 return is
             },
             getSilkcarDetails(code) {
-                this.silkCodeList = []
                 this.$api.getSilkss(code).then((res) => {
                     if (res.data.status === '200') {
                         this.data = res.data.data;
+
+
                     } else {
                         Toast(res.data.msg)
                     }
@@ -182,21 +189,24 @@
                 });
                 return s;
             },
+            getGrades() {
+                this.$api.getGrades().then((res) => {
+                    if (res.data.code === 200) {
+                        this.gradeData = res.data.queryResult.list;
+                    } else {
+                        Toast(res.data.message)
+                        // console.log(res.data.queryResult , "aa")
+
+                    }
+                });
+            }
 
         },
         created() {
 
             this.userId = this.$route.query.userId
             this.name = this.$route.query.name
-            this.gradeData = [
-                {name: "AA", type: "primary"},
-                {name: "B", type: "warning"},
-                {name: "A", type: "primary"},
-                {name: "C", type: "primary"},
-                {name: "不定重", type: "primary"},
-                {name: "不定重优等", type: "primary"},
-                {name: "废丝", type: "primary"},
-            ]
+            this.getGrades()
 
         },
         mounted() {
@@ -212,17 +222,21 @@
         display: flex;
         background-color: #33aa46;
         border-radius: 3px;
+        width: 100%;
     }
+
     .main > .left {
-        flex:  4;
+        flex: 4;
         line-height: 40px;
         color: white;
     }
+
     .main > .right {
-        flex:  1;
+        flex: 1;
         line-height: 40px;
         color: red;
     }
+
     #app {
         font-family: "Avenir", Helvetica, Arial, sans-serif;
         -webkit-font-smoothing: antialiased;
@@ -280,7 +294,7 @@
     }
 
     main > .item:nth-of-type(2) {
-        background-color: #33aa46;
+        background-color: #5b53aa;
     }
 
     main > .item:nth-of-type(3) {
@@ -293,6 +307,8 @@
 
     main > .item > .left {
         flex: 1;
+        display: flex;
+
     }
 
     main > .item > .right {
@@ -301,6 +317,7 @@
         flex-wrap: wrap;
         /*设置为伸缩盒子*/
         display: flex;
+        overflow: hidden;
     }
 
     main > .item > .right > a {
@@ -362,4 +379,6 @@
     footer > .copyRight {
         text-align: center;
     }
+
+
 </style>

@@ -5,6 +5,11 @@ import Home from '../views/Home.vue'
 import SilkUnbind from '../views/SilkUnbind.vue'
 import SilkCarDetails from '../views/SilkCarDetails.vue'
 import SilkCarPool from '../views/SilkCarPool.vue'
+import SetGrade from '../views/SetGrade.vue'
+import DoffAuto from '../views/DoffAuto.vue'
+import ManuPack from '../views/ManuPack.vue'
+import TemBoxPack from '../views/TemBoxPack.vue'
+import PackInTemBox from '../views/PackInTemBox.vue'
 
 Vue.use(Router)
 const originalPush = Router.prototype.push
@@ -60,6 +65,31 @@ let router = new Router({
             path: '/SilkCarPool',
             name: 'SilkCarPool',
             component: SilkCarPool
+        },
+        {
+            path: '/SetGrade',
+            name: 'SetGrade',
+            component: SetGrade
+        },
+        {
+            path: '/DoffAuto',
+            name: 'DoffAuto',
+            component: DoffAuto
+        },
+        {
+            path: '/ManuPack',
+            name: 'ManuPack.vue',
+            component: ManuPack
+        },
+        {
+            path: '/TemBoxPack',
+            name: 'TemBoxPack.vue',
+            component: TemBoxPack
+        },
+        {
+            path: '/PackInTemBox',
+            name: 'PackInTemBox.vue',
+            component: PackInTemBox
         }
     ]
 

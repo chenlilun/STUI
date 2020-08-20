@@ -138,7 +138,7 @@ white-space:nowrap;">{{item.lineMachine+'-'+item.doffNo}}
                         }]
                         this.weiPosition = 0
 
-                        Toast("定等成功")
+                        Toast.success(res.data.msg)
                     } else {
                         Toast(res.data.msg)
                     }
@@ -190,10 +190,10 @@ white-space:nowrap;">{{item.lineMachine+'-'+item.doffNo}}
             callByAndroid(code) {
                 // Toast("对了？" + code)
                 if (code) {
-                    if (code.length === 10) { // 丝车
+                    if (this.$myUtils.checkIsSilkCar(code)) { // 丝车
                         this.silkCarCode = code;
                         this.getSilkcarDetails(code);
-                    } else if (code.length == 14) { //丝锭
+                    } else if (this.$myUtils.checkIsSilk(code)) { //丝锭
                         if (this.data) {
                             // Toast(JSON.stringify(this.data.silkCarRowColList+'sssss' ))
                             if (this.isContentThisSilk(code, this.data.silkCarRowColList)) {

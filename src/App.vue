@@ -133,4 +133,30 @@ footer > .link {
 footer > .copyRight {
   text-align: center;
 }
+.van-toast__text {
+    margin-top: 2.133vw;
+    font-size: 25px;
+}
+.van-cell__title > span {
+    float: left;
+    overflow: hidden;
+    font-size: 20px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.van-field__control {
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    color: red;
+    font-size: 20px;
+    line-height: inherit;
+    text-align: left;
+    background-color: transparent;
+    border: 0;
+    resize: none;
+}
 </style>

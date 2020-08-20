@@ -12,14 +12,20 @@
         <div style="margin: 10px;">
             <!-- <van-button round block plain hairline type="primary">{{silkCarCode}}</van-button> -->
             <van-field v-model="silkCarCode" center clearable label="丝车条码" placeholder="请扫描丝车条码">
-                <template #button>
-                    <van-button size="small" type="primary" @click="find">查询</van-button>
-                </template>
+
             </van-field>
         </div>
 
 
-
+        <div style="overflow: hidden">设置等级</div>
+        <div style="overflow: hidden">
+            <a v-for="(item, index ) in gradeData" :key="index" @click.prevent="chooseOne(index)" style="float: left">
+                <van-button :type="item.firstRate?'warning':'primary'" style="margin : 5px;width: 60px ; float: left">
+                    {{item.grade}}
+                </van-button>
+            </a>
+        </div>
+        <p style="color: red;line-height: 40px" v-if="silkCarCode!=''">***请扫描丝锭***</p>
         <div style="text-align: left" >
             <div class="main" v-for="(item, index ) in silkCodeList" :key="index">
                 <div class="left">{{item}}</div>
@@ -122,7 +128,7 @@
                         }]
                         this.weiPosition = 0
 
-                        Toast("拼车成功")
+                        Toast.success(res.data.msg)
                     } else {
                         Toast(res.data.msg)
                     }
@@ -172,10 +178,10 @@
             callByAndroid(code) {
                 // Toast("对了？" + code)
                 if (code) {
-                    if (code.length === 10) { // 丝车
+                    if (this.$myUtils.checkIsSilkCar(code)) { // 丝车
                         this.silkCarCode = code;
                         this.getSilkcarDetails(code);
-                    } else if (code.length == 14) { //丝锭
+                    } else if (this.$myUtils.checkIsSilk(code)) { //丝锭
                         if (this.silkCarCode) {
                             // Toast(JSON.stringify(this.data.silkCarRowColList+'sssss' ))
                             if (this.isContentThisSilk(code, this.data.silkCarRowColList)) {
@@ -199,7 +205,6 @@
 
             },
             isContentThisSilk(silk, list) {
-                Toast("dage")
                 if (!(list instanceof Array)) return true
                 let is = true
                 list.forEach(a => {
@@ -225,7 +230,6 @@
                         this.silkCodeList = []
 
                     } else {
-                        Toast(res.data.msg)
                         this.silkCodeList = []
                     }
                     console.log(res.data);

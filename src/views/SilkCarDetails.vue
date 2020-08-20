@@ -44,6 +44,31 @@
         </section>
       </main>
     </ol>
+    <van-popup v-model="show"
+               close-icon-position="top-left"
+               closeable
+               position="right" :style="{ height: '100%' , width : '70%'  }   " >
+      <div style="margin-top: 30px;margin-left: 8px">
+        <van-steps direction="vertical" :active="0">
+          <van-step v-for="(item  , index) in events" :key="index">
+            <h3>操作类型:{{item.operate}}</h3>
+            <p>操作人:{{item.post+' ' +item.operator}}</p>
+            <h4>时间:{{ getTime(item.operateTime) }}</h4>
+            <van-collapse v-model="activeNames">
+              <van-collapse-item title="操作丝锭" :name="index"> <p v-for="(i, index ) in item.silkCodes" :key="index"> {{i}}</p></van-collapse-item>
+            </van-collapse>
+            <van-divider
+                    :style="{ color: '#1989fa', borderColor: '#1989fa', padding: '0 16px' }"
+            >
+              分割线
+            </van-divider>
+          </van-step>
+
+        </van-steps>
+      </div>
+
+
+    </van-popup>
 
     <!-- <van-field readonly name="picker" :value="capacity" label="丝锭数量:" placeholder />
     <van-field readonly :value="capacity" label="线别/位号/落次:" placeholder />-->
@@ -56,6 +81,8 @@
 <script>
 // import HelloWorld from "@/components/HelloWorld.vue";
 import { Toast } from "vant";
+import { Divider } from 'vant';
+import moment from 'moment'
 // import { List } from "vant";
 export default {
   name: "app",
@@ -64,12 +91,15 @@ export default {
   },
   data() {
     return {
+      activeNames:['0'],
+      activeNameArray:[],
       showDoff: false,
       lineWeiDoff: "",
       date: "",
       capacity: "",
       show: false,
-      silkCarCode: "9700P00006",
+      events: [],
+      silkCarCode: "9700P600010",
       list: [],
       loading: false,
       finished: true,
@@ -82,31 +112,43 @@ export default {
         this.getSilkcarDetails(this.silkCarCode);
       }
     },
+    getTime: function (date) {
+      return moment(new Date(date)).format('YYYY-MM-DD HH:mm:ss')
+    },
     onClickLeft() {
       Toast("返回");
       window.android.finish();
     },
     onClickRight() {
-      Toast("按钮3333");
-      this.$router.push({
-        path: '/SilkUnbind',
-      })
+      // Toast("按钮3333");
+      // this.$router.push({
+      //   path: '/SilkUnbind',
+      // })
+      this.show = true
     },
     callByAndroid(code) {
       Toast(code);
       this.silkCarCode = code;
       this.getSilkcarDetails(code);
     },
-    getSilkcarDetails(code) {
+    getSilkcarDetails: function (code) {
       this.$api.getSilkss(code).then((res) => {
         console.log(res.data);
-        if(res.data.status=='200'){
+        if (res.data.status == '200') {
           this.list = []
+          this.events = res.data.data.events
+          if(this.events&&this.events.length>0){
+
+            this.events.forEach(a=>{
+              this.activeNameArray.push(this.activeName)
+            })
+          }
+
           res.data.data.spindleLists.forEach((e) => {
             this.list.push(e);
           });
           this.capacity = res.data.data.silkCarRowColList.length;
-          if (res.data.data.silkCarOnLinePositions.length > 0) {
+          if (res.data.data.silkCarOnLinePositions && res.data.data.silkCarOnLinePositions.length > 0) {
             this.lineWeiDoff = this.getDoff(
                     res.data.data.silkCarOnLinePositions
             );
@@ -116,7 +158,7 @@ export default {
                   res.data.data.doffType === "AUTO";
           this.loading = false;
           this.finished = true;
-        }else {
+        } else {
           Toast(res.data.msg)
         }
       });

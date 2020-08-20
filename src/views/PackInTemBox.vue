@@ -103,7 +103,7 @@
                         this.silkCarCode = ''
                         this.tempBoxCode = ''
                         this.weiPosition = 0
-                        Toast(res.data.msg)
+                        Toast.success(res.data.msg)
                     } else {
                         Toast(res.data.msg)
                     }
@@ -151,12 +151,13 @@
             callByAndroid(code) {
                 // Toast("对了？" + code)
                 if (code) {
-                    if (code.length === 10) { // 丝车
+                    if(this.$myUtils.checkIsTemBox(code)){
+                        this.tempBoxCode = code
+                    }
+                    else  if (this.$myUtils.checkIsSilkCar(code)) { // 丝车
                         this.silkCodeList.pushNoRepeat(code)
                         this.hairline = true
-                    }else if(code.indexOf('/')!=-1){
-                        this.tempBoxCode = code
-                    }else {
+                    } else {
                         Toast('不符合规则')
                     }
                 }

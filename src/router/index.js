@@ -7,6 +7,7 @@ import SilkCarDetails from '../views/SilkCarDetails.vue'
 import SilkCarPool from '../views/SilkCarPool.vue'
 import SetGrade from '../views/SetGrade.vue'
 import DoffAuto from '../views/DoffAuto.vue'
+import DoffManMade from '../views/DoffManMade.vue'
 import ManuPack from '../views/ManuPack.vue'
 import TemBoxPack from '../views/TemBoxPack.vue'
 import PackInTemBox from '../views/PackInTemBox.vue'
@@ -75,6 +76,11 @@ let router = new Router({
             path: '/DoffAuto',
             name: 'DoffAuto',
             component: DoffAuto
+        },
+        {
+            path: '/DoffManMade',
+            name: 'DoffManMade',
+            component: DoffManMade
         },
         {
             path: '/ManuPack',

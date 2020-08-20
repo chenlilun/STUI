@@ -18,7 +18,7 @@
             </van-field>
         </div>
         <div style="overflow: hidden">设置等级</div>
-        <div style="overflow: hidden">
+        <div style="overflow: hidden;display: inline-block">
             <a v-for="(item, index ) in gradeData" :key="index" @click.prevent="chooseOne(index)" style="float: left">
                 <van-button :type="item.firstRate?'warning':'primary'" style="margin : 5px;width: 60px ; float: left">
                     {{item.grade}}
@@ -27,7 +27,7 @@
         </div>
         <div style="overflow: hidden">按位定等</div>
         <!--整车 按位-->
-        <div style="float: left">
+        <div style="display: inline-block">
             <div style="float: left">
                 <a v-for="(item, index ) in weiList" :key="index" @click.prevent="chooseWei(index)"
                    style="float: left ; overflow: hidden">
@@ -41,17 +41,15 @@ white-space:nowrap;">{{item.lineMachine+'-'+item.doffNo}}
 
 
         </div>
-        <div style="text-align: left;" >
-            <div class="main" v-for="(item, index ) in silkCodeList" :key="index">
-                <div class="left">{{item}}</div>
-                <div class="right" @click="deleteSilk(index)">
-                    删除
-                </div>
+        <div class="main2" v-for="(item, index ) in silkCodeList" :key="index">
+            <div class="left">{{item}}</div>
+            <div class="right" @click="deleteSilk(index)">
+                删除
             </div>
-
         </div>
+
         <van-button type="danger" block hairline="hairline" v-if="hairline"
-                    style="margin:  15px auto;overflow: hidden ;display: inline" @click="dingDeng">确定
+                    style="margin:  6px 6px;display: inline-block" @click="dingDeng">确定
         </van-button>
 
 
@@ -90,7 +88,7 @@ white-space:nowrap;">{{item.lineMachine+'-'+item.doffNo}}
                         "lineMachine": "整",
 
 
-                }],
+                    }],
                 userId: '',
                 hairline: this.silkCodeList && this.silkCodeList.length > 0,
                 name: '',
@@ -103,7 +101,7 @@ white-space:nowrap;">{{item.lineMachine+'-'+item.doffNo}}
                 date: "",
                 capacity: "",
                 show: false,
-                silkCarCode: "9700P00006",
+                silkCarCode: "9700P600010",
                 list: [],
                 loading: false,
                 finished: true,
@@ -113,24 +111,24 @@ white-space:nowrap;">{{item.lineMachine+'-'+item.doffNo}}
         methods: {
 
             dingDeng() {
-                let arr = [] ;
-                this.silkCodeList.forEach(a=>{
-                    arr.push({silkCode: a })
+                let arr = [];
+                this.silkCodeList.forEach(a => {
+                    arr.push({silkCode: a})
                 })
                 this.$api.dingDeng({
                     post: this.name,
                     silkCarCode: this.silkCarCode,
                     modifier: this.userId,
                     silkCarRowColList: arr,
-                    id:this.data.id,
-                    grade: this.gradeData.find(a=>a.firstRate).grade
+                    id: this.data.id,
+                    grade: this.gradeData.find(a => a.firstRate).grade
                 }).then((res) => {
                     if (res.data.status === '200') {
                         this.silkCodeList = []
                         this.hairline = false
                         this.data = ''
                         this.silkCarCode = ''
-                        this.weiList = [    {
+                        this.weiList = [{
                             "doffNo": "车",
                             "lineMachine": "整",
 
@@ -146,7 +144,7 @@ white-space:nowrap;">{{item.lineMachine+'-'+item.doffNo}}
             },
             deleteSilk(index) {
                 this.silkCodeList.splice(index, 1)
-                console.log(this.silkCodeList,"444232")
+                console.log(this.silkCodeList, "444232")
             },
             chooseOne(clickIndex) {
                 this.gradeData.forEach((e, index) => {
@@ -162,12 +160,12 @@ white-space:nowrap;">{{item.lineMachine+'-'+item.doffNo}}
             chooseWei(clickIndex) {
                 this.weiPosition = clickIndex
                 this.silkCodeList = []
-                if(clickIndex===0){
+                if (clickIndex === 0) {
                     this.data.silkCarRowColList && this.data.silkCarRowColList.forEach(b => {
                         this.silkCodeList.pushNoRepeat(b.silkCode)
                     })
-                }else {
-                    this.data.silkCarRowColList &&  this.data.silkCarRowColList.filter(a => a.orderBy == this.weiList[clickIndex].orderBy).forEach(b => {
+                } else {
+                    this.data.silkCarRowColList && this.data.silkCarRowColList.filter(a => a.orderBy == this.weiList[clickIndex].orderBy).forEach(b => {
                         this.silkCodeList.pushNoRepeat(b.silkCode)
                         console.log(b)
 
@@ -229,13 +227,13 @@ white-space:nowrap;">{{item.lineMachine+'-'+item.doffNo}}
                     if (res.data.status === '200') {
                         this.data = res.data.data;
                         // this.weiList = res.data.data.silkCarOnLinePositions
-                        this.weiList = [     {
+                        this.weiList = [{
                             "doffNo": "车",
                             "lineMachine": "整",
 
 
                         }]
-                        this.data.silkCarOnLinePositions && this.data.silkCarOnLinePositions.forEach(a=>{
+                        this.data.silkCarOnLinePositions && this.data.silkCarOnLinePositions.forEach(a => {
                             this.weiList.push(a)
                         })
                         this.silkCodeList = []
@@ -261,6 +259,7 @@ white-space:nowrap;">{{item.lineMachine+'-'+item.doffNo}}
                 this.$api.getGrades().then((res) => {
                     if (res.data.code === 200) {
                         this.gradeData = res.data.queryResult.list;
+
                     } else {
                         Toast(res.data.message)
                         // console.log(res.data.queryResult , "aa")
@@ -284,168 +283,26 @@ white-space:nowrap;">{{item.lineMachine+'-'+item.doffNo}}
 </script>
 
 <style>
-    .main {
-        margin: 15px;
+    .main2 {
+        margin: 5px 5px;
         height: 40px;
         display: flex;
         background-color: #33aa46;
-        border-radius: 3px;
-        width: 100%;
+        overflow: hidden;
+        border-radius: 6px;
     }
 
-    .main > .left {
-        flex: 4;
+    .main2 > .left {
+        flex: 3;
+        padding-left: 8px;
         line-height: 40px;
         color: white;
     }
 
-    .main > .right {
+    .main2 > .right {
         flex: 1;
         line-height: 40px;
         color: red;
-    }
-
-    #app {
-        font-family: "Avenir", Helvetica, Arial, sans-serif;
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
-        text-align: center;
-        color: #2c3e50;
-        margin-top: 1px;
-    }
-
-    .van-field__label {
-        -webkit-box-flex: 0;
-        -webkit-flex: none;
-        flex: none;
-        box-sizing: border-box;
-        width: 8.2em;
-        margin-right: 3.2vw;
-        color: #646566;
-        text-align: left;
-        word-wrap: break-word;
-    }
-
-    /*顶部块样式*/
-    header {
-        width: 100%;
-        /*设置为伸缩盒子*/
-        display: flex;
-    }
-
-    header > a {
-        /*width: 100%;*/
-        /*flex:设置当前子元素占据父容器剩余宽度的比例*/
-        flex: 1;
-    }
-
-    header > a > img {
-        width: 100%;
-    }
-
-    /*主体内容块样式*/
-    main {
-        width: 100%;
-        padding: 0 10px;
-        /*设置盒模型*/
-        box-sizing: border-box;
-    }
-
-    main > .item {
-        width: 100%;
-        height: 100px;
-        background-color: #57c3ae;
-        border-radius: 10px;
-        margin-top: 10px;
-        /*设置为伸缩盒子*/
-        display: flex;
-    }
-
-    main > .item:nth-of-type(2) {
-        background-color: #5b53aa;
-    }
-
-    main > .item:nth-of-type(3) {
-        background-color: #aa4b40;
-    }
-
-    main > .item:nth-of-type(4) {
-        background-color: #445faa;
-    }
-
-    main > .item > .left {
-        flex: 1;
-        display: flex;
-
-    }
-
-    main > .item > .right {
-        flex: 2;
-        /*设置换行显示*/
-        flex-wrap: wrap;
-        /*设置为伸缩盒子*/
-        display: flex;
-        overflow: hidden;
-    }
-
-    main > .item > .right > a {
-        /*如果想让子元素换行显示，必须为子元素设置宽度*/
-        width: 50%;
-        box-sizing: border-box;
-        border-left: 1px solid #fff;
-        border-bottom: 1px solid #fff;
-        display: block;
-        color: #fff;
-        line-height: 50px;
-        text-align: center;
-        text-decoration: none;
-    }
-
-    main > .item > .right > a:nth-last-of-type(-n + 2) {
-        border-bottom: none;
-    }
-
-    main > .extra {
-        width: 100%;
-        display: flex;
-    }
-
-    main > .extra > a {
-        flex: 1;
-    }
-
-    main > .extra > a > img {
-        width: 100%;
-    }
-
-    /*底部块样式*/
-    footer {
-        width: 100%;
-        font-size: 13px;
-    }
-
-    footer > nav {
-        width: 100%;
-        display: flex;
-        border-top: 1px solid #ccc;
-        border-bottom: 1px solid #ccc;
-    }
-
-    footer > nav > a {
-        flex: 1;
-        line-height: 30px;
-        text-align: center;
-        color: #888;
-        text-decoration: none;
-    }
-
-    footer > .link {
-        text-align: center;
-        line-height: 25px;
-    }
-
-    footer > .copyRight {
-        text-align: center;
     }
 
 

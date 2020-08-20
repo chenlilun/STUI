@@ -71,8 +71,8 @@ white-space:nowrap;">{{item.lineMachine+'-'+item.doffNo}}
             <!--            <van-collapse-item title="标题2" name="2">内容</van-collapse-item>-->
             <!--            <van-collapse-item title="标题3" name="3">内容</van-collapse-item>-->
         </van-collapse>
-        <div v-for="(item, index ) in this.data.silkCarRowColList" :key="index"
-             :style=" index ===activeName ?'background-color:  darkgrey ;border-color: red' : 'background-color:   white ;border-color: #2c3e50 ;border-radius: 6px' "
+        <div v-for="(item, index ) in this.data.silkCarRowColList" :key="index" class="div_item"
+             :style="index ===activeName ?'background-color:  goldenrod ;  border: 1px solid red;' : 'background-color:   darkgrey ;'"
              @click="activeName=index"
         >
             <div class="van-collapse-item-div33" style="border-radius: 6px">{{item.silkCode}}</div>
@@ -171,16 +171,16 @@ white-space:nowrap;">{{item.lineMachine+'-'+item.doffNo}}
             changeSilk(index) {
                 this.activeName = index
                 let a = Math.floor(Math.random() * this.data.silkCarPositionList[this.activeName].silkCarRowColList.length)
-                this.data.silkCarRowColList[this.activeName].silkCode=null
-                this.data.silkCarRowColList[this.activeName].canModify= null
-                this.data.silkCarRowColList[this.activeName].sideType=  this.data.silkCarPositionList[this.activeName].silkCarRowColList[a].sideType
-                this.data.silkCarRowColList[this.activeName].row=  this.data.silkCarPositionList[this.activeName].silkCarRowColList[a].row
-                this.data.silkCarRowColList[this.activeName].col=  this.data.silkCarPositionList[this.activeName].silkCarRowColList[a].col
-                this.data.silkCarRowColList[this.activeName].spindleNum=  this.data.silkCarPositionList[this.activeName].silkCarRowColList[a].spindleNum
-                this.data.silkCarRowColList[this.activeName].orderBy=  this.data.silkCarPositionList[this.activeName].silkCarRowColList[a].orderBy
-                this.data.silkCarRowColList[this.activeName].createTime=  this.data.silkCarPositionList[this.activeName].silkCarRowColList[a].createTime
-                this.data.silkCarRowColList[this.activeName].grabFlag=  this.data.silkCarPositionList[this.activeName].silkCarRowColList[a].grabFlag
-                this.data.silkCarRowColList[this.activeName].eliminateFlag=  this.data.silkCarPositionList[this.activeName].silkCarRowColList[a].eliminateFlag
+                this.data.silkCarRowColList[this.activeName].silkCode = null
+                this.data.silkCarRowColList[this.activeName].canModify = null
+                this.data.silkCarRowColList[this.activeName].sideType = this.data.silkCarPositionList[this.activeName].silkCarRowColList[a].sideType
+                this.data.silkCarRowColList[this.activeName].row = this.data.silkCarPositionList[this.activeName].silkCarRowColList[a].row
+                this.data.silkCarRowColList[this.activeName].col = this.data.silkCarPositionList[this.activeName].silkCarRowColList[a].col
+                this.data.silkCarRowColList[this.activeName].spindleNum = this.data.silkCarPositionList[this.activeName].silkCarRowColList[a].spindleNum
+                this.data.silkCarRowColList[this.activeName].orderBy = this.data.silkCarPositionList[this.activeName].silkCarRowColList[a].orderBy
+                this.data.silkCarRowColList[this.activeName].createTime = this.data.silkCarPositionList[this.activeName].silkCarRowColList[a].createTime
+                this.data.silkCarRowColList[this.activeName].grabFlag = this.data.silkCarPositionList[this.activeName].silkCarRowColList[a].grabFlag
+                this.data.silkCarRowColList[this.activeName].eliminateFlag = this.data.silkCarPositionList[this.activeName].silkCarRowColList[a].eliminateFlag
             },
             doffNoPopChoose(i) {  // 弹框选择
                 if (this.currentScanMachineQrCode) {
@@ -514,6 +514,16 @@ white-space:nowrap;">{{item.lineMachine+'-'+item.doffNo}}
 </script>
 
 <style>
+    .div_item {
+        background-color: goldenrod;
+        border-radius: 9px;
+        margin: 3px 5px;
+        box-sizing: border-box;
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+
+
+    }
 
     .van-collapse-item-div33 {
         height: 50px;
@@ -521,7 +531,6 @@ white-space:nowrap;">{{item.lineMachine+'-'+item.doffNo}}
         border-radius: 6px;
         line-height: 50px;
         font-size: 20px;
-        margin-top: 10px;
         color: black;
 
     }

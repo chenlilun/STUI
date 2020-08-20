@@ -13,21 +13,19 @@
             <van-field v-model="tempBoxCode" center clearable label="暂存箱条码:" placeholder="请扫描暂存箱条码">
             </van-field>
         </div>
-        <div>
+        <div style="">
             <a @.prevent.click style="color: #1989fa;float: left;line-height: 40px;margin-left: 24px;" > 打包颗数：</a>
             <van-button type="info" style="width: 120px;float: left" @click="show = true">{{this.silkNums}}</van-button>
 
         </div>
 
-        <div style="text-align: left;">
-            <div class="main" v-for="(item, index ) in silkCodeList" :key="index">
+            <div class="main2" v-for="(item, index ) in silkCodeList" :key="index">
                 <div class="left">{{item}}</div>
                 <div class="right" @click="deleteSilk(index)">
                     删除
                 </div>
             </div>
 
-        </div>
         <van-button type="danger" block hairline="hairline" v-show="true"
                     style="margin:  60px auto;overflow: hidden ;display: inline" @click="dingDeng">确定
         </van-button>

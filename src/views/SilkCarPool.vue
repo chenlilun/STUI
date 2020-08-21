@@ -34,7 +34,7 @@
         </div>
 
         <van-button type="danger" block hairline="hairline" v-if="hairline"
-                    style="margin:  15px auto;overflow: hidden ;display: inline" @click="dingDeng">确定
+                    style="margin:  0;overflow: hidden ;display: inline" @click="dingDeng">确定
         </van-button>
 
 
@@ -274,7 +274,8 @@
         margin: 5px 5px;
         height: 40px;
         display: flex;
-        background-color: #33aa46;
+        /*background-color: #33aa46;*/
+        background-color: grey;
         overflow: hidden;
         border-radius: 6px;
     }

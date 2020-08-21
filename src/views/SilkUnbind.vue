@@ -25,13 +25,13 @@
                 </van-button>
             </a>
         </div>
-        <div style="overflow: hidden">按位定等</div>
+        <div style="overflow: hidden">按位解绑</div>
         <!--整车 按位-->
         <div style="display: inline-block">
             <div style="float: left">
                 <a v-for="(item, index ) in weiList" :key="index" @click.prevent="chooseWei(index)"
                    style="float: left ; overflow: hidden">
-                    <van-button :color="weiPosition===index?'#C11C1B':'#5b53aa'" style="margin : 5px;width: 80px ; float: left;overflow:hidden;
+                    <van-button :color="weiPosition===index?'#ff976a':'#07c160'" style="margin : 5px;width: 80px ; float: left;overflow:hidden;
 text-overflow:ellipsis;
 white-space:nowrap;">{{item.lineMachine+'-'+item.doffNo}}
                     </van-button>
@@ -88,6 +88,16 @@ white-space:nowrap;">{{item.lineMachine+'-'+item.doffNo}}
                         "lineMachine": "整",
 
 
+                    },{
+                        "doffNo": "面",
+                        "lineMachine": "A",
+
+
+                    },{
+                        "doffNo": "面",
+                        "lineMachine": "B",
+
+
                     }],
                 userId: '',
                 hairline: this.silkCodeList && this.silkCodeList.length > 0,
@@ -101,7 +111,7 @@ white-space:nowrap;">{{item.lineMachine+'-'+item.doffNo}}
                 date: "",
                 capacity: "",
                 show: false,
-                silkCarCode: "9700P00006",
+                silkCarCode: "9700P600001",
                 list: [],
                 loading: false,
                 finished: true,
@@ -113,7 +123,11 @@ white-space:nowrap;">{{item.lineMachine+'-'+item.doffNo}}
             dingDeng() {
                 let arr = [];
                 this.silkCodeList.forEach(a => {
-                    arr.push({silkCode: a})
+                    if(a.indexOf('位置:')!=-1){
+                        arr.push({silkCode: a.split('位置:')[0]})
+                    }else {
+                        arr.push({silkCode: a})
+                    }
                 })
                 this.$api.silkUnbind({
                     post: this.name,
@@ -135,8 +149,18 @@ white-space:nowrap;">{{item.lineMachine+'-'+item.doffNo}}
                             "lineMachine": "整",
 
 
+                        },{
+                            "doffNo": "面",
+                            "lineMachine": "A",
+
+
+                        },{
+                            "doffNo": "面",
+                            "lineMachine": "B",
+
+
                         }]
-                        this.weiPosition = 0
+                        this.weiPosition = -1
                         Toast.success(res.data.msg)
                     } else {
                         Toast(res.data.msg)
@@ -189,11 +213,19 @@ white-space:nowrap;">{{item.lineMachine+'-'+item.doffNo}}
                 this.silkCodeList = []
                 if (clickIndex === 0) {
                     this.data.silkCarRowColList && this.data.silkCarRowColList.forEach(b => {
-                        this.silkCodeList.pushNoRepeat(b.silkCode)
+                        this.silkCodeList.pushNoRepeat(b.silkCode+'位置:'+b.sideType+'/'+b.row+'/'+b.col)
                     })
-                } else {
+                } if (clickIndex === 1) { // A
+                    this.data.silkCarRowColList && this.data.silkCarRowColList.filter(a => a.sideType === 'A').forEach(b => {
+                        this.silkCodeList.pushNoRepeat(b.silkCode+'位置:'+b.sideType+'/'+b.row+'/'+b.col)
+                    })
+                }  if (clickIndex === 2) { //B
+                    this.data.silkCarRowColList && this.data.silkCarRowColList.filter(a => a.sideType === 'B').forEach(b => {
+                        this.silkCodeList.pushNoRepeat(b.silkCode+'位置:'+b.sideType+'/'+b.row+'/'+b.col)
+                    })
+                }  else {
                     this.data.silkCarRowColList && this.data.silkCarRowColList.filter(a => a.orderBy == this.weiList[clickIndex].orderBy).forEach(b => {
-                        this.silkCodeList.pushNoRepeat(b.silkCode)
+                        this.silkCodeList.pushNoRepeat(b.silkCode+'位置:'+b.sideType+'/'+b.row+'/'+b.col)
                         console.log(b)
 
                     })
@@ -259,12 +291,22 @@ white-space:nowrap;">{{item.lineMachine+'-'+item.doffNo}}
                             "lineMachine": "整",
 
 
+                        },{
+                            "doffNo": "面",
+                            "lineMachine": "A",
+
+
+                        },{
+                            "doffNo": "面",
+                            "lineMachine": "B",
+
+
                         }]
                         this.data.silkCarOnLinePositions && this.data.silkCarOnLinePositions.forEach(a => {
                             this.weiList.push(a)
                         })
                         this.silkCodeList = []
-                        this.chooseWei(0)
+                        this.chooseWei(-1)
 
                     } else {
                         Toast(res.data.msg)
@@ -313,7 +355,8 @@ white-space:nowrap;">{{item.lineMachine+'-'+item.doffNo}}
         margin: 5px 5px;
         height: 40px;
         display: flex;
-        background-color: #33aa46;
+        /*background-color: #33aa46;*/
+        background-color: grey;
         overflow: hidden;
         border-radius: 6px;
     }

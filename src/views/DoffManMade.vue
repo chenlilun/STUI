@@ -3,7 +3,7 @@
         <van-nav-bar
                 title="人工落筒"
                 left-text="返回"
-                right-text=""
+                right-text="adsdsa"
                 left-arrow
                 @click-left="onClickLeft"
                 @click-right="onClickRight"
@@ -267,6 +267,7 @@ white-space:nowrap;">{{item.lineMachine+'-'+item.doffNo}}
                     }
                 }
 
+
                 this.$api.manualDoff(this.data).then((res) => {
 
                     if (res.data.status === '200') {
@@ -322,7 +323,7 @@ white-space:nowrap;">{{item.lineMachine+'-'+item.doffNo}}
                 window.android.finish();
             },
             onClickRight() {
-
+                this.callByAndroid('0J1Y104AA0117D')
             },
             callByAndroid(code) {
                 // Toast(code)
@@ -364,25 +365,39 @@ white-space:nowrap;">{{item.lineMachine+'-'+item.doffNo}}
                         }
                         let last = code.substr(code.length - 1, 1)
                         let first = code.substr(0, 12);
+                        let spindleNums = code.substr(code.length - 2, 1)
                         let isIn = true
-                        this.data.silkCarRowColList.filter(a => a.silkCode && a.silkCode != null && a.silkCode != '').forEach((item, index) => {
+                        this.data.silkCarRowColList.filter(a => a.silkCode && a.silkCode != null && a.silkCode != ''
+                        ).forEach((item, index) => {
                             let mylast = item.silkCode.substr(item.silkCode.length - 1, 1)
                             let myfirst = item.silkCode.substr(0, 12);
-                            if (mylast === last && myfirst === first) {
+                            let mySpindleNum = item.silkCode.substr(item.length - 2, 1)
+                            if (mylast === last && myfirst === first ) {
                                 isIn = false
                             }
+
                         })
                         if (!isIn) {
                             Toast('不能重复验证同一个落次的丝锭')
                             return;
                         }
+                        //都不一样判断锭位必须一致
+
                         //判断是不是正确的丝锭
                         let col = this.data.silkCarRowColList[this.activeName].col;
                         let row = this.data.silkCarRowColList[this.activeName].row;
+                        console.log(col , 'col')
+                        console.log(row , 'row')
+
+
                         for (let i = 0; i < this.data.silkCarPositionList[this.activeName].silkCarRowColList.length; i++) {
-                            if (this.data.silkCarPositionList[this.activeName].silkCarRowColList[i].col === col &&
-                                this.data.silkCarPositionList[this.activeName].silkCarRowColList[i].row === row) {
-                                if (code.substr(code.length - 2, 1) === this.data.silkCarPositionList[this.activeName].silkCarRowColList[i].spindleNum) {
+                            if (this.data.silkCarPositionList[this.activeName].silkCarRowColList[i].col === col
+                                && this.data.silkCarPositionList[this.activeName].silkCarRowColList[i].row === row
+                                && this.data.silkCarPositionList[this.activeName].silkCarRowColList[i].sideType === this.data.silkCarRowColList[this.activeName].sideType
+
+                            ) {
+                                if (code.substr(code.length - 2, 1) === this.data.silkCarPositionList[this.activeName].silkCarRowColList[i].spindleNum
+                                ) {
                                     Toast("验证通过")
                                     this.data.silkCarRowColList[this.activeName].silkCode = code
                                     this.data.silkCarRowColList[this.activeName].canModify = true

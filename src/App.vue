@@ -23,6 +23,31 @@ export default {
   color: #2c3e50;
   margin-top: 1px;
 }
+.main2 {
+    margin: 5px 5px;
+    height: 40px;
+    display: flex;
+    background-color: #cccccc;
+    overflow: hidden;
+    border-radius: 6px;
+}
+
+.main2 > .left {
+    flex: 3;
+    padding-left: 8px;
+    line-height: 40px;
+    color: white;
+}
+
+.main2 > .right {
+    flex: 1;
+    line-height: 40px;
+    color: red;
+}
+element.style {
+    margin: 0px;
+    display: inline-block;
+}
 .van-field__label {
   -webkit-box-flex: 0;
   -webkit-flex: none;
@@ -30,7 +55,7 @@ export default {
   box-sizing: border-box;
   width: 8.2em;
   margin-right: 3.2vw;
-  color: #646566;
+  color: #cdffe6;
   text-align: left;
   word-wrap: break-word;
 }
@@ -158,5 +183,10 @@ footer > .copyRight {
     background-color: transparent;
     border: 0;
     resize: none;
+}
+.van-button--small {
+    height: 8.533vw;
+    padding: 0 2.133vw;
+    font-size: 4.2vw;
 }
 </style>

@@ -223,7 +223,8 @@
         margin: 5px 5px;
         height: 40px;
         display: flex;
-        background-color: #33aa46;
+        /*background-color: #33aa46;*/
+        background-color: grey;
         overflow: hidden;
         border-radius: 6px;
     }

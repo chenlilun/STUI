@@ -1,59 +1,65 @@
 <template>
-    <div id="app">
-        <van-nav-bar
-                title="丝锭定等"
-                left-text="返回"
-                right-text=""
-                left-arrow
-                @click-left="onClickLeft"
-                @click-right="onClickRight"
-        />
+    <div id="app2">
 
-        <div style="margin: 10px;">
-            <!-- <van-button round block plain hairline type="primary">{{silkCarCode}}</van-button> -->
-            <van-field v-model="silkCarCode" center clearable label="丝车条码" placeholder="请扫描丝车条码">
-                <template #button>
-                    <van-button size="small" type="primary" @click="find">查询</van-button>
-                </template>
-            </van-field>
-        </div>
-        <div style="overflow: hidden">设置等级</div>
-        <div style="overflow: hidden;display: inline-block">
-            <a v-for="(item, index ) in gradeData" :key="index" @click.prevent="chooseOne(index)" style="float: left">
-                <van-button :type="item.firstRate?'warning':'primary'" style="margin : 5px;width: 60px ; float: left">
-                    {{item.grade}}
-                </van-button>
-            </a>
-        </div>
-        <div style="overflow: hidden">按位定等</div>
-        <!--整车 按位-->
-        <div style="display: inline-block">
-            <div style="float: left">
-                <a v-for="(item, index ) in weiList" :key="index" @click.prevent="chooseWei(index)"
-                   style="float: left ; overflow: hidden">
-                    <van-button :color="weiPosition===index?'#C11C1B':'#5b53aa'" style="margin : 5px;width: 80px ; float: left;overflow:hidden;
-text-overflow:ellipsis;
-white-space:nowrap;">{{item.lineMachine+'-'+item.doffNo}}
+
+        <div class="roll">
+            <van-nav-bar
+                    title="丝锭定等"
+                    left-text="返回"
+                    right-text=""
+                    left-arrow
+                    @click-left="onClickLeft"
+                    @click-right="onClickRight"
+            />
+
+            <div style="margin: 10px;">
+                <!-- <van-button round block plain hairline type="primary">{{silkCarCode}}</van-button> -->
+                <van-field v-model="silkCarCode" center clearable label="丝车条码" placeholder="请扫描丝车条码">
+                    <template #button>
+                        <van-button size="small" type="primary" @click="find">查询</van-button>
+                    </template>
+                </van-field>
+            </div>
+            <div style="overflow: hidden">设置等级</div>
+            <div style="overflow: hidden;display: inline-block">
+                <a v-for="(item, index ) in gradeData" :key="index" @click.prevent="chooseOne(index)"
+                   style="float: left">
+                    <van-button :type="item.firstRate?'warning':'primary'"
+                                style="margin : 5px;width: 60px ; float: left">
+                        {{item.grade}}
                     </van-button>
                 </a>
+            </div>
+            <div style="overflow: hidden">按位定等</div>
+            <!--整车 按位-->
+            <div style="display: inline-block">
+                <div style="float: left">
+                    <a v-for="(item, index ) in weiList" :key="index" @click.prevent="chooseWei(index)"
+                       style="float: left ; overflow: hidden">
+                        <van-button :color="weiPosition===index? '#ff976a':'#07c160'" style="margin : 5px;width: 80px ; float: left;overflow:hidden;
+text-overflow:ellipsis;
+white-space:nowrap;">{{item.lineMachine+'-'+item.doffNo}}
+                        </van-button>
+                    </a>
+
+                </div>
+
 
             </div>
-
-
-        </div>
-        <div class="main2" v-for="(item, index ) in silkCodeList" :key="index">
-            <div class="left">{{item}}</div>
-            <div class="right" @click="deleteSilk(index)">
-                删除
+            <div class="main2" v-for="(item, index ) in silkCodeList" :key="index">
+                <div class="left">{{item}}</div>
+                <div class="right" @click="deleteSilk(index)">
+                    删除
+                </div>
             </div>
         </div>
-
-        <van-button type="danger" block hairline="hairline" v-if="hairline"
-                    style="margin:  6px 6px;display: inline-block" @click="dingDeng">确定
-        </van-button>
-
-
+        <footer class="ftor">
+            <van-button type="danger" block hairline="hairline" v-if="hairline"
+                        style="margin: 0px 0px;display: inline-block" @click="dingDeng">确定
+            </van-button>
+        </footer>
     </div>
+
 </template>
 
 <script>
@@ -282,12 +288,24 @@ white-space:nowrap;">{{item.lineMachine+'-'+item.doffNo}}
     };
 </script>
 
-<style>
+<style scoped="scoped">
+
+    .ftor{
+        background:#F2F3F6;max-width: 750px;width: 100%;height: 1rem;
+    }
+    app2{
+        display:flex;display: -webkit-flex;height:100%;flex-direction:column;
+
+    }
+    .roll{
+        flex: 1; width: 100%;overflow-y: scroll;-webkit-overflow-scrolling: touch;height: auto;
+    }
+
     .main2 {
         margin: 5px 5px;
         height: 40px;
         display: flex;
-        background-color: #33aa46;
+        background-color: grey;
         overflow: hidden;
         border-radius: 6px;
     }

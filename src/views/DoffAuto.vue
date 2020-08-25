@@ -3,7 +3,7 @@
         <van-nav-bar
                 title="自动线落筒"
                 left-text="返回"
-                right-text="aasasa"
+                right-text=""
                 left-arrow
                 @click-left="onClickLeft"
                 @click-right="onClickRight"
@@ -138,7 +138,7 @@ white-space:nowrap;">{{item.lineMachine+'-'+item.doffNo}}
                 date: "",
                 capacity: "",
                 show: false,
-                silkCarCode: "9700P600010",
+                silkCarCode: "",
                 list: [],
                 loading: false,
                 finished: true,
@@ -428,6 +428,13 @@ white-space:nowrap;">{{item.lineMachine+'-'+item.doffNo}}
                 this.$api.getGrades().then((res) => {
                     if (res.data.code === 200) {
                         this.gradeData = res.data.queryResult.list;
+                        this.gradeData.forEach((a,index)=>{
+                            if(this.gradeData[index].grade=='A'){
+                                this.gradeData[index].firstRate = true
+                            }else {
+                                this.gradeData[index].firstRate = false
+                            }
+                        })
                     } else {
                         Toast(res.data.message)
                         // console.log(res.data.queryResult , "aa")

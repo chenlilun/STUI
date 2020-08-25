@@ -78,7 +78,7 @@
                 date: "",
                 capacity: "",
                 show: false,
-                silkCarCode: "9700P00006",
+                silkCarCode: "",
                 list: [],
                 loading: false,
                 finished: true,

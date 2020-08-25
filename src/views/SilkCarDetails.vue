@@ -52,13 +52,17 @@
             <div style="margin-top: 30px;margin-left: 8px">
                 <van-steps direction="vertical" :active="0">
                     <van-step v-for="(item  , index) in events" :key="index">
-                        <h3>操作类型:{{item.operate}}</h3>
-                        <p>操作人:{{item.post+' ' +item.operator}}</p>
+                        <div>
+                            <h3>操作类型:{{item.operate}}</h3>
+
+                        </div>
+                        <h3>操作人:{{item.post+' ' +item.operator}}</h3>
                         <h4>时间:{{ getTime(item.operateTime) }}</h4>
                         <van-collapse v-model="activeNames">
                             <van-collapse-item title="操作丝锭" :name="index"><p v-for="(i, index ) in item.silkCodes"
                                                                              :key="index"> {{i}}</p></van-collapse-item>
                         </van-collapse>
+                        <van-button style="margin-top: 5px" type="danger" v-if="item.recover" @click="recover(item)" >撤销</van-button>
                         <van-divider
                                 :style="{ color: '#1989fa', borderColor: '#1989fa', padding: '0 16px' }"
                         >
@@ -101,14 +105,44 @@
                 capacity: "",
                 show: false,
                 events: [],
-                silkCarCode: "9700P600010",
+                silkCarCode: "9700P600002",
                 list: [],
                 loading: false,
                 finished: true,
                 refreshing: false,
+                userId: '',
+                name: '',
             };
         },
         methods: {
+            recover(item){
+                // Toast.loading({
+                //     message: '撤销...',
+                //     forbidClick: true,
+                //     loadingType: 'spinner',
+                //     duration:0
+                // });
+                console.log("aaa")
+                let arr = []
+                arr.push(item)
+
+                this.$api.silkSeparateRecover({
+                    post: this.name,
+                    modifier: this.userId,
+                    silkCarCode: this.silkCarCode,
+                    events : arr
+
+                }).then((res) => {
+                    if (res.data.status === '200') {
+                        this.find()
+                        Toast.clear()
+                        Toast.success(res.data.msg)
+                    } else {
+                        Toast.clear()
+                        Toast(res.data.msg)
+                    }
+                });
+            },
             find() {
                 if (this.silkCarCode) {
                     this.getSilkcarDetails(this.silkCarCode);
@@ -185,6 +219,10 @@
             },
         },
         created() {
+
+            this.userId = this.$route.query.userId
+
+            this.name = this.$route.query.name
 
         },
         mounted() {

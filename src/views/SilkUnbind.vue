@@ -111,7 +111,7 @@ white-space:nowrap;">{{item.lineMachine+'-'+item.doffNo}}
                 date: "",
                 capacity: "",
                 show: false,
-                silkCarCode: "9700P600001",
+                silkCarCode: "",
                 list: [],
                 loading: false,
                 finished: true,

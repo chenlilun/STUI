@@ -357,4 +357,20 @@ export default {
         // console.log("data" +  data.toString())
         return axios.post(baseUrl + '/api/pack/inTemporaryBox' , data)
     },
+
+    // 获取所有异常
+    getAllExceptions() {
+        // console.log("data" +  data.toString())
+        return axios.get(baseUrl + '/api/silkException/findAll' )
+    },
+    // 获取所有备注
+    getAllSilkNote() {
+        // console.log("data" +  data.toString())
+        return axios.get(baseUrl + '/api/silkNote/findAll' )
+    },
+    // 解绑撤销
+    silkSeparateRecover(data) {
+        // console.log("data" +  data.toString())
+        return axios.post(baseUrl + '/api/silkCarOnline/silkSeparateRecover' , data)
+    },
 }

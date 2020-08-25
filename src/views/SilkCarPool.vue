@@ -17,8 +17,8 @@
         </div>
 
 
-        <div style="overflow: hidden">设置等级</div>
-        <div style="display: inline-block">
+        <div style="overflow: hidden" v-if="false">设置等级</div>
+        <div style="display: inline-block" v-if="false">
             <a v-for="(item, index ) in gradeData" :key="index" @click.prevent="chooseOne(index)" style="float: left">
                 <van-button :type="item.firstRate?'warning':'primary'" style="margin : 5px;width: 60px ; float: left">
                     {{item.grade}}
@@ -110,7 +110,7 @@
                     silkCarCode: this.silkCarCode,
                     operatorId: this.userId,
                     silkCode: this.silkCodeList,
-                    grade: this.gradeData.find(a => a.firstRate).grade
+                    // grade: this.gradeData.find(a => a.firstRate).grade
                 }).then((res) => {
                     Toast(res.data.status)
                     if (res.data.status === '200') {

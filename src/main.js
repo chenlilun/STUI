@@ -16,6 +16,9 @@ import { Collapse, CollapseItem } from 'vant';
 import { Popup } from 'vant';
 import {Toast} from "vant";
 import { Divider } from 'vant';
+import { Tab, Tabs } from 'vant';
+Vue.use(Tab);
+Vue.use(Tabs)
 Vue.use(Divider);
 Vue.use(Toast)
 Toast.setDefaultOptions({ duration: 4000 });

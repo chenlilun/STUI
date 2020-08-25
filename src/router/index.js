@@ -11,6 +11,7 @@ import DoffManMade from '../views/DoffManMade.vue'
 import ManuPack from '../views/ManuPack.vue'
 import TemBoxPack from '../views/TemBoxPack.vue'
 import PackInTemBox from '../views/PackInTemBox.vue'
+import SubmitExcepAndUnbind from '../views/SubmitExcepAndUnbind.vue'
 
 Vue.use(Router)
 const originalPush = Router.prototype.push
@@ -86,6 +87,11 @@ let router = new Router({
             path: '/ManuPack',
             name: 'ManuPack.vue',
             component: ManuPack
+        },
+        {
+            path: '/SubmitExcepAndUnbind',
+            name: 'SubmitExcepAndUnbind.vue',
+            component: SubmitExcepAndUnbind
         },
         {
             path: '/TemBoxPack',

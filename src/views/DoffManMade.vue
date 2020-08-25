@@ -3,7 +3,7 @@
         <van-nav-bar
                 title="人工落筒"
                 left-text="返回"
-                right-text="adsdsa"
+                right-text=""
                 left-arrow
                 @click-left="onClickLeft"
                 @click-right="onClickRight"
@@ -159,7 +159,7 @@ white-space:nowrap;">{{item.lineMachine+'-'+item.doffNo}}
                 date: "",
                 capacity: "",
                 show: false,
-                silkCarCode: "9700P600004",
+                silkCarCode: "",
                 list: [],
                 loading: false,
                 finished: true,

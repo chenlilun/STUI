@@ -40,15 +40,15 @@ axios.interceptors.response.use(function (response) {
             // store.state.pageLoading = false;
             break
         case 302:
-            window.location = '/'
+            // window.location = '/'
             break
         case 500:
             // vue.$notify.error({
             //   title: '错误',
             //   message: '服务器错误'
             // })
-            localStorage.removeItem('token')
-            window.location = '/'
+            // localStorage.removeItem('token')
+            // window.location = '/'
             break
         default:
             vue.$notify.error({
@@ -372,5 +372,10 @@ export default {
     silkSeparateRecover(data) {
         // console.log("data" +  data.toString())
         return axios.post(baseUrl + '/api/silkCarOnline/silkSeparateRecover' , data)
+    },
+    // 外观确认
+    qualityProducts(data) {
+        // console.log("data" +  data.toString())
+        return axios.post(baseUrl + '/api/silkCarOnline/qualityProducts' , data)
     },
 }

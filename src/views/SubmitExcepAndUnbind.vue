@@ -293,8 +293,12 @@ white-space:nowrap;">{{item.lineMachine+'-'+item.doffNo}}
                 }
             },
             onClickLeft() {
-                Toast("返回");
-                window.android.finish();
+                if(window&&window.android){
+                    window.android.finish();
+                }else {
+                    this.$router.go(-1);//返回上一层
+                }
+
             },
             onClickRight() {
             },
@@ -388,9 +392,12 @@ white-space:nowrap;">{{item.lineMachine+'-'+item.doffNo}}
         },
         created() {
 
-            this.userId = this.$route.query.userId
+            // this.userId = this.$route.query.userId
+            //
+            // this.name = this.$route.query.name
+            this.userId = "5f7359456d3b29361e345261"
 
-            this.name = this.$route.query.name
+            this.name = "沈洋"
 
             this.getGrades()
             this.getExceps()
@@ -400,6 +407,15 @@ white-space:nowrap;">{{item.lineMachine+'-'+item.doffNo}}
         },
         mounted() {
             window.callByAndroid = this.callByAndroid;
+            this.silkCarCode = this.$route.query.silkCodeJump
+            this.userId = this.$route.query.userId
+            this.name = this.$route.query.name
+            if(this.silkCarCode&&this.silkCarCode!=""){
+                this.getSilkcarDetails(this.silkCarCode);
+                this.getGrades()
+                this.getExceps()
+                this.getNodeArray()
+            }
         },
     };
 </script>

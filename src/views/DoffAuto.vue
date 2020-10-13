@@ -137,7 +137,7 @@ white-space:nowrap;">{{item.lineMachine+'-'+item.doffNo}}
                 lineWeiDoff: "",
                 date: "",
                 capacity: "",
-                show: false,
+
                 silkCarCode: "",
                 list: [],
                 loading: false,
@@ -290,7 +290,7 @@ white-space:nowrap;">{{item.lineMachine+'-'+item.doffNo}}
             onClickRight() {
                 // this.activeName = 2
                 // this.show = true;
-                // this.callByAndroid("5f3a2d5021145958d161fa34,D1,02A")
+                // this.callByAndroid("5f68392825ebe13fce83fb05,C5,1A")
                 Toast("aaaa")
             },
             callByAndroid(code) {
@@ -507,7 +507,7 @@ white-space:nowrap;">{{item.lineMachine+'-'+item.doffNo}}
         -webkit-flex: none;
         flex: none;
         box-sizing: border-box;
-        width: 8.2em;
+        /* width: 8.2em; */
         margin-right: 3.2vw;
         color: #646566;
         text-align: left;

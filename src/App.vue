@@ -53,7 +53,7 @@ element.style {
   -webkit-flex: none;
   flex: none;
   box-sizing: border-box;
-  width: 8.2em;
+  /* width: 8.2em; */
   margin-right: 3.2vw;
   color: #cdffe6;
   text-align: left;

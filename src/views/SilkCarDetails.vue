@@ -45,6 +45,18 @@
                 </section>
             </main>
         </ol>
+        <van-button type="danger" block hairline="hairline" v-if="!showSecond"
+                    style="margin: 6px auto ;display: block ; " @click="AppearanceConfirm()">外观确认
+        </van-button>
+        <footer class="ftor">
+            <van-button type="danger" block hairline="hairline" v-if="showSecond"
+                        style="margin: 3px 3px;display: inline-block ; flex: 1" @click="dingDeng()">定等
+            </van-button>
+            <van-button type="danger" block hairline="hairline" v-if="showSecond"
+                        style="margin: 3px 3px;display: inline-block ; flex: 1" @click="jumpJieBang()">
+                解绑
+            </van-button>
+        </footer>
         <van-popup v-model="show"
                    close-icon-position="top-left"
                    closeable
@@ -97,6 +109,7 @@
         },
         data() {
             return {
+                showSecond:false ,
                 activeNames: ['0'],
                 activeNameArray: [],
                 showDoff: false,
@@ -105,7 +118,7 @@
                 capacity: "",
                 show: false,
                 events: [],
-                silkCarCode: "9700P600002",
+                silkCarCode: "",
                 list: [],
                 loading: false,
                 finished: true,
@@ -115,6 +128,58 @@
             };
         },
         methods: {
+            AppearanceConfirm(){
+                this.$api.qualityProducts({
+                    operatorId: this.userId,
+                    silkCarCode: this.silkCarCode,
+
+                }).then((res) => {
+                    if (res.data.status === '200') {
+                        this.find()
+                        Toast.clear()
+                        Toast.success(res.data.msg)
+                    } else {
+                        Toast.clear()
+                        Toast(res.data.msg)
+                    }
+                });
+            },
+            jumpJieBang(){
+                let that = this ;
+                this.$router.push({
+                    path: '/SubmitExcepAndUnbind',
+                    name: 'SubmitExcepAndUnbind.vue', //要跳转的路径的 name,在 router 文件夹下的 index.js 文件内找
+                    /*params: {
+                        key: 'silkCodeJump',
+                        msgKey: this.silkCarCode
+                    }*/
+                    query: {
+                        silkCodeJump: this.silkCarCode ,
+                        userId : this.userId ,
+                        name : that.name
+
+
+                    }
+                })
+            },
+            dingDeng(){
+                let that = this ;
+                this.$router.push({
+                    path: '/SetGrade',
+                    name: 'SetGrade', //要跳转的路径的 name,在 router 文件夹下的 index.js 文件内找
+                    /*params: {
+                        key: 'silkCodeJump',
+                        msgKey: this.silkCarCode
+                    }*/
+                    query: {
+                        silkCodeJump: this.silkCarCode ,
+                        userId : this.userId ,
+                        name : that.name
+
+
+                    }
+                })
+            },
             recover(item){
                 // Toast.loading({
                 //     message: '撤销...',
@@ -154,6 +219,7 @@
             onClickLeft() {
                 Toast("返回");
                 window.android.finish();
+
             },
             onClickRight() {
                 // Toast("按钮3333");
@@ -171,6 +237,15 @@
                 this.$api.getSilkss(code).then((res) => {
                     console.log(res.data);
                     if (res.data.status == '200') {
+                        if(res.data.data.checkMember){
+                            this.showSecond = true
+
+                        }else {
+                            this.showSecond = false
+                        }
+                        if(this.name != '质检'){
+                            this.showSecond = true
+                        }
                         this.list = []
                         this.events = res.data.data.events
                         if (this.events && this.events.length > 0) {
@@ -219,10 +294,12 @@
             },
         },
         created() {
-
             this.userId = this.$route.query.userId
 
             this.name = this.$route.query.name
+            if(this.silkCarCode){
+                this.find()
+            }
 
         },
         mounted() {
@@ -246,7 +323,7 @@
         -webkit-flex: none;
         flex: none;
         box-sizing: border-box;
-        width: 8.2em;
+        /* width: 8.2em; */
         margin-right: 3.2vw;
         color: #646566;
         text-align: left;
@@ -340,6 +417,13 @@
 
     main > .extra > a > img {
         width: 100%;
+    }
+    .ftor {
+        background: #F2F3F6;
+        max-width: 750px;
+        width: 100%;
+        height: 1rem;
+        display: flex;
     }
 
 </style>

@@ -631,7 +631,7 @@ white-space:nowrap;">{{item.lineMachine+'-'+item.doffNo}}
         -webkit-flex: none;
         flex: none;
         box-sizing: border-box;
-        width: 8.2em;
+        /* width: 8.2em; */
         margin-right: 3.2vw;
         color: #646566;
         text-align: left;

@@ -187,7 +187,13 @@ white-space:nowrap;">{{item.lineMachine+'-'+item.doffNo}}
             },
             onClickLeft() {
                 Toast("返回");
-                window.android.finish();
+                if(window&&window.android){
+                    window.android.finish();
+                }else {
+                    this.$router.go(-1);//返回上一层
+                }
+
+
             },
             onClickRight() {
             },
@@ -279,11 +285,18 @@ white-space:nowrap;">{{item.lineMachine+'-'+item.doffNo}}
 
             this.userId = this.$route.query.userId
             this.name = this.$route.query.name
+            console.log("11111111",this.name)
             this.getGrades()
 
         },
         mounted() {
             window.callByAndroid = this.callByAndroid;
+            this.silkCarCode = this.$route.query.silkCodeJump
+            this.userId = this.$route.query.userId
+            this.name = this.$route.query.name
+            if(this.silkCarCode&&this.silkCarCode!=""){
+                this.getSilkcarDetails(this.silkCarCode);
+            }
         },
     };
 </script>

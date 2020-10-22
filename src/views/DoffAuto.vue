@@ -152,7 +152,7 @@ white-space:nowrap;">{{item.lineMachine+'-'+item.doffNo}}
                     //去重扫过的机台
                     for (let i = 0; i < this.data.silkCarRowColList.length ; i++) {
                         let a = this.data.silkCarRowColList[i]
-                        if(this.data.silkCarRowColList[i].silkCode && a.canModify&&this.data.silkCarRowColList[i].silkCode===code.split(',')[0]){
+                        if(this.data.silkCarRowColList[i].silkCode && a.canModify&&this.data.silkCarRowColList[i].silkCode===  this.currentScanMachineQrCode .split(',')[0]){
                             this.data.silkCarRowColList[i].silkCode =null
                             this.data.silkCarRowColList[i].doffNo =null
                             this.data.silkCarRowColList[i].batchNo =null
@@ -164,6 +164,7 @@ white-space:nowrap;">{{item.lineMachine+'-'+item.doffNo}}
                     this.data.silkCarRowColList[this.activeName].silkCode =this.currentScanMachineQrCode.split(',')[0]
                     this.data.silkCarRowColList[this.activeName].doffNo =this.doffNoPop[i].doffNo
                     this.data.silkCarRowColList[this.activeName].batchNo =this.doffNoPop[i].batchNo
+                    this.data.silkCarRowColList[this.activeName].doffTime =this.doffNoPop[i].doffTime
                     this.data.silkCarRowColList[this.activeName].canModify =true
                     this.data.silkCarRowColList[this.activeName].showInfo =this.doffNoPop[i].batchNo
                         + " "+ this.doffNoPop[i].lineName+'-'+this.doffNoPop[i].machinName+'-'+this.doffNoPop[i].doffNo
@@ -290,8 +291,17 @@ white-space:nowrap;">{{item.lineMachine+'-'+item.doffNo}}
             onClickRight() {
                 // this.activeName = 2
                 // this.show = true;
-                // this.callByAndroid("5f68392825ebe13fce83fb05,C5,1A")
+                this.callByAndroid("5f3f6660e6b49e2632ce592a,D5,47A")
                 Toast("aaaa")
+            },
+            isCanMoidfy(silkCarRowColList){
+                let b = true ;
+                silkCarRowColList.forEach(a=>{
+                    if(a.silkCode){
+                        b = false
+                    }
+                })
+                return b
             },
             callByAndroid(code) {
                 Toast(code)
@@ -331,48 +341,71 @@ white-space:nowrap;">{{item.lineMachine+'-'+item.doffNo}}
                             Toast("请先扫描丝车")
                             return;
                         }
-                        this.$api.getMqDoffMessage({
-
-                            lineName: code.split(',')[1],
-                            machineName: code.split(',')[2]
-
-                        }).then((res) => {
-                            if (res.data.status === '200') {
-
-                                this.doffNoPop = res.data.data
-                                if(this.doffNoPop.length>1){
-                                    this.showPopup()
-                                    this.currentScanMachineQrCode = code  ;
-                                }else {
-                                    //控制删除重复扫过的机台
-                                    for (let i = 0; i < this.data.silkCarRowColList.length ; i++) {
-                                        let a = this.data.silkCarRowColList[i]
-                                        if(this.data.silkCarRowColList[i].silkCode && a.canModify&&this.data.silkCarRowColList[i].silkCode===code.split(',')[0]){
-                                            this.data.silkCarRowColList[i].silkCode =null
-                                            this.data.silkCarRowColList[i].doffNo =null
-                                            this.data.silkCarRowColList[i].batchNo =null
-                                            this.data.silkCarRowColList[i].canModify =null
-                                            this.data.silkCarRowColList[i].showInfo =null
-                                        }
+                        this.$api.getMachineId(code.split(',')[0],code.split(',')[1]).then((a)=>{
+                            if( a.data.status === '200'){
+                                this.$api.getMqDoffMessage(
+                                    {
+                                        silkCarCode:this.silkCarCode,
+                                        doffType:"MANUAL",
+                                        "machineId":a.data.data
                                     }
+                                    /*{
 
-                                    this.data.silkCarRowColList[this.activeName].silkCode =code.split(',')[0]
-                                    this.data.silkCarRowColList[this.activeName].doffNo =this.doffNoPop[0].doffNo
-                                    this.data.silkCarRowColList[this.activeName].batchNo =this.doffNoPop[0].batchNo
-                                    this.data.silkCarRowColList[this.activeName].canModify =true
-                                    this.data.silkCarRowColList[this.activeName].showInfo =this.doffNoPop[0].batchNo
-                                        + " "+ this.doffNoPop[0].lineName+'-'+this.doffNoPop[0].machinName+'-'+this.doffNoPop[0].doffNo
-                                    this.activeName = this.getActiveName()
-                                    this.hairline = true
-                                }
+                                    lineName: code.split(',')[1],
+                                    machineName: code.split(',')[2]
 
-                            } else {
-                                Toast(res.data.msg)
+                                }*/).then((res) => {
+                                    if (res.data.status === '200') {
+
+                                        this.doffNoPop = res.data.data.getMqDoffMessage
+                                        let isCanModify = this.isCanMoidfy( this.data.silkCarRowColList)
+                                        if(isCanModify){
+                                            this.data.silkCarRowColList =  res.data.data.getSilkCarDoffSpec[0].silkCarRowColList
+                                            this.data.doffSpecId =  res.data.data.getSilkCarDoffSpec[0].doffSpecId
+                                        }
+
+                                        // console.log( this.data.doffSpecId +"ddddddddddddddddddd")
+                                        // Toast(this.data.doffSpecId)
+                                        if(this.doffNoPop.length>1){
+                                            this.showPopup()
+                                            this.currentScanMachineQrCode = code  ;
+                                        }else {
+                                            //控制删除重复扫过的机台
+                                            for (let i = 0; i < this.data.silkCarRowColList.length ; i++) {
+                                                let a = this.data.silkCarRowColList[i]
+                                                if(this.data.silkCarRowColList[i].silkCode && a.canModify&&this.data.silkCarRowColList[i].silkCode===code.split(',')[0]){
+                                                    this.data.silkCarRowColList[i].silkCode =null
+                                                    this.data.silkCarRowColList[i].doffNo =null
+                                                    this.data.silkCarRowColList[i].batchNo =null
+                                                    this.data.silkCarRowColList[i].canModify =null
+                                                    this.data.silkCarRowColList[i].showInfo =null
+                                                }
+                                            }
+
+                                            this.data.silkCarRowColList[this.activeName].silkCode =code.split(',')[0]
+                                            this.data.silkCarRowColList[this.activeName].doffNo =this.doffNoPop[0].doffNo
+                                            this.data.silkCarRowColList[this.activeName].batchNo =this.doffNoPop[0].batchNo
+                                            this.data.silkCarRowColList[this.activeName].canModify =true
+                                            this.data.silkCarRowColList[this.activeName].doffTime =this.doffNoPop[0].doffTime
+                                            this.data.silkCarRowColList[this.activeName].showInfo =this.doffNoPop[0].batchNo
+                                                + " "+ this.doffNoPop[0].lineName+'-'+this.doffNoPop[0].machinName+'-'+this.doffNoPop[0].doffNo
+                                            this.activeName = this.getActiveName()
+                                            this.hairline = true
+                                        }
+
+                                    } else {
+                                        Toast(res.data.msg)
+                                    }
+                                    console.log(res.data);
+                                })
+                            }else {
+                                Toast(a.data.msg)
                             }
-                            console.log(res.data);
+
                         })
+
                     } else {
-                        Toast('不符合规则')
+                        Toast('条码不符合规则')
                     }
                 }
 
@@ -391,7 +424,7 @@ white-space:nowrap;">{{item.lineMachine+'-'+item.doffNo}}
             getSilkcarDetails(code) {
                 this.$api.getSilkCarDoff({
                     "silkCarCode": code,
-                    "doffType": "AUTO_MANUAL"
+                    "doffType": "MANUAL"
                 }).then((res) => {
                     if (res.data.status === '200') {
                         this.data = res.data.data[0];

@@ -312,10 +312,20 @@ export default {
         // console.log("data" +  data.toString())
         return axios.post(baseUrl + '/api/silkCarOnline/get/' + code)
     },
+    // 根据机台获取废丝
+    getWasteSilk(code) {
+        // console.log("data" +  data.toString())
+        return axios.post(baseUrl + '/api/doff/getMqDoffMessageExcludeFullVolume' , code)
+    },
     // 丝车: 解绑
     silkUnbind(data) {
         // console.log("data" +  data.toString())
         return axios.post(baseUrl + '/api/silkCarOnline/separate' , data)
+    },
+    // 删除
+    deleteMqDoffMessageExcludeFullVolume(data) {
+        // console.log("data" +  data.toString())
+        return axios.post(baseUrl + '/api/doff/deleteMqDoffMessageExcludeFullVolume' , data)
     },
     // 丝车: 定等
     dingDeng(data) {
@@ -326,6 +336,12 @@ export default {
     poolSilkCar(data) {
         // console.log("data" +  data.toString())
         return axios.post(baseUrl + '/api/carPool/silkCarPooling' , data)
+    },
+
+    // 丝车: 强制拼车
+    ForceSilkCarPool(data) {
+        // console.log("data" +  data.toString())
+        return axios.post(baseUrl + '/api/carPool/outLineExcSilkPool' , data)
     },
     // 落筒: 自动线人工落筒 扫机台
     getSilkCarDoff(data) {
@@ -377,5 +393,16 @@ export default {
     qualityProducts(data) {
         // console.log("data" +  data.toString())
         return axios.post(baseUrl + '/api/silkCarOnline/qualityProducts' , data)
+    },
+    // pda打印
+    print(line,silkCarCode) {
+        // console.log("data" +  data.toString())
+        return axios.get(baseUrl + '/api/mqtttopic/pdaPrint/'+line+"/"+silkCarCode)
+    },
+
+    // pda打印
+    getMachineId(lineName,machineName) {
+        // console.log("data" +  data.toString())
+        return axios.get(baseUrl + '/api/machine/find/'+lineName+"/"+machineName)
     },
 }

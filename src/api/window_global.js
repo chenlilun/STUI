@@ -7,7 +7,8 @@
 // const ipPort = 'http://192.168.128.57:8090'
 // const ipPort = 'http://10.18.7.185:8090'
 const ipPort = 'http://10.77.0.24:8090'
-// const autoReportUrl = 'http://localhost:8090'
+// const ipPort = 'http://localhost:8090'
+// const ipPort = 'http://192.168.168.109:8090'
 
 // const ipPort = 'http://10.77.0.23:8090'
 // const ipPort = 'http://10.77.0.23:8090'

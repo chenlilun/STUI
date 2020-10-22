@@ -12,6 +12,9 @@ import ManuPack from '../views/ManuPack.vue'
 import TemBoxPack from '../views/TemBoxPack.vue'
 import PackInTemBox from '../views/PackInTemBox.vue'
 import SubmitExcepAndUnbind from '../views/SubmitExcepAndUnbind.vue'
+import DeleteWasteSilk from '../views/DeleteWasteSilk.vue'
+import ForceSilkCarPool from '../views/ForceSilkCarPool.vue'
+import PrintSilkCodes from '../views/PrintSilkCodes.vue'
 
 Vue.use(Router)
 const originalPush = Router.prototype.push
@@ -102,6 +105,21 @@ let router = new Router({
             path: '/PackInTemBox',
             name: 'PackInTemBox.vue',
             component: PackInTemBox
+        },
+        {
+            path: '/DeleteWasteSilk',
+            name: 'DeleteWasteSilk.vue',
+            component: DeleteWasteSilk
+        },
+        {
+            path: '/ForceSilkCarPool',
+            name: 'ForceSilkCarPool.vue',
+            component: ForceSilkCarPool
+        },
+        {
+            path: '/PrintSilkCodes',
+            name: 'PrintSilkCodes.vue',
+            component: PrintSilkCodes
         }
     ]
 

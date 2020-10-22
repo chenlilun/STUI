@@ -32,7 +32,7 @@
             </div>
             <van-divider/>
             <!--整车 按位-->
-            <div style="display: inline-block;margin-top: -10px">
+            <div style="display: inline-block;margin-top: -10px"  v-if="false">
                 <div style="float: left ">
                     <a v-for="(item, index ) in weiList" :key="index" @click.prevent="chooseWei(index)"
                        style="float: left ; overflow: hidden">
@@ -53,7 +53,7 @@ white-space:nowrap;">{{item.lineMachine+'-'+item.doffNo}}
                     <div style="margin-top: 5px;margin-left: 8px">
                         <div :class="index===excepIndex?'main3':'main4'" v-for="(item, index ) in excepArray"
                              :key="index">
-                            <div class="left" @click="chooseException(index)">{{ item.exceptionName }}</div>
+                            <div class="left" style="font-size: 20px" @click="chooseException(index)">{{ item.exceptionName }}</div>
 
                         </div>
                     </div>
@@ -301,6 +301,7 @@ white-space:nowrap;">{{item.lineMachine+'-'+item.doffNo}}
 
             },
             onClickRight() {
+
             },
             callByAndroid(code) {
                 // Toast("对了？" + code)
@@ -311,6 +312,8 @@ white-space:nowrap;">{{item.lineMachine+'-'+item.doffNo}}
                     } else if (this.$myUtils.checkIsSilk(code)) { //丝锭
                         if (this.data) {
                             // Toast(JSON.stringify(this.data.silkCarRowColList+'sssss' ))
+                            // console.log("dddddd",(JSON.stringify(this.data.silkCarRowColList))
+                            console.log("ddd",JSON.stringify(this.data.silkCarRowColList))
                             if (this.isContentThisSilk(code, this.data.silkCarRowColList)) {
                                 // 解绑的丝锭数组
                                 // this.silkCodeList.pushNoRepeat({"silkCode": code})
@@ -392,12 +395,12 @@ white-space:nowrap;">{{item.lineMachine+'-'+item.doffNo}}
         },
         created() {
 
-            // this.userId = this.$route.query.userId
-            //
-            // this.name = this.$route.query.name
-            this.userId = "5f7359456d3b29361e345261"
+            this.userId = this.$route.query.userId
 
-            this.name = "沈洋"
+            this.name = this.$route.query.name
+            // this.userId = "5f7359456d3b29361e345261"
+            //
+            // this.name = "沈洋"
 
             this.getGrades()
             this.getExceps()

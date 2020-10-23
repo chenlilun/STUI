@@ -350,7 +350,7 @@
             },
             getTime: function (date) {
                 let a  =  new Date(date)
-            let b  =     a.setHours(a.getHours() -8)
+            let b  =     a.setHours(a.getHours() - 8  )
                 return moment(b).format('YYYY-MM-DD HH:mm:ss')
             },
             onClickLeft() {

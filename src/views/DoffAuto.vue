@@ -1,7 +1,7 @@
 <template>
     <div id="app">
         <van-nav-bar
-                title="自动线落筒"
+                title="自动线手工落筒"
                 left-text="返回"
                 right-text=""
                 left-arrow
@@ -116,6 +116,7 @@ white-space:nowrap;">{{item.lineMachine+'-'+item.doffNo}}
         },
         data() {
             return {
+                machinId  : '' ,
                 doffNoPop : [] ,
                 show: false,
                 activeName: 0,
@@ -161,7 +162,8 @@ white-space:nowrap;">{{item.lineMachine+'-'+item.doffNo}}
                         }
                     }
 
-                    this.data.silkCarRowColList[this.activeName].silkCode =this.currentScanMachineQrCode.split(',')[0]
+                    // this.data.silkCarRowColList[this.activeName].silkCode =this.currentScanMachineQrCode.split(',')[0]
+                    this.data.silkCarRowColList[this.activeName].silkCode =this.machinId
                     this.data.silkCarRowColList[this.activeName].doffNo =this.doffNoPop[i].doffNo
                     this.data.silkCarRowColList[this.activeName].batchNo =this.doffNoPop[i].batchNo
                     this.data.silkCarRowColList[this.activeName].doffTime =this.doffNoPop[i].doffTime
@@ -291,7 +293,7 @@ white-space:nowrap;">{{item.lineMachine+'-'+item.doffNo}}
             onClickRight() {
                 // this.activeName = 2
                 // this.show = true;
-                this.callByAndroid("5f3f6660e6b49e2632ce592a,D5,47A")
+                this.callByAndroid("D8,56")
                 Toast("aaaa")
             },
             isCanMoidfy(silkCarRowColList){
@@ -341,8 +343,10 @@ white-space:nowrap;">{{item.lineMachine+'-'+item.doffNo}}
                             Toast("请先扫描丝车")
                             return;
                         }
+                         this.machinId  = ''
                         this.$api.getMachineId(code.split(',')[0],code.split(',')[1]).then((a)=>{
                             if( a.data.status === '200'){
+                                this.machinId  = a.data.data
                                 this.$api.getMqDoffMessage(
                                     {
                                         silkCarCode:this.silkCarCode,
@@ -382,7 +386,8 @@ white-space:nowrap;">{{item.lineMachine+'-'+item.doffNo}}
                                                 }
                                             }
 
-                                            this.data.silkCarRowColList[this.activeName].silkCode =code.split(',')[0]
+                                            // this.data.silkCarRowColList[this.activeName].silkCode =code.split(',')[0]
+                                            this.data.silkCarRowColList[this.activeName].silkCode =this.machinId
                                             this.data.silkCarRowColList[this.activeName].doffNo =this.doffNoPop[0].doffNo
                                             this.data.silkCarRowColList[this.activeName].batchNo =this.doffNoPop[0].batchNo
                                             this.data.silkCarRowColList[this.activeName].canModify =true

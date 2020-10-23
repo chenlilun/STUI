@@ -17,8 +17,8 @@
                 </template>
             </van-field>
         </div>
-        <div style="overflow: hidden" v-if="false">设置等级</div>
-        <div style="overflow: hidden" v-if="false">
+        <div style="overflow: hidden" v-if="true">设置等级</div>
+        <div style="overflow: hidden" v-if="true">
             <a v-for="(item, index ) in gradeData" :key="index" @click.prevent="chooseOne(index)" style="float: left">
                 <van-button :type="item.firstRate?'warning':'primary'" style="margin : 5px;width: 60px ; float: left">
                     {{item.grade}}
@@ -131,10 +131,12 @@ white-space:nowrap;">{{item.lineMachine+'-'+item.doffNo}}
                 })
                 this.$api.silkUnbind({
                     post: this.name,
-                    id: this.data.id,
+                    id: this.data.id ,
                     silkCarCode: this.silkCarCode,
+                    grade: this.gradeData.find(a => a.firstRate).grade,
                     modifier: this.userId,
                     silkCarRowColList: arr,
+                    separateFlag:true
                 }).then((res) => {
                     if (res.data.status === '200') {
                         this.silkCodeList = []

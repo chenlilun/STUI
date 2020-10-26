@@ -45,7 +45,7 @@ white-space:nowrap;">{{item.lineMachine+'-'+item.doffNo}}
             </div>
             <van-cell title="丝锭列表" is-link :value="silkCodeList.length" @click="show=true"/>
             <!--异常备注-->
-            <van-tabs v-model="active">
+            <van-tabs v-model="active" v-if="juanRao">
                 <van-tab title="异常">
                     <!--                    <div v-for="(item, index ) in silkCodeList" :key="index" style="margin: 0;padding: 0">-->
                     <!--                        <p :class="index===excepIndex?'left2':'left1'">{{item}}</p>-->
@@ -70,7 +70,7 @@ white-space:nowrap;">{{item.lineMachine+'-'+item.doffNo}}
             </van-tabs>
         </div>
         <footer class="ftor">
-            <van-button type="danger" block hairline="hairline" v-if="hairline"
+            <van-button type="danger" block hairline="hairline" v-if="hairline&&juanRao"
                         style="margin: 3px 3px;display: inline-block ; flex: 1" @click="dingDeng(false)">只提交异常
             </van-button>
             <van-button type="danger" block hairline="hairline" v-if="hairline"
@@ -123,6 +123,7 @@ white-space:nowrap;">{{item.lineMachine+'-'+item.doffNo}}
         },
         data() {
             return {
+                juanRao:true ,
                 excepArray: [],
                 nodeArray: [],
                 excepIndex: -1,
@@ -378,7 +379,7 @@ white-space:nowrap;">{{item.lineMachine+'-'+item.doffNo}}
                     if (res.data.code === 200) {
                         this.gradeData = res.data.queryResult.list;
                         this.gradeData.forEach((a, index) => {
-                            if (this.gradeData[index].grade == 'A') {
+                            if (this.gradeData[index].grade == 'AA') {
                                 this.gradeData[index].firstRate = true
                             } else {
                                 this.gradeData[index].firstRate = false
@@ -401,7 +402,9 @@ white-space:nowrap;">{{item.lineMachine+'-'+item.doffNo}}
             // this.userId = "5f7359456d3b29361e345261"
             //
             // this.name = "沈洋"
-
+            if(this.name&&this.name==='卷绕工'){
+                this.juanRao = false
+            }
             this.getGrades()
             this.getExceps()
             this.getNodeArray()
@@ -413,6 +416,9 @@ white-space:nowrap;">{{item.lineMachine+'-'+item.doffNo}}
             this.silkCarCode = this.$route.query.silkCodeJump
             this.userId = this.$route.query.userId
             this.name = this.$route.query.name
+            if(this.name&&this.name==='落丝'){
+                this.juanRao = false
+            }
             if(this.silkCarCode&&this.silkCarCode!=""){
                 this.getSilkcarDetails(this.silkCarCode);
                 this.getGrades()

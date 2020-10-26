@@ -130,6 +130,7 @@ white-space:nowrap;">{{item.lineMachine+'-'+item.doffNo}}
                 userId: '',
                 hairline: false,
                 name: '',
+                realName: '',
                 silkCodeList: [],
                 data: '',
                 gradeData: [],
@@ -171,7 +172,7 @@ white-space:nowrap;">{{item.lineMachine+'-'+item.doffNo}}
                     this.data.silkCarRowColList[this.activeName].showInfo =this.doffNoPop[i].batchNo
                         + " "+ this.doffNoPop[i].lineName+'-'+this.doffNoPop[i].machinName+'-'+this.doffNoPop[i].doffNo
                     this.hairline = true
-                    this.activeName = this.getActiveName()
+                    // this.activeName = this.getActiveName()
                 }
                 this.show = false;
 
@@ -394,7 +395,7 @@ white-space:nowrap;">{{item.lineMachine+'-'+item.doffNo}}
                                             this.data.silkCarRowColList[this.activeName].doffTime =this.doffNoPop[0].doffTime
                                             this.data.silkCarRowColList[this.activeName].showInfo =this.doffNoPop[0].batchNo
                                                 + " "+ this.doffNoPop[0].lineName+'-'+this.doffNoPop[0].machinName+'-'+this.doffNoPop[0].doffNo
-                                            this.activeName = this.getActiveName()
+                                            // this.activeName = this.getActiveName()
                                             this.hairline = true
                                         }
 
@@ -486,6 +487,7 @@ white-space:nowrap;">{{item.lineMachine+'-'+item.doffNo}}
 
             this.userId = this.$route.query.userId
             this.name = this.$route.query.name
+            this.realName = this.$route.query.realName /*'D5乙班卷绕工'*/
             this.getGrades()
 
         },

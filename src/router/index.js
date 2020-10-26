@@ -15,6 +15,7 @@ import SubmitExcepAndUnbind from '../views/SubmitExcepAndUnbind.vue'
 import DeleteWasteSilk from '../views/DeleteWasteSilk.vue'
 import ForceSilkCarPool from '../views/ForceSilkCarPool.vue'
 import PrintSilkCodes from '../views/PrintSilkCodes.vue'
+import JoinSilkDoff from '../views/JoinSilkDoff.vue'
 
 Vue.use(Router)
 const originalPush = Router.prototype.push
@@ -120,6 +121,11 @@ let router = new Router({
             path: '/PrintSilkCodes',
             name: 'PrintSilkCodes.vue',
             component: PrintSilkCodes
+        },
+        {
+            path: '/JoinSilkDoff',
+            name: 'JoinSilkDoff.vue',
+            component: JoinSilkDoff
         }
     ]
 

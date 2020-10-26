@@ -18,18 +18,19 @@
                 </template>
             </van-field>
         </div>
-            <li v-for="(item, index ) in list" :key="index" style="list-style: none">
-                <div  class="topOne">
-                    <div class="topOneItem" @click.prevent>数量:{{item.silkCarRowColList.length}}</div>
-                    <div class="topOneItem" @click.prevent>{{item.batch}}</div>
-                    <div class="topOneItem" @click.prevent>{{item.line+'/'+item.machine+'/'+item.doffNum}}</div>
-                    <div  class="topOneItem" @click.prevent>{{item.grade}}</div>
+        <div class="doffType" @click.prevent v-if="doffType!=''">落筒类型:{{this.doffType==='AUTO'?'自动落筒':'手工落筒'}}</div>
+        <li v-for="(item, index ) in list" :key="index" style="list-style: none">
+            <div class="topOne">
+                <div class="topOneItem" @click.prevent>数量:{{item.silkCarRowColList.length}}</div>
+                <div class="topOneItem" @click.prevent>{{item.batch}}</div>
+                <div class="topOneItem" @click.prevent>{{item.line+'/'+item.machine+'/'+item.doffNum}}</div>
+                <div class="topOneItem" @click.prevent>{{item.grade}}</div>
 
-                </div>
-            </li>
+            </div>
+        </li>
         <ul class="sudoku_row">
 
-            <li class="sudoku_item"  v-for="(silk,index) in silks"
+            <li class="sudoku_item" v-for="(silk,index) in silks"
                 :key="index">
                 <!--                <img :src="sudoku.img_src" width="40" height="40" >-->
 
@@ -47,7 +48,7 @@
                     style="margin: 6px auto ;display: block ; " @click="AppearanceConfirm()">外观确认
         </van-button>
         <footer class="ftor">
-            <van-button type="danger" block hairline="hairline" v-if="showSecond"
+            <van-button type="danger" block hairline="hairline" v-if="showSecond&&juanRao"
                         style="margin: 3px 3px;display: inline-block ; flex: 1" @click="dingDeng()">定等
             </van-button>
             <van-button type="danger" block hairline="hairline" v-if="showSecond"
@@ -68,11 +69,17 @@
                         </div>
                         <h3>操作人:{{item.post+' ' +item.operator}}</h3>
                         <h4>时间:{{ getTime(item.operateTime) }}</h4>
+                        <van-button style="margin-top: 5px " type="danger" v-if="item.recover" @click="recover(item)">
+                            撤销
+                        </van-button>
+                        <van-button style="margin-top: 5px;margin-left: 5px" type="danger"
+                                    @click="print(item)">补打标签
+                        </van-button>
                         <van-collapse v-model="activeNames">
                             <van-collapse-item title="操作丝锭" :name="index"><p v-for="(i, index ) in item.silkCodes"
                                                                              :key="index"> {{i}}</p></van-collapse-item>
                         </van-collapse>
-                        <van-button style="margin-top: 5px" type="danger" v-if="item.recover" @click="recover(item)" >撤销</van-button>
+
                         <van-divider
                                 :style="{ color: '#1989fa', borderColor: '#1989fa', padding: '0 16px' }"
                         >
@@ -107,6 +114,8 @@
         },
         data() {
             return {
+                juanRao: true,
+                doffType:'',
                 silks: [{
                     id: 0,
                     position: 'A11',
@@ -228,7 +237,7 @@
                     position: 'B35',
                     silkCode: ''
                 }],
-                showSecond:false ,
+                showSecond: false,
                 activeNames: ['0'],
                 activeNameArray: [],
                 showDoff: false,
@@ -244,7 +253,7 @@
                 refreshing: false,
                 userId: '',
                 name: '',
-                  silkCarRowColList : []
+                silkCarRowColList: []
             };
         },
         methods: {
@@ -255,8 +264,8 @@
                     return 'noSilk'
                 }
 
-            } ,
-            AppearanceConfirm(){
+            },
+            AppearanceConfirm() {
                 this.$api.qualityProducts({
                     operatorId: this.userId,
                     silkCarCode: this.silkCarCode,
@@ -272,8 +281,8 @@
                     }
                 });
             },
-            jumpJieBang(){
-                let that = this ;
+            jumpJieBang() {
+                let that = this;
                 this.$router.push({
                     path: '/SubmitExcepAndUnbind',
                     name: 'SubmitExcepAndUnbind.vue', //要跳转的路径的 name,在 router 文件夹下的 index.js 文件内找
@@ -282,16 +291,16 @@
                         msgKey: this.silkCarCode
                     }*/
                     query: {
-                        silkCodeJump: this.silkCarCode ,
-                        userId : this.userId ,
-                        name : that.name
+                        silkCodeJump: this.silkCarCode,
+                        userId: this.userId,
+                        name: that.name
 
 
                     }
                 })
             },
-            dingDeng(){
-                let that = this ;
+            dingDeng() {
+                let that = this;
                 this.$router.push({
                     path: '/SetGrade',
                     name: 'SetGrade', //要跳转的路径的 name,在 router 文件夹下的 index.js 文件内找
@@ -300,15 +309,15 @@
                         msgKey: this.silkCarCode
                     }*/
                     query: {
-                        silkCodeJump: this.silkCarCode ,
-                        userId : this.userId ,
-                        name : that.name
+                        silkCodeJump: this.silkCarCode,
+                        userId: this.userId,
+                        name: that.name
 
 
                     }
                 })
             },
-            recover(item){
+            recover(item) {
                 // Toast.loading({
                 //     message: '撤销...',
                 //     forbidClick: true,
@@ -323,7 +332,7 @@
                     post: this.name,
                     modifier: this.userId,
                     silkCarCode: this.silkCarCode,
-                    events : arr
+                    events: arr
 
                 }).then((res) => {
                     if (res.data.status === '200') {
@@ -336,21 +345,48 @@
                     }
                 });
             },
+            print(item) {
+                // Toast.loading({
+                //     message: '撤销...',
+                //     forbidClick: true,
+                //     loadingType: 'spinner',
+                //     duration:0
+                // });
+                console.log("aaa")
+                let arr = []
+                arr.push(item)
+
+                this.$api.printSilks({
+                    silkCarEvent: item,
+                    lineName: this.silkCarRowColList[0].lineName
+
+                }).then((res) => {
+                    if (res.data.status === '200') {
+                        //发送Mq打印信息了
+                        Toast("打印成功，请在" + this.silkCarRowColList[0].lineName + "打印机查看查看")
+                    } else {
+                        Toast(res.data.msg)
+                    }
+                });
+            },
             find() {
+
                 if (this.silkCarCode) {
+                    // this.getSilks()
                     this.getSilkcarDetails(this.silkCarCode);
-                }else {
+                } else {
                     this.events = []
                     this.list = []
+                    // this.silks = this.getSilks()
                     this.silkCarRowColList = []
-                    for (let i = 0; i <this.silks.length; i++) {
+                    for (let i = 0; i < this.silks.length; i++) {
                         this.silks[i].silkCode = ''
                     }
                 }
             },
             getTime: function (date) {
-                let a  =  new Date(date)
-            let b  =     a.setHours(a.getHours() - 8  )
+                let a = new Date(date)
+                let b = a.setHours(a.getHours() - 8)
                 return moment(b).format('YYYY-MM-DD HH:mm:ss')
             },
             onClickLeft() {
@@ -371,64 +407,69 @@
                 this.getSilkcarDetails(code);
             },
             getSilkcarDetails: function (code) {
-                this.$api.getSilkss(code).then((res) => {
-                    console.log(res.data);
-                    if (res.data.status == '200') {
+                this.doffType = ''
+                for (let i = 0; i < this.silks.length; i++) {
+                    this.silks[i].silkCode = ''
+                }
+                    this.$api.getSilkss(code).then((res) => {
+                        console.log(res.data);
+                        if (res.data.status == '200') {
 
-                        if(res.data.data.checkMember){
-                            this.showSecond = true
+                            if (res.data.data.checkMember) {
+                                this.showSecond = true
 
-                        }else {
-                            this.showSecond = false
-                        }
-                        if(this.name != '质检'){
-                            this.showSecond = true
-                        }
-                        this.list = []
-                        this.events = res.data.data.events
-                        if (this.events && this.events.length > 0) {
+                            } else {
+                                this.showSecond = false
+                            }
+                            if (this.name != '质检') {
+                                this.showSecond = true
+                            }
+                            this.list = []
+                            this.doffType = res.data.data.doffType
+                            this.events = res.data.data.events
+                            if (this.events && this.events.length > 0) {
 
-                            this.events.forEach(a => {
-                                this.activeNameArray.push(this.activeName)
-                            })
-                        }
-
-                        res.data.data.spindleLists.forEach((e) => {
-                            this.list.push(e);
-                        });
-                        this.capacity = res.data.data.silkCarRowColList.length;
-                     this.silkCarRowColList  = res.data.data.silkCarRowColList
-                        if(  this.silkCarRowColList.length>0/*&&this.data.forceCarPlooing*/){
-                            for (let i = 0; i <   this.silkCarRowColList.length; i++) {
-                                for (let j = 0; j < this.silks.length; j++) {
-                                    if((  this.silkCarRowColList[i].sideType+  this.silkCarRowColList[i].row+  this.silkCarRowColList[i].col)===this.silks[j].position){
-                                        this.silks[j].silkCode =   this.silkCarRowColList[i].silkCode
-                                    }
-                                }
+                                this.events.forEach(a => {
+                                    this.activeNameArray.push(this.activeName)
+                                })
                             }
 
-                        }
+                            res.data.data.spindleLists.forEach((e) => {
+                                this.list.push(e);
+                            });
+                            this.capacity = res.data.data.silkCarRowColList.length;
+                            this.silkCarRowColList = res.data.data.silkCarRowColList
+                            if (this.silkCarRowColList.length > 0/*&&this.data.forceCarPlooing*/) {
+                                for (let i = 0; i < this.silkCarRowColList.length; i++) {
+                                    for (let j = 0; j < this.silks.length; j++) {
+                                        if ((this.silkCarRowColList[i].sideType + this.silkCarRowColList[i].row + this.silkCarRowColList[i].col) === this.silks[j].position) {
+                                            this.silks[j].silkCode = this.silkCarRowColList[i].silkCode
+                                        }
+                                    }
+                                }
 
-                        if (res.data.data.silkCarOnLinePositions && res.data.data.silkCarOnLinePositions.length > 0) {
-                            this.lineWeiDoff = this.getDoff(
-                                res.data.data.silkCarOnLinePositions
-                            );
+                            }
+
+                            if (res.data.data.silkCarOnLinePositions && res.data.data.silkCarOnLinePositions.length > 0) {
+                                this.lineWeiDoff = this.getDoff(
+                                    res.data.data.silkCarOnLinePositions
+                                );
+                            }
+                            this.showDoff =
+                                res.data.data.doffType === "MANUAL" ||
+                                res.data.data.doffType === "AUTO";
+                            this.loading = false;
+                            this.finished = true;
+                        } else {
+                            Toast(res.data.msg)
+                            this.events = []
+                            this.list = []
+                            this.silkCarRowColList = []
+                            for (let i = 0; i < this.silks.length; i++) {
+                                this.silks[i].silkCode = ''
+                            }
                         }
-                        this.showDoff =
-                            res.data.data.doffType === "MANUAL" ||
-                            res.data.data.doffType === "AUTO";
-                        this.loading = false;
-                        this.finished = true;
-                    } else {
-                        Toast(res.data.msg)
-                        this.events = []
-                        this.list = []
-                        this.silkCarRowColList = []
-                        for (let i = 0; i <this.silks.length; i++) {
-                            this.silks[i].silkCode = ''
-                        }
-                    }
-                });
+                    });
             },
 
             getDoff(arr) {
@@ -452,8 +493,11 @@
         created() {
             this.userId = this.$route.query.userId
 
-            this.name = this.$route.query.name
-            if(this.silkCarCode){
+            this.name = this.$route.query.name   // roleName 落丝
+            if (this.name && this.name === '落丝') {
+                this.juanRao = false
+            }
+            if (this.silkCarCode) {
                 this.find()
             }
 
@@ -574,6 +618,7 @@
     main > .extra > a > img {
         width: 100%;
     }
+
     .ftor {
         background: #F2F3F6;
         max-width: 750px;
@@ -581,6 +626,7 @@
         height: 1rem;
         display: flex;
     }
+
     .topOne {
         display: flex;
         align-items: center;
@@ -589,6 +635,7 @@
         border: 1px solid greenyellow;
         border-radius: 3px;
     }
+
     .topOneItem {
         display: flex;
         justify-content: center;
@@ -598,7 +645,16 @@
         font-size: 15px;
         padding-bottom: 2px;
         box-sizing: border-box;
-        color:brown;
+        color: brown;
+        position: relative;
+    }
+    .doffType {
+
+        align-items: center;
+
+        font-size: 15px;
+        box-sizing: border-box;
+        color: brown;
         position: relative;
     }
 

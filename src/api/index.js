@@ -389,6 +389,12 @@ export default {
         // console.log("data" +  data.toString())
         return axios.post(baseUrl + '/api/silkCarOnline/silkSeparateRecover' , data)
     },
+
+    // printsilks
+    printSilks(data) {
+        // console.log("data" +  data.toString())
+        return axios.post(baseUrl + '/api/mqtttopic/pdaPrintSilks' , data)
+    },
     // 外观确认
     qualityProducts(data) {
         // console.log("data" +  data.toString())
@@ -404,5 +410,11 @@ export default {
     getMachineId(lineName,machineName) {
         // console.log("data" +  data.toString())
         return axios.get(baseUrl + '/api/machine/find/'+lineName+"/"+machineName)
+    },
+
+    // 查询合股丝机台
+    findJoinSilkMachine(lineName) {
+        // console.log("data" +  data.toString())
+        return axios.get(baseUrl + '/api/machine/findJoinSilkMachin/'+lineName)
     },
 }

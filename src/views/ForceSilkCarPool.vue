@@ -18,6 +18,7 @@
                 </template>
             </van-field>
         </div>
+        <div class="doffType" @click.prevent v-if="doffType!=''">落筒类型:{{this.doffType==='AUTO'?'自动落筒':'手工落筒'}}</div>
         <div  style="background-color: #58727e;color: gold;height: 30px;line-height: 30px" v-if="this.chooseIndex!=-1">当前选择位置:{{ this.silks[this.chooseIndex].position}}</div>
         <ul class="sudoku_row">
 
@@ -257,9 +258,11 @@
                 refreshing: false,
                 activeNames: ['0'],
                 activeNameArray: [],
+                doffType:''
             };
         },
         methods: {
+
             getTime: function (date) {
                 let a  =  new Date(date)
                 let b  =     a.setHours(a.getHours() -8)
@@ -452,10 +455,16 @@
                 return is
             },
             getSilkcarDetails(code) {
+              // this.getSilks()
+                this.doffType = ''
+                for (let i = 0; i < this.silks.length; i++) {
+                    this.silks[i].silkCode = ''
+                }
                 this.chooseIndex = -1
                 this.$api.getSilkss(code).then((res) => {
                     if (res.data.status === '200') {
                         this.data = res.data.data;
+                        this.doffType = res.data.data.doffType
                         this.events = res.data.data.events
                         if (this.events && this.events.length > 0) {
 
@@ -524,7 +533,15 @@
         width: 100%;
         flex-wrap: wrap;
     }
+    .doffType {
 
+        align-items: center;
+
+        font-size: 15px;
+        box-sizing: border-box;
+        color: brown;
+        position: relative;
+    }
     .sudoku_item {
         display: flex;
         justify-content: center;

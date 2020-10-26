@@ -3,7 +3,7 @@
         <van-nav-bar
                 title="自动线手工落筒"
                 left-text="返回"
-                right-text=""
+                right-text="撤回落筒"
                 left-arrow
                 @click-left="onClickLeft"
                 @click-right="onClickRight"
@@ -88,6 +88,24 @@ white-space:nowrap;">{{item.lineMachine+'-'+item.doffNo}}
                     </div>
             </div>
         </van-popup>
+
+        <van-popup v-model="showChe"
+                   close-icon-position="top-left"
+                   closeable
+                   position="right" :style="{ height: '100%' , width : '70%'  }   ">
+            <div style="margin-top: 30px;margin-left: 8px">
+                <van-steps direction="vertical" :active="0">
+                    <van-step>
+                        <van-button style="margin-top: 5px " type="danger"  @click="recover()">
+                            撤销落筒
+                        </van-button>
+                    </van-step>
+
+                </van-steps>
+            </div>
+
+
+        </van-popup>
     </div>
 </template>
 
@@ -116,6 +134,7 @@ white-space:nowrap;">{{item.lineMachine+'-'+item.doffNo}}
         },
         data() {
             return {
+                showChe: false ,
                 machinId  : '' ,
                 doffNoPop : [] ,
                 show: false,
@@ -149,6 +168,21 @@ white-space:nowrap;">{{item.lineMachine+'-'+item.doffNo}}
             };
         },
         methods: {
+            recover(){
+                this.$api.canCleDoff({
+                    silkCarCode: this.silkCarCode,
+
+                }).then((res) => {
+                    if (res.data.status === '200') {
+                        this.find()
+                        Toast.clear()
+                        Toast.success(res.data.msg)
+                    } else {
+                        Toast.clear()
+                        Toast(res.data.msg)
+                    }
+                });
+            },
             doffNoPopChoose(i){  // 弹框选择
                 if(this.currentScanMachineQrCode){
                     //去重扫过的机台
@@ -294,8 +328,7 @@ white-space:nowrap;">{{item.lineMachine+'-'+item.doffNo}}
             onClickRight() {
                 // this.activeName = 2
                 // this.show = true;
-                this.callByAndroid("D8,56")
-                Toast("aaaa")
+                this.showChe = true
             },
             isCanMoidfy(silkCarRowColList){
                 let b = true ;

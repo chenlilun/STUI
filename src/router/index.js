@@ -16,6 +16,7 @@ import DeleteWasteSilk from '../views/DeleteWasteSilk.vue'
 import ForceSilkCarPool from '../views/ForceSilkCarPool.vue'
 import PrintSilkCodes from '../views/PrintSilkCodes.vue'
 import JoinSilkDoff from '../views/JoinSilkDoff.vue'
+import WaiGuanReport from '../views/WaiGuanReport.vue'
 
 Vue.use(Router)
 const originalPush = Router.prototype.push
@@ -126,6 +127,11 @@ let router = new Router({
             path: '/JoinSilkDoff',
             name: 'JoinSilkDoff.vue',
             component: JoinSilkDoff
+        },
+        {
+            path: '/WaiGuanReport',
+            name: 'WaiGuanReport.vue',
+            component: WaiGuanReport
         }
     ]
 

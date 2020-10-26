@@ -358,6 +358,11 @@ export default {
         // console.log("data" +  data.toString())
         return axios.post(baseUrl + '/api/doff/manualDoff' , data)
     } ,
+    // 查询个人报表
+    findReportWaiguan(data) {
+        // console.log("data" +  data.toString())
+        return axios.post(baseUrl + '/api/silkCarOnline/getOperateRecord' , data)
+    } ,
     // 丝车: 人工打包
     handPack(data) {
         // console.log("data" +  data.toString())
@@ -399,6 +404,12 @@ export default {
     qualityProducts(data) {
         // console.log("data" +  data.toString())
         return axios.post(baseUrl + '/api/silkCarOnline/qualityProducts' , data)
+    },
+
+    // 取消落筒
+    canCleDoff(data) {
+        // console.log("data" +  data.toString())
+        return axios.post(baseUrl + '/api/silkCarOnline/silkCarRecover' , data)
     },
     // pda打印
     print(line,silkCarCode) {

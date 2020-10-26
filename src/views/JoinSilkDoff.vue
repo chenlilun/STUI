@@ -3,7 +3,7 @@
         <van-nav-bar
                 title="合股丝落筒"
                 left-text="返回"
-                right-text=""
+                right-text="撤回落筒"
                 left-arrow
                 @click-left="onClickLeft"
                 @click-right="onClickRight"
@@ -76,7 +76,23 @@
         </van-collapse>
 
         <!--        <van-cell is-link @click="showPopup">展示弹出层</van-cell>-->
+        <van-popup v-model="showChe"
+                   close-icon-position="top-left"
+                   closeable
+                   position="right" :style="{ height: '100%' , width : '70%'  }   ">
+            <div style="margin-top: 30px;margin-left: 8px">
+                <van-steps direction="vertical" :active="0">
+                    <van-step>
+                        <van-button style="margin-top: 5px " type="danger"  @click="recover()">
+                            撤销落筒
+                        </van-button>
+                    </van-step>
 
+                </van-steps>
+            </div>
+
+
+        </van-popup>
         <van-popup
                 v-model="show"
                 closeable
@@ -119,6 +135,7 @@
         },
         data() {
             return {
+                showChe: false ,
                 machineIndex : -1 ,
                 suggestOrderBy: -1,
                 curSelect: null,
@@ -157,6 +174,21 @@
             };
         },
         methods: {
+            recover(){
+                this.$api.canCleDoff({
+                    silkCarCode: this.silkCarCode,
+
+                }).then((res) => {
+                    if (res.data.status === '200') {
+                        this.find()
+                        Toast.clear()
+                        Toast.success(res.data.msg)
+                    } else {
+                        Toast.clear()
+                        Toast(res.data.msg)
+                    }
+                });
+            },
             delMachine(index) {
                 // this.silks[index].silkCode = ''
                 // this.chooseIndex = -1
@@ -351,10 +383,7 @@
                 window.android.finish();
             },
             onClickRight() {
-                // this.activeName = 2
-                // this.show = true;
-                this.callByAndroid("D8,56")
-                Toast("aaaa")
+                this.showChe = true
             },
             isCanMoidfy(silkCarRowColList) {
                 let b = true;
@@ -493,7 +522,7 @@
                 }).then((res) => {
                     if (res.data.status === '200') {
                         this.data = res.data.data[0];
-                        this.getMachin(this.realName.substr(0, 2))
+                        this.getMachin(/*this.realName.substr(0, 2)*/'D5')
                         // 确定activeName 的值
                         this.activeName = this.getActiveName(true)
                     } else {

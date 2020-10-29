@@ -501,7 +501,7 @@ white-space:nowrap;">{{item.lineMachine+'-'+item.doffNo}}
                     if (res.data.code === 200) {
                         this.gradeData = res.data.queryResult.list;
                         this.gradeData.forEach((a,index)=>{
-                            if(this.gradeData[index].grade=='A'){
+                            if(this.gradeData[index].grade=='AA'){
                                 this.gradeData[index].firstRate = true
                             }else {
                                 this.gradeData[index].firstRate = false

@@ -37,19 +37,21 @@
                 <div :class="getColor(machine ,index)" @click="chooseSilk(machine,index)">
 
                     {{machine.position?machine.position:''}}
-                    <br>
+                    <br v-if="machine.position">
                     {{machine.line.lineName +'-'+machine.machineName}}
+
+
                     <br>
                     {{machine.haveScanNoDoff?'':''}}
                     <div style="font-size: 1px">
                         <!--                        {{'..'+machine.silkCode.substr(silk.silkCode.length-8,silk.silkCode.length-1)}}-->
                     </div>
-                    <div style="color: white; border: 1px solid red; border-radius: 6px;background-color: red"
+                <!--    <div style="color: white; border: 1px solid red; border-radius: 6px;background-color: red"
                          v-if="machine.haveScanNoDoff&&false"
                          @click=""
                     >
                         删除
-                    </div>
+                    </div>-->
 
                 </div>
             </li>
@@ -557,7 +559,7 @@
                     if (res.data.code === 200) {
                         this.gradeData = res.data.queryResult.list;
                         this.gradeData.forEach((a, index) => {
-                            if (this.gradeData[index].grade == 'A') {
+                            if (this.gradeData[index].grade == 'AA') {
                                 this.gradeData[index].firstRate = true
                             } else {
                                 this.gradeData[index].firstRate = false

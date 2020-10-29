@@ -111,11 +111,17 @@
             getExcp(list){
                 let str = ''
                 let i = 1
-                list.forEach(a=>{
-                    str = str +a.machineName+'/'+a.spindleNum +'  '+ a.silkExceptions[0] +'; '
-                    i++
-                })
-                return str
+                console.log(JSON.stringify(list))
+                if(list!=null&&list.length>0){
+                    list.forEach(a=>{
+                        str = str +a.machineName+'/'+a.spindleNum +'  '+ a.silkExceptions[0] +'; '
+                        i++
+                    })
+                    return str
+                }else {
+                    return str
+                }
+
             },
             getSilkCount(grade,list){
                 let str = '0'
@@ -207,7 +213,7 @@
         },
         created() {
 
-            this.userId = this.$route.query.userId
+            this.userId = this.$route.query.userId/*'5f90616b0e6ef90b1af42832'*/
             this.name = this.$route.query.name
             this.find()
 
@@ -218,7 +224,7 @@
     };
 </script>
 
-<style>
+<style scoped>
     .onerow {
         display: flex;
         align-items: center;
@@ -251,12 +257,16 @@
         justify-content: center;
         align-items: center;
         flex-direction: column;
-        width: 30%;
+        width: 33%;
+        font-size: 5px;
         padding-bottom: 3px;
         box-sizing: border-box;
-        font-size: 0.42rem;
         color: white;
         position: relative;
+        word-break:keep-all;
+        white-space:nowrap;
+        overflow:hidden;
+        text-overflow:ellipsis;
     }
     .col_item_four {
         display: flex;
@@ -269,6 +279,10 @@
         font-size: 0.42rem;
         color: white;
         position: relative;
+        word-break:keep-all;
+        white-space:nowrap;
+        overflow:hidden;
+        text-overflow:ellipsis;
     }
     .opacity {
         opacity: 0.4;
@@ -317,7 +331,7 @@
     }
     .divItem {
         width: 100%;
-        height: 80px;
+        height: 100px;
         margin-top: 2px;
         color: white;
         border-radius: 8px;

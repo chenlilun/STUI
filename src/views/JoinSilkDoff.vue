@@ -382,7 +382,11 @@
             },
             onClickLeft() {
                 Toast("返回");
-                window.android.finish();
+                if(window&&window.android){
+                    window.android.finish();
+                }else {
+                    this.$router.go(-1);//返回上一层
+                }
             },
             onClickRight() {
                 this.showChe = true
@@ -729,6 +733,13 @@
         },
         mounted() {
             window.callByAndroid = this.callByAndroid;
+            this.silkCarCode = this.$route.query.silkCodeJump
+            this.userId = this.$route.query.userId
+            this.name = this.$route.query.name
+            this.getGrades()
+            if (this.silkCarCode) {
+                this.find();
+            }
         },
     };
 </script>

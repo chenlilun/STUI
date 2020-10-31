@@ -58,7 +58,7 @@ white-space:nowrap;">{{item.lineMachine+'-'+item.doffNo}}
         <van-collapse v-model="activeName" accordion @change="change">
             <div v-for="(item, index ) in this.data.silkCarRowColList" :key="index">
                 <van-collapse-item
-                        :title="(item.batchNo===null||typeof(item.batchNo)===undefined||item.batchNo==='')?'未落筒':item.canModify?('已扫码'+item.showInfo):'已落筒'"
+                        :title="(item.batchNo===null||typeof(item.batchNo)===undefined||item.batchNo==='')?(showPosition(index)+'未落筒'):item.canModify?(showPosition(index)+('已扫码'+item.showInfo)):(showPosition(index)+'已落筒')"
                         :value="(item.batchNo===null||typeof(item.batchNo)===undefined||item.batchNo==='')?'未落筒':item.canModify?'待提交':'已落筒'"
                         :border="true" value-class="van-cell__value">
                     <div class="van-collapse-item-div">{{item.silkCode===null?'请扫描机台':item.canModify===true
@@ -168,6 +168,47 @@ white-space:nowrap;">{{item.lineMachine+'-'+item.doffNo}}
             };
         },
         methods: {
+            showPosition(index){
+
+                let info = ''
+                if(this.data.silkCarRowColList.length===3){
+                    switch (index) {
+                        case 0:
+                            info = '(A面)'
+                            break
+                        case 1:
+                            info = '(AB面)'
+                            break
+                        case 2:
+                            info = '(B面)'
+                            break
+                    }
+                }
+                if(this.data.silkCarRowColList.length===6){
+                    switch (index) {
+                        case 0:
+                            info = '(A面最下面)'
+                            break
+                        case 1:
+                            info = '(A面中间)'
+                            break
+                        case 2:
+                            info = '(A面最上面)'
+                            break
+                        case 3:
+                            info = '(B面最下面)'
+                            break
+                        case 4:
+                            info = '(B面中间)'
+                            break
+                        case 5:
+                            info = '(B面最上面)'
+                            break
+                    }
+                }
+                console.log('ddddddddddd'+info)
+                return info
+            },
             recover(){
                 this.$api.canCleDoff({
                     silkCarCode: this.silkCarCode,
@@ -323,7 +364,12 @@ white-space:nowrap;">{{item.lineMachine+'-'+item.doffNo}}
             },
             onClickLeft() {
                 Toast("返回");
-                window.android.finish();
+                // window.android.finish();
+                if(window&&window.android){
+                    window.android.finish();
+                }else {
+                    this.$router.go(-1);//返回上一层
+                }
             },
             onClickRight() {
                 // this.activeName = 2
@@ -526,6 +572,13 @@ white-space:nowrap;">{{item.lineMachine+'-'+item.doffNo}}
         },
         mounted() {
             window.callByAndroid = this.callByAndroid;
+            this.silkCarCode = this.$route.query.silkCodeJump
+            this.userId = this.$route.query.userId
+            this.name = this.$route.query.name
+            this.getGrades()
+            if (this.silkCarCode) {
+                this.getSilkcarDetails(this.silkCarCode);
+            }
         },
     };
 </script>

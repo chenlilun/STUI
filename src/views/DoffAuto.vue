@@ -79,12 +79,12 @@ white-space:nowrap;">{{item.lineMachine+'-'+item.doffNo}}
                 v-model="show"
                 closeable
                 position="bottom"
-                :style="{ height: '30%' }"
+                :style="{ height: '50%' }"
         >
             <div v-for="(item, index ) in this.doffNoPop" :key="index" @click="doffNoPopChoose(index)">
 
                     <div class="van-collapse-item-div">
-                        {{item.batchNo+"  "+item.lineName+'-'+item.machinName+'-'+item.doffNo}}
+                        {{getTime(item.doffTime)+'-'+ item.batchNo+"  "+item.lineName+'-'+item.machinName+'-'+item.doffNo}}
                     </div>
             </div>
         </van-popup>
@@ -122,6 +122,7 @@ white-space:nowrap;">{{item.lineMachine+'-'+item.doffNo}}
     import {Toast} from "vant";
 
     import {Swipe, SwipeItem, Row, Col} from "vant";
+    import moment from 'moment'
     Toast.setDefaultOptions({ duration: 4000 });
     export default {
         name: "DoffAuto",
@@ -168,6 +169,11 @@ white-space:nowrap;">{{item.lineMachine+'-'+item.doffNo}}
             };
         },
         methods: {
+            getTime: function (date) {
+                let a = new Date(date)
+                let b = a.setHours(a.getHours() - 8)
+                return moment(b).format('MM-DD HH:mm')
+            },
             showPosition(index){
 
                 let info = ''
@@ -243,6 +249,7 @@ white-space:nowrap;">{{item.lineMachine+'-'+item.doffNo}}
                     this.data.silkCarRowColList[this.activeName].doffNo =this.doffNoPop[i].doffNo
                     this.data.silkCarRowColList[this.activeName].batchNo =this.doffNoPop[i].batchNo
                     this.data.silkCarRowColList[this.activeName].doffTime =this.doffNoPop[i].doffTime
+                    this.data.silkCarRowColList[this.activeName].doffingTime =this.doffNoPop[i].doffTime
                     this.data.silkCarRowColList[this.activeName].canModify =true
                     this.data.silkCarRowColList[this.activeName].showInfo =this.doffNoPop[i].batchNo
                         + " "+ this.doffNoPop[i].lineName+'-'+this.doffNoPop[i].machinName+'-'+this.doffNoPop[i].doffNo
@@ -372,9 +379,8 @@ white-space:nowrap;">{{item.lineMachine+'-'+item.doffNo}}
                 }
             },
             onClickRight() {
-                // this.activeName = 2
-                // this.show = true;
                 this.showChe = true
+                // this.callByAndroid('C5,22A')
             },
             isCanMoidfy(silkCarRowColList){
                 let b = true ;
@@ -472,6 +478,7 @@ white-space:nowrap;">{{item.lineMachine+'-'+item.doffNo}}
                                             this.data.silkCarRowColList[this.activeName].batchNo =this.doffNoPop[0].batchNo
                                             this.data.silkCarRowColList[this.activeName].canModify =true
                                             this.data.silkCarRowColList[this.activeName].doffTime =this.doffNoPop[0].doffTime
+                                            this.data.silkCarRowColList[this.activeName].doffingTime =this.doffNoPop[0].doffTime
                                             this.data.silkCarRowColList[this.activeName].showInfo =this.doffNoPop[0].batchNo
                                                 + " "+ this.doffNoPop[0].lineName+'-'+this.doffNoPop[0].machinName+'-'+this.doffNoPop[0].doffNo
                                             // this.activeName = this.getActiveName()

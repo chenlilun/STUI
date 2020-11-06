@@ -18,7 +18,16 @@
                 </template>
             </van-field>
         </div>
-        <div class="doffType" @click.prevent v-if="doffType!=''">落筒类型:{{this.doffType==='AUTO'?'自动落筒':'手工落筒'}}</div>
+        <div class="topOne">
+            <div class="topOneItem" @click.prevent >{{this.silkCarRowColList.length+'颗'}}</div>
+            <div class="topOneItem" @click.prevent v-if="doffType!=''">{{this.doffType==='AUTO'?'自动落筒':'手工落筒'}}</div>
+            <div class="topOneItem" @click.prevent >{{this.checkMember?'外观已确认':'外观未确认'}}</div>
+            <!--            <div class="topOneItem" @click.prevent>数量:{{item.silkCarRowColList.length}}</div>-->
+            <!--            <div class="topOneItem" @click.prevent>{{item.batch}}</div>-->
+            <!--            <div class="topOneItem" @click.prevent>{{item.line+'/'+item.machine+'/'+item.doffNum}}</div>-->
+            <!--            <div class="topOneItem" @click.prevent>{{item.grade}}</div>-->
+        </div>
+<!--        <div class="doffType" @click.prevent v-if="doffType!=''">落筒类型:{{this.doffType==='AUTO'?'自动落筒':'手工落筒'}}</div>-->
         <li v-for="(item, index ) in list" :key="index" style="list-style: none">
             <div class="topOne">
                 <div class="topOneItem" @click.prevent>数量:{{item.silkCarRowColList.length}}</div>
@@ -45,7 +54,7 @@
             </li>
         </ul>
         <footer class="ftor">
-            <van-button type="danger" block hairline="hairline"
+            <van-button type="danger" block hairline="hairline" v-if="false"
                         style="margin: 3px 3px;display: inline-block ; flex: 1" @click="dingDeng()">整车解绑
             </van-button>
             <van-button type="danger" block hairline="hairline"
@@ -112,6 +121,7 @@
         },
         data() {
             return {
+                checkMember:false,
                 juanRao: true,
                 doffType:'',
                 silks: [{
@@ -455,53 +465,56 @@
                     this.$api.getSilkss(code).then((res) => {
                         console.log(res.data);
                         if (res.data.status == '200') {
+                            this.checkMember = res.data.data.checkMember
+                            if(!this.checkMember){
+                                if (res.data.data.checkMember) {
+                                    this.showSecond = true
 
-                            if (res.data.data.checkMember) {
-                                this.showSecond = true
+                                } else {
+                                    this.showSecond = false
+                                }
+                                if (this.name != '质检') {
+                                    this.showSecond = true
+                                }
+                                this.list = []
+                                this.doffType = res.data.data.doffType
+                                this.events = res.data.data.events
+                                if (this.events && this.events.length > 0) {
 
-                            } else {
-                                this.showSecond = false
-                            }
-                            if (this.name != '质检') {
-                                this.showSecond = true
-                            }
-                            this.list = []
-                            this.doffType = res.data.data.doffType
-                            this.events = res.data.data.events
-                            if (this.events && this.events.length > 0) {
-
-                                this.events.forEach(a => {
-                                    this.activeNameArray.push(this.activeName)
-                                })
-                            }
-
-                            res.data.data.spindleLists.forEach((e) => {
-                                this.list.push(e);
-                            });
-                            this.data = res.data.data
-                            this.capacity = res.data.data.silkCarRowColList.length;
-                            this.silkCarRowColList = res.data.data.silkCarRowColList
-                            if (this.silkCarRowColList.length > 0/*&&this.data.forceCarPlooing*/) {
-                                for (let i = 0; i < this.silkCarRowColList.length; i++) {
-                                    for (let j = 0; j < this.silks.length; j++) {
-                                        if ((this.silkCarRowColList[i].sideType + this.silkCarRowColList[i].row + this.silkCarRowColList[i].col) === this.silks[j].position) {
-                                            this.silks[j].silkCode = this.silkCarRowColList[i].silkCode
-                                        }
-                                    }
+                                    this.events.forEach(a => {
+                                        this.activeNameArray.push(this.activeName)
+                                    })
                                 }
 
+                                res.data.data.spindleLists.forEach((e) => {
+                                    this.list.push(e);
+                                });
+                                this.data = res.data.data
+                                this.capacity = res.data.data.silkCarRowColList.length;
+                                this.silkCarRowColList = res.data.data.silkCarRowColList
+                                if (this.silkCarRowColList.length > 0/*&&this.data.forceCarPlooing*/) {
+                                    for (let i = 0; i < this.silkCarRowColList.length; i++) {
+                                        for (let j = 0; j < this.silks.length; j++) {
+                                            if ((this.silkCarRowColList[i].sideType + this.silkCarRowColList[i].row + this.silkCarRowColList[i].col) === this.silks[j].position) {
+                                                this.silks[j].silkCode = this.silkCarRowColList[i].silkCode
+                                            }
+                                        }
+                                    }
+
+                                }
+
+                                if (res.data.data.silkCarOnLinePositions && res.data.data.silkCarOnLinePositions.length > 0) {
+                                    this.lineWeiDoff = this.getDoff(
+                                        res.data.data.silkCarOnLinePositions
+                                    );
+                                }
+                                this.showDoff =
+                                    res.data.data.doffType === "MANUAL" ||
+                                    res.data.data.doffType === "AUTO";
+                                this.loading = false;
+                                this.finished = true;
                             }
 
-                            if (res.data.data.silkCarOnLinePositions && res.data.data.silkCarOnLinePositions.length > 0) {
-                                this.lineWeiDoff = this.getDoff(
-                                    res.data.data.silkCarOnLinePositions
-                                );
-                            }
-                            this.showDoff =
-                                res.data.data.doffType === "MANUAL" ||
-                                res.data.data.doffType === "AUTO";
-                            this.loading = false;
-                            this.finished = true;
                         } else {
                             Toast(res.data.msg)
                             this.events = []

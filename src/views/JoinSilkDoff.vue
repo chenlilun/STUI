@@ -99,12 +99,12 @@
                 v-model="show"
                 closeable
                 position="bottom"
-                :style="{ height: '30%' }"
+                :style="{ height: '50%' }"
         >
             <div v-for="(item, index ) in this.doffNoPop" :key="index" @click="doffNoPopChoose(index)">
 
                 <div class="van-collapse-item-div">
-                    {{item.batchNo+" "+item.lineName+'-'+item.machinName+'-'+item.doffNo}}
+                    {{getTime(item.doffTime)+'-'+ item.batchNo+" "+item.lineName+'-'+item.machinName+'-'+item.doffNo}}
                 </div>
             </div>
         </van-popup>
@@ -122,7 +122,7 @@
     };
     // import HelloWorld from "@/components/HelloWorld.vue";
     import {Toast} from "vant";
-
+    import moment from 'moment'
     import {Swipe, SwipeItem, Row, Col} from "vant";
 
     Toast.setDefaultOptions({duration: 4000});
@@ -176,6 +176,11 @@
             };
         },
         methods: {
+            getTime: function (date) {
+                let a = new Date(date)
+                let b = a.setHours(a.getHours() - 8)
+                return moment(b).format('MM-DD HH:mm')
+            },
             recover(){
                 this.$api.canCleDoff({
                     silkCarCode: this.silkCarCode,
@@ -260,6 +265,8 @@
                     this.data.silkCarRowColList[this.activeName].doffNo = this.doffNoPop[i].doffNo
                     this.data.silkCarRowColList[this.activeName].batchNo = this.doffNoPop[i].batchNo
                     this.data.silkCarRowColList[this.activeName].doffTime = this.doffNoPop[i].doffTime
+                    this.data.silkCarRowColList[this.activeName].doffingTime = this.doffNoPop[i].doffTime
+
                     this.data.silkCarRowColList[this.activeName].canModify = true
                     this.data.silkCarRowColList[this.activeName].showInfo = this.doffNoPop[i].batchNo
                         + " " + this.doffNoPop[i].lineName + '-' + this.doffNoPop[i].machinName + '-' + this.doffNoPop[i].doffNo
@@ -487,6 +494,7 @@
                                             this.data.silkCarRowColList[this.activeName].batchNo = this.doffNoPop[0].batchNo
                                             this.data.silkCarRowColList[this.activeName].canModify = true
                                             this.data.silkCarRowColList[this.activeName].doffTime = this.doffNoPop[0].doffTime
+                                            this.data.silkCarRowColList[this.activeName].doffingTime = this.doffNoPop[0].doffTime
                                             this.data.silkCarRowColList[this.activeName].showInfo = this.doffNoPop[0].batchNo
                                                 + " " + this.doffNoPop[0].lineName + '-' + this.doffNoPop[0].machinName + '-' + this.doffNoPop[0].doffNo
                                             this.activeName = this.getActiveName()
@@ -685,6 +693,7 @@
                                     this.data.silkCarRowColList[this.activeName].batchNo = this.doffNoPop[0].batchNo
                                     this.data.silkCarRowColList[this.activeName].canModify = true
                                     this.data.silkCarRowColList[this.activeName].doffTime = this.doffNoPop[0].doffTime
+                                    this.data.silkCarRowColList[this.activeName].doffingTime = this.doffNoPop[0].doffTime
                                     this.data.silkCarRowColList[this.activeName].showInfo = this.doffNoPop[0].batchNo
                                         + " " + this.doffNoPop[0].lineName + '-' + this.doffNoPop[0].machinName + '-' + this.doffNoPop[0].doffNo
                                     if(this.activeName!=-1){
@@ -750,6 +759,7 @@
         background-color: #57c3ae;
         width: 100%;
         border-radius: 6px;
+        margin-top: 5px;
         line-height: 50px;
         font-size: 20px;
         color: white;

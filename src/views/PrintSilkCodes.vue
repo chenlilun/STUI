@@ -104,6 +104,7 @@
     import {Toast} from "vant";
     import {Divider} from 'vant';
     import moment from 'moment'
+    import { Dialog } from 'vant';
     // import { List } from "vant";
     export default {
         name: "PrintSilkCodes",
@@ -264,19 +265,31 @@
 
             },
             AppearanceConfirm() {
-                this.$api.print(this.line,this.silkCarCode).then((res) => {
-                    if (res.data.status === '200') {
-                        this.silkCarCode = ''
-                        Toast.clear()
-                        Toast.success(res.data.msg)
-                        this.list = [] ;
-                        this.line = ''
-                        this.find()
-                    } else {
-                        Toast.clear()
-                        Toast(res.data.msg)
-                    }
-                });
+
+                Dialog.confirm({
+                    title: '丝锭条码打印',
+                    message: '请仔细观察丝车资料与实物是否符合,不符合撤销落筒重新落，符合请打印？',
+                })
+                    .then(() => {
+                        this.$api.print(this.line,this.silkCarCode).then((res) => {
+                            if (res.data.status === '200') {
+                                this.silkCarCode = ''
+                                Toast.clear()
+                                Toast.success(res.data.msg)
+                                this.list = [] ;
+                                this.line = ''
+                                this.find()
+                            } else {
+                                Toast.clear()
+                                Toast(res.data.msg)
+                            }
+                        });
+                    })
+                    .catch(() => {
+                        // on cancel
+                    });
+
+
             },
             jumpJieBang() {
                 let that = this;

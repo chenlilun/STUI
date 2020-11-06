@@ -18,7 +18,16 @@
                 </template>
             </van-field>
         </div>
-        <div class="doffType" @click.prevent v-if="doffType!=''">落筒类型:{{this.doffType==='AUTO'?'自动落筒':'手工落筒'}}</div>
+
+        <div class="topOne">
+            <div class="topOneItem" @click.prevent >{{this.silkCarRowColList.length+'颗'}}</div>
+            <div class="topOneItem" @click.prevent v-if="doffType!=''">{{this.doffType==='AUTO'?'自动落筒':'手工落筒'}}</div>
+            <div class="topOneItem" @click.prevent >{{this.checkMember?whoIntrue():'外观未确认'}}</div>
+<!--            <div class="topOneItem" @click.prevent>数量:{{item.silkCarRowColList.length}}</div>-->
+<!--            <div class="topOneItem" @click.prevent>{{item.batch}}</div>-->
+<!--            <div class="topOneItem" @click.prevent>{{item.line+'/'+item.machine+'/'+item.doffNum}}</div>-->
+<!--            <div class="topOneItem" @click.prevent>{{item.grade}}</div>-->
+        </div>
         <li v-for="(item, index ) in list" :key="index" style="list-style: none">
             <div class="topOne">
                 <div class="topOneItem" @click.prevent>数量:{{item.silkCarRowColList.length}}</div>
@@ -114,6 +123,7 @@
         },
         data() {
             return {
+                data:'',
                 juanRao: true,
                 doffType:'',
                 silks: [{
@@ -238,6 +248,7 @@
                     silkCode: ''
                 }],
                 showSecond: false,
+                checkMember: false ,
                 activeNames: ['0'],
                 activeNameArray: [],
                 showDoff: false,
@@ -257,6 +268,13 @@
             };
         },
         methods: {
+            whoIntrue(){
+                if(this.data.checkTime){
+                   return  this.getTimeSecond(this.data.checkTime)+this.data.checker +'确认'
+                }else {
+                    return '外观已确认'
+                }
+            },
             getColor(item, index) {
                 if (item.silkCode) {
                     return 'haveSilkOnDetail'
@@ -389,6 +407,11 @@
                 let b = a.setHours(a.getHours() - 8)
                 return moment(b).format('YYYY-MM-DD HH:mm:ss')
             },
+            getTimeSecond: function (date) {
+                let a = new Date(date)
+                let b = a.setHours(a.getHours() - 8)
+                return moment(b).format('MM-DD HH:mm')
+            },
             onClickLeft() {
                 Toast("返回");
                 window.android.finish();
@@ -414,7 +437,8 @@
                     this.$api.getSilkss(code).then((res) => {
                         console.log(res.data);
                         if (res.data.status == '200') {
-
+                            this.checkMember = res.data.data.checkMember
+                            this.data = res.data.data
                             if (res.data.data.checkMember) {
                                 this.showSecond = true
 
@@ -463,6 +487,7 @@
                         } else {
                             Toast(res.data.msg)
                             this.events = []
+                          this.data = ''
                             this.list = []
                             this.silkCarRowColList = []
                             for (let i = 0; i < this.silks.length; i++) {

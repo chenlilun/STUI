@@ -20,6 +20,7 @@ import WaiGuanReport from '../views/WaiGuanReport.vue'
 import DoffMatualNew from '../views/DoffMatualNew.vue'
 import DoffMatualJoinSilkNew from '../views/DoffMatualJoinSilkNew.vue'
 import ChoosePositionSilkCarPool from '../views/ChoosePositionSilkCarPool.vue'
+import SilkCarPoolFinal from '../views/SilkCarPoolFinal.vue'
 
 Vue.use(Router)
 const originalPush = Router.prototype.push
@@ -150,6 +151,11 @@ let router = new Router({
             path: '/ChoosePositionSilkCarPool',
             name: 'ChoosePositionSilkCarPool.vue',
             component: ChoosePositionSilkCarPool
+        },
+        {
+            path: '/SilkCarPoolFinal',
+            name: 'SilkCarPoolFinal.vue',
+            component: SilkCarPoolFinal
         }
     ]
 

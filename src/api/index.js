@@ -343,6 +343,11 @@ export default {
         // console.log("data" +  data.toString())
         return axios.post(baseUrl + '/api/carPool/outLineExcSilkPool' , data)
     },
+ // 丝车: 强制拼车
+    newSilkCarPooling(data) {
+        // console.log("data" +  data.toString())
+        return axios.post(baseUrl + '/api/carPool/newSilkCarPooling' , data)
+    },
 
     // 选择位置拼车
     ChoosePostionSilkCarPool(data) {

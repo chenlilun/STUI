@@ -54,7 +54,7 @@ white-space:nowrap;">{{item.lineMachine+'-'+item.doffNo}}
             </div>
         </div>
         <footer class="ftor">
-            <van-button type="danger" block hairline="hairline" v-if="hairline"
+            <van-button type="danger" block hairline="hairline" v-if="silkCodeList.length>0"
                         style="margin: 0px 0px;display: inline-block" @click="dingDeng">确定
             </van-button>
         </footer>

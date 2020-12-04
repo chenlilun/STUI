@@ -30,7 +30,8 @@
 
                     {{silk.position}}
                     <div style="font-size: 1px">
-                        {{'..'+silk.silkCode.substr(silk.silkCode.length-8,silk.silkCode.length-1)}}
+                        {{silk.info}}
+<!--                        {{'..'+silk.silkCode.substr(silk.silkCode.length-8,silk.silkCode.length-1)}}-->
                     </div>
                     <div style="color: white; border: 1px solid red; border-radius: 6px;background-color: red"
                          v-if="silk.silkCode!=''"
@@ -90,12 +91,21 @@
             }
         }
     };
+    function getArrayIndex(arr, obj) {
+        var i = arr.length;
+        while (i--) {
+            if (arr[i] === obj) {
+                return i;
+            }
+        }
+        return -1;
+    }
     function up(x,y){
         return x.id -y.id;
     }
     // import HelloWorld from "@/components/HelloWorld.vue";
     import {Toast} from "vant";
-
+    import { Dialog } from 'vant';
     import {Swipe, SwipeItem, Row, Col} from "vant";
     import Vue from 'vue';
     import {Grid, GridItem} from 'vant';
@@ -117,123 +127,153 @@
                 silks: [{
                     id: 0,
                     position: 'A11',
-                    silkCode: ''
+                    silkCode: '',
+                    info:''
                 }, {
                     id: 1,
                     position: 'A12',
-                    silkCode: ''
+                    silkCode: '',
+                    info:''
                 }, {
                     id: 2,
                     position: 'A13',
-                    silkCode: ''
+                    silkCode: '',
+                    info:''
                 }, {
                     id: 3,
                     position: 'A14',
-                    silkCode: ''
+                    silkCode: '',
+                    info:''
                 }, {
                     id: 4,
                     position: 'A15',
-                    silkCode: ''
+                    silkCode: '',
+                    info:''
                 }, {
                     id: 9,
                     position: 'A21',
-                    silkCode: ''
+                    silkCode: '',
+                    info:''
                 }, {
                     id: 8,
                     position: 'A22',
-                    silkCode: ''
+                    silkCode: '',
+                    info:''
                 }, {
                     id: 7,
                     position: 'A23',
-                    silkCode: ''
+                    silkCode: '',
+                    info:''
                 }, {
                     id: 6,
                     position: 'A24',
-                    silkCode: ''
+                    silkCode: '',
+                    info:''
                 }, {
                     id: 5,
                     position: 'A25',
-                    silkCode: ''
+                    silkCode: '',
+                    info:''
                 }, {
                     id: 10,
                     position: 'A31',
-                    silkCode: ''
+                    silkCode: '',
+                    info:''
                 }, {
                     id: 11,
                     position: 'A32',
-                    silkCode: ''
+                    silkCode: '',
+                    info:''
                 }, {
                     id: 12,
                     position: 'A33',
-                    silkCode: ''
+                    silkCode: '',
+                    info:''
                 }, {
                     id: 13,
                     position: 'A34',
-                    silkCode: ''
+                    silkCode: '',
+                    info:''
                 }, {
                     id: 14,
                     position: 'A35',
-                    silkCode: ''
+                    silkCode: '',
+                    info:''
                 }, {
                     id: 15,
                     position: 'B11',
-                    silkCode: ''
+                    silkCode: '',
+                    info:''
                 }, {
                     id: 16,
                     position: 'B12',
-                    silkCode: ''
+                    silkCode: '',
+                    info:''
                 }, {
                     id: 17,
                     position: 'B13',
-                    silkCode: ''
+                    silkCode: '',
+                    info:''
                 }, {
                     id: 18,
                     position: 'B14',
-                    silkCode: ''
+                    silkCode: '',
+                    info:''
                 }, {
                     id: 19,
                     position: 'B15',
-                    silkCode: ''
+                    silkCode: '',
+                    info:''
                 }, {
                     id: 24,
                     position: 'B21',
-                    silkCode: ''
+                    silkCode: '',
+                    info:''
                 }, {
                     id: 23,
                     position: 'B22',
-                    silkCode: ''
+                    silkCode: '',
+                    info:''
                 }, {
                     id: 22,
                     position: 'B23',
-                    silkCode: ''
+                    silkCode: '',
+                    info:''
                 }, {
                     id: 21,
                     position: 'B24',
-                    silkCode: ''
+                    silkCode: '',
+                    info:''
                 }, {
                     id: 20,
                     position: 'B25',
-                    silkCode: ''
+                    silkCode: '',
+                    info:''
                 }, {
                     id: 25,
                     position: 'B31',
-                    silkCode: ''
+                    silkCode: '',
+                    info:''
                 }, {
                     id: 26,
                     position: 'B32',
-                    silkCode: ''
+                    silkCode: '',
+                    info:''
                 }, {
                     id: 27,
                     position: 'B33',
-                    silkCode: ''
+                    silkCode: '',
+                    info:''
                 }, {
                     id: 28,
                     position: 'B34',
-                    silkCode: ''
+                    silkCode: '',
+                    info:''
                 }, {
                     id: 29,
                     position: 'B35',
-                    silkCode: ''
+                    silkCode: '',
+                    info:''
                 }],
                 curSelect: null,
                 weiPosition: -1,
@@ -331,6 +371,11 @@
                 //     arr.push({silkCode:a})
                 // })
                 // Toast(arr + "xx")
+                //找出原先在车上但是后面没有在车上的丝锭
+                let silkCodes = []
+
+
+
                 let arr = []
                 //去掉重复提交的丝锭
 
@@ -341,17 +386,33 @@
                 })*/
                 for(let a of this.silks){
 
-                    if(a.silkCode&&this.isAddOrModify(a)){
+                    if(a.silkCode/*&&this.isAddOrModify(a)*/){
                         arr.push(a)
                     }
+
                 }
                 if(arr.length>0){
+                    this.orginSilkCarRowColList.forEach(a=>{
+                        let ite = arr.find(item => {
+                            return item.silkCode == a.silkCode;
+                        });
+                        if(typeof(ite) == undefined){
+                            silkCodes.push(a.silkCode)
+                        }
+             /*
+                            this.arr.find(item => {
+                                return item.silkCode == a.silkCode;)*/
+                    })
+                }
+
+                if(arr.length>0){
                     this.$api.newSilkCarPooling({
-                        operator: this.name,
+                        operator: /*'D7乙班包装工'*/this.name,
                         id: this.data.id,
                         silkCarCode: this.silkCarCode,
-                        operatorId: this.userId,
+                        operatorId: this.userId/*'5f904e116c9f1a52e806ac1c'*/,
                         forceSilkCarPooingVoList:arr,
+                        silkCode:silkCodes
                         // grade: this.gradeData.find(a => a.firstRate).grade
                     }).then((res) => {
                         Toast(res.data.status)
@@ -362,14 +423,44 @@
                             this.orginSilkCarRowColList = []
                             for (let i = 0; i < this.silks.length; i++) {
                                 this.silks[i].silkCode = ''
+                                this.silks[i].info = ''
                             }
 
                             Toast.success(res.data.msg)
+                        }  else if (res.data.status === '300') {
+                            Dialog.confirm({
+                                title: '存在没有解绑的丝锭',
+                                message: res.data.msg+'立即解绑？',
+                            })
+                                .then(() => {
+                                    let arr = []
+                                    arr.push({silkCode:res.data.data.unbindSilkCode})
+                                    this.$api.silkUnbind({
+                                        post: this.name/*"D7乙班包装工"*/,
+                                        grade: res.data.data.grade,
+                                        silkCarCode: res.data.data.unbindSilkCarCode,
+                                        modifier: this.userId/*'5f904e116c9f1a52e806ac1c'*/,
+                                        silkCarRowColList: arr,
+                                        separateFlag: true,
+                                    }).then((res) => {
+                                        if (res.data.status === '200') {
+
+                                            Toast.success(res.data.msg+'请重新提交拼车')
+                                        } else {
+                                            Toast.clear()
+                                            Toast(res.data.msg)
+                                        }
+                                    });
+                                })
+                                .catch(() => {
+                                    // on cancel
+                                });
                         } else {
                             Toast(res.data.msg)
                         }
                     });
                 }else {
+
                     Toast("请扫描要拼车的丝锭")
                 }
 
@@ -423,7 +514,7 @@
                 window.android.finish();
             },
             onClickRight() {
-                // this.callByAndroid('0J4D109A00114D')
+                // this.callByAndroid('0J50401A00111D')
                 this.show = true
             },
             callByAndroid(code) {
@@ -453,7 +544,7 @@
                                 // this.silkCodeList.pushNoRepeat(code)
                                 this.silks[this.chooseIndex].silkCode = code
                                 // this.chooseIndex = -1
-                                this.setChooseIndex(this.silks)
+                                this.setChooseIndex(this.silks,this.chooseIndex)
 
                             } else {
                                 Toast("丝锭已经在车上了")
@@ -471,15 +562,26 @@
                 }
 
             },
-            setChooseIndex(silks){
+            setChooseIndex(silks,currentIndex){
                 // let arr = this.silks
-                let a  =  silks.sort(up)
-                for (let i = 0; i < a.length; i++) {
-                    if(!a[i].silkCode){
-                        this.chooseIndex = a[i].id
-                            break
+                // let a  =  silks.sort(up)
+
+               let a =  this.silks[currentIndex].id  // 获取当前索引的id号
+                for (let j = a+1; j < silks.length; j++) {
+                    for (let i = 0; i < silks.length; i++) {
+                        if(!silks[i].silkCode&&!silks[j].silkCode&&j==silks[i].id){
+                            this.chooseIndex = i
+                            return
+                        }
                     }
                 }
+                //
+                // for (let i = 0; i < silks.length; i++) {
+                //     if(!silks[i].silkCode){
+                //         this.chooseIndex = silks[i].id
+                //             break
+                //     }
+                // }
             },
             isContentThisSilk(silk, list) {
                 if (!(list instanceof Array)) return true
@@ -497,6 +599,8 @@
                 this.doffType = ''
                 for (let i = 0; i < this.silks.length; i++) {
                     this.silks[i].silkCode = ''
+                    this.silks[i].info = ''
+
                 }
                 this.chooseIndex = -1
                 this.$api.getSilkss(code).then((res) => {
@@ -517,6 +621,7 @@
                                 for (let j = 0; j < this.silks.length; j++) {
                                     if((arr[i].sideType+arr[i].row+arr[i].col)===this.silks[j].position){
                                         this.silks[j].silkCode = arr[i].silkCode
+                                        this.silks[j].info = arr[i].lineName+'-'+arr[i].machineName+'-'+arr[i].doffNo+'-'+arr[i].spindleNum
                                     }
                                 }
                             }

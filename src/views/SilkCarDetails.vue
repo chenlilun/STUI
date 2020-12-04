@@ -47,7 +47,8 @@
 
                     {{silk.position}}
                     <div style="font-size: 1px">
-                        {{'..'+silk.silkCode.substr(silk.silkCode.length-8,silk.silkCode.length-1)}}
+                        {{silk.info}}
+<!--                        {{'..'+silk.silkCode.substr(silk.silkCode.length-8,silk.silkCode.length-1)}}-->
                     </div>
 
                 </div>
@@ -129,59 +130,73 @@
                 silks: [{
                     id: 0,
                     position: 'A11',
-                    silkCode: ''
+                    silkCode: '',
+                    info:''
                 }, {
                     id: 1,
                     position: 'A12',
-                    silkCode: ''
+                    silkCode: '',
+                    info:''
                 }, {
                     id: 2,
                     position: 'A13',
-                    silkCode: ''
+                    silkCode: '',
+                    info:''
                 }, {
                     id: 3,
                     position: 'A14',
-                    silkCode: ''
+                    silkCode: '',
+                    info:''
                 }, {
                     id: 4,
                     position: 'A15',
-                    silkCode: ''
+                    silkCode: '',
+                    info:''
                 }, {
                     id: 5,
                     position: 'A21',
-                    silkCode: ''
+                    silkCode: '',
+                    info:''
                 }, {
                     id: 6,
                     position: 'A22',
-                    silkCode: ''
+                    silkCode: '',
+                    info:''
                 }, {
                     id: 7,
                     position: 'A23',
-                    silkCode: ''
+                    silkCode: '',
+                    info:''
                 }, {
                     id: 8,
                     position: 'A24',
-                    silkCode: ''
+                    silkCode: '',
+                    info:''
                 }, {
                     id: 9,
                     position: 'A25',
-                    silkCode: ''
+                    silkCode: '',
+                    info:''
                 }, {
                     id: 10,
                     position: 'A31',
-                    silkCode: ''
+                    silkCode: '',
+                    info:''
                 }, {
                     id: 11,
                     position: 'A32',
-                    silkCode: ''
+                    silkCode: '',
+                    info:''
                 }, {
                     id: 12,
                     position: 'A33',
-                    silkCode: ''
+                    silkCode: '',
+                    info:''
                 }, {
                     id: 13,
                     position: 'A34',
-                    silkCode: ''
+                    silkCode: '',
+                    info:''
                 }, {
                     id: 14,
                     position: 'A35',
@@ -189,15 +204,18 @@
                 }, {
                     id: 15,
                     position: 'B11',
-                    silkCode: ''
+                    silkCode: '',
+                    info:''
                 }, {
                     id: 16,
                     position: 'B12',
-                    silkCode: ''
+                    silkCode: '',
+                    info:''
                 }, {
                     id: 17,
                     position: 'B13',
-                    silkCode: ''
+                    silkCode: '',
+                    info:''
                 }, {
                     id: 18,
                     position: 'B14',
@@ -205,47 +223,58 @@
                 }, {
                     id: 19,
                     position: 'B15',
-                    silkCode: ''
+                    silkCode: '',
+                    info:''
                 }, {
                     id: 20,
                     position: 'B21',
-                    silkCode: ''
+                    silkCode: '',
+                    info:''
                 }, {
                     id: 21,
                     position: 'B22',
-                    silkCode: ''
+                    silkCode: '',
+                    info:''
                 }, {
                     id: 22,
                     position: 'B23',
-                    silkCode: ''
+                    silkCode: '',
+                    info:''
                 }, {
                     id: 23,
                     position: 'B24',
-                    silkCode: ''
+                    silkCode: '',
+                    info:''
                 }, {
                     id: 24,
                     position: 'B25',
-                    silkCode: ''
+                    silkCode: '',
+                    info:''
                 }, {
                     id: 25,
                     position: 'B31',
-                    silkCode: ''
+                    silkCode: '',
+                    info:''
                 }, {
                     id: 26,
                     position: 'B32',
-                    silkCode: ''
+                    silkCode: '',
+                    info:''
                 }, {
                     id: 27,
                     position: 'B33',
-                    silkCode: ''
+                    silkCode: '',
+                    info:''
                 }, {
                     id: 28,
                     position: 'B34',
-                    silkCode: ''
+                    silkCode: '',
+                    info:''
                 }, {
                     id: 29,
                     position: 'B35',
-                    silkCode: ''
+                    silkCode: '',
+                    info:''
                 }],
                 showSecond: false,
                 checkMember: false ,
@@ -399,6 +428,7 @@
                     this.silkCarRowColList = []
                     for (let i = 0; i < this.silks.length; i++) {
                         this.silks[i].silkCode = ''
+                        this.silks[i].info = ''
                     }
                 }
             },
@@ -433,6 +463,7 @@
                 this.doffType = ''
                 for (let i = 0; i < this.silks.length; i++) {
                     this.silks[i].silkCode = ''
+                    this.silks[i].info = ''
                 }
                     this.$api.getSilkss(code).then((res) => {
                         console.log(res.data);
@@ -468,6 +499,7 @@
                                     for (let j = 0; j < this.silks.length; j++) {
                                         if ((this.silkCarRowColList[i].sideType + this.silkCarRowColList[i].row + this.silkCarRowColList[i].col) === this.silks[j].position) {
                                             this.silks[j].silkCode = this.silkCarRowColList[i].silkCode
+                                            this.silks[j].info = this.silkCarRowColList[i].lineName+'-'+this.silkCarRowColList[i].machineName+'-'+this.silkCarRowColList[i].doffNo+'-'+this.silkCarRowColList[i].spindleNum
                                         }
                                     }
                                 }
@@ -492,6 +524,7 @@
                             this.silkCarRowColList = []
                             for (let i = 0; i < this.silks.length; i++) {
                                 this.silks[i].silkCode = ''
+                                this.silks[i].info = ''
                             }
                         }
                     });

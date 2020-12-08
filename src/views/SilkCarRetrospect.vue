@@ -1,13 +1,29 @@
 <template>
   <div id="app" class="main">
     <van-nav-bar
-      title="丝车追溯"
+      title="丝锭追溯"
       left-text="返回"
       right-text=""
       left-arrow
       @click-left="onClickLeft"
     />
     <div class="index-page">
+      <div>
+        <!-- <van-button round block plain hairline type="primary">{{silkCarCode}}</van-button> -->
+        <van-field
+          v-model="silkCarCode"
+          center
+          clearable
+          label="丝车条码"
+          placeholder="请扫描丝车条码"
+        >
+          <template #button>
+            <van-button size="small" type="primary" @click="findsc"
+              >查询</van-button
+            >
+          </template>
+        </van-field>
+      </div>
       <van-cell
         class="line"
         title="选择线别"
@@ -90,6 +106,7 @@ export default {
   data() {
     return {
       //班次 7.50 21.50  7.50
+      silkCarCode: "",
       xianbie: false,
       xianbieItem: {},
       xianbieStr: "",
@@ -162,7 +179,12 @@ export default {
             })
             .then(
               (res) => {
-                if (res.data && res.data.data) {
+                Toast.clear();
+                if (
+                  res.data &&
+                  res.data.data != null &&
+                  Array.isArray(res.data.data)
+                ) {
                   this.selectCarList = res.data.data.map((item) => {
                     if (
                       item.silkReportVoList != null &&
@@ -184,7 +206,7 @@ export default {
                     return item;
                   });
                 }
-                Toast.clear();
+
                 if (this.selectCarList.length == 0) {
                   Toast.success("没有查询到落次");
                 }
@@ -203,22 +225,57 @@ export default {
         Toast("请选择线别和机台");
       }
     },
+    findsc() {
+      this.$api
+        .findSilkInfo({
+          lineName: "", //线别
+          machineName: "", //机台
+          doffingTime: "", //落筒开始时间
+          doffingTimeEnd: "", //落筒结束时间
+          // doffNo: "1", //落次,可选
+          silkCode: this.silkCarCode, //丝锭,可选
+        })
+        .then((res) => {
+          if (
+            res.data &&
+            res.data.data != null &&
+            Array.isArray(res.data.data)
+          ) {
+            this.selectCarList = res.data.data.map((item) => {
+              if (
+                item.silkReportVoList != null &&
+                item.silkReportVoList.length > 0
+              ) {
+                item.doffingTime = moment(
+                  new Date(item.silkReportVoList[0].doffingTime)
+                ).format("YYYY-MM-DD HH:mm:ss");
+                item.spec = item.silkReportVoList[0].spec;
+                item.dofferType =
+                  item.silkReportVoList[0].doffType == "AUTO" ? "自动" : "人工";
+                console.log(
+                  item.silkReportVoList[0].doffType + "-----" + "AUTO"
+                );
+              }
+
+              return item;
+            });
+          } else {
+            Toast.success(res.msg);
+          }
+
+          if (this.selectCarList.length == 0) {
+            Toast.success("没有查询到落次");
+          }
+
+          console.log(JSON.stringify(this.selectCarList) + "sss");
+          // console.log(JSON.stringify(res));
+        });
+    },
     callByAndroid(code) {
       // Toast("对了？" + code)
       if (code) {
         if (this.$myUtils.checkIsSilk(code)) {
-          this.$api
-            .findSilkInfo({
-              lineName: "", //线别
-              machineName: "", //机台
-              doffingTime: "", //落筒开始时间
-              doffingTimeEnd: "", //落筒结束时间
-              // doffNo: "1", //落次,可选
-              silkCode: code, //丝锭,可选
-            })
-            .then((res) => {
-              console.log(JSON.stringify(res));
-            });
+          this.silkCarCode = code;
         } else {
           Toast("请扫码丝锭");
         }

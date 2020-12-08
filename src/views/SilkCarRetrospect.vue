@@ -14,8 +14,8 @@
           v-model="silkCarCode"
           center
           clearable
-          label="丝车条码"
-          placeholder="请扫描丝车条码"
+          label="丝锭二维码"
+          placeholder="请扫描丝锭二维码"
         >
           <template #button>
             <van-button size="small" type="primary" @click="findsc"

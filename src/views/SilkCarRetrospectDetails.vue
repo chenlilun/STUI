@@ -1,7 +1,7 @@
 <template>
   <div id="app" class="main">
     <van-nav-bar
-      title="丝车详情"
+      title="丝锭详情"
       left-text="返回"
       right-text=""
       left-arrow

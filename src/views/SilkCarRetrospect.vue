@@ -143,17 +143,17 @@ export default {
           var doffingTimeEnd = "";
           console.log("this.banciResult.length" + this.banciResult.length);
           if (this.banciResult.length == 1) {
-            console.log("this.banciResult.length" + this.banciResult.length);
+            console.log("this.banciResult.length-----" + this.banciResult);
             console.log(this.selectTime.getTime());
             //白班 7.50 - 19.50
             if (this.banciResult[0] == "a") {
               doffingTime =
-                this.selectTime.getTime() + (8 * 60 - 10) * 60 * 1000;
+                this.selectTime.getTime() + (16 * 60 - 10) * 60 * 1000;
               doffingTimeEnd = doffingTime + 12 * 60 * 60 * 1000;
               //夜班 19.50 - 7.50
             } else if (this.banciResult[0] == "b") {
               doffingTime =
-                this.selectTime.getTime() + (22 * 60 - 10) * 60 * 1000;
+                this.selectTime.getTime() + (30 * 60 - 10) * 60 * 1000;
               doffingTimeEnd = doffingTime + 12 * 60 * 60 * 1000;
             }
           } else if (this.banciResult.length == 2) {
@@ -163,11 +163,11 @@ export default {
           }
           var startTime = new Date(doffingTime);
           var TimeEnd = new Date(doffingTimeEnd);
-          /*           var startTime1 = moment(new Date(startTime)).format(
+          var startTime1 = moment(new Date(startTime)).format(
             "YYYY-MM-DD HH:mm"
           );
           var TimeEnd1 = moment(new Date(TimeEnd)).format("YYYY-MM-DD HH:mm");
-          console.log("开始时间" + startTime1 + "-----" + "结束" + TimeEnd1); */
+          console.log("开始时间" + startTime + "-----" + "结束" + TimeEnd);
           this.$api
             .findSilkInfo({
               lineName: this.xianbieItem.lineName, //线别

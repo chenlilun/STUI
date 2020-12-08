@@ -191,7 +191,10 @@ export default {
                       item.silkReportVoList.length > 0
                     ) {
                       item.doffingTime = moment(
-                        new Date(item.silkReportVoList[0].doffingTime)
+                        new Date(
+                          item.silkReportVoList[0].doffingTime
+                        ).getTime() -
+                          8 * 60 * 60 * 1000
                       ).format("YYYY-MM-DD HH:mm:ss");
                       item.spec = item.silkReportVoList[0].spec;
                       item.dofferType =
@@ -247,7 +250,8 @@ export default {
                 item.silkReportVoList.length > 0
               ) {
                 item.doffingTime = moment(
-                  new Date(item.silkReportVoList[0].doffingTime)
+                  new Date(item.silkReportVoList[0].doffingTime).getTime() -
+                    8 * 60 * 60 * 1000
                 ).format("YYYY-MM-DD HH:mm:ss");
                 item.spec = item.silkReportVoList[0].spec;
                 item.dofferType =

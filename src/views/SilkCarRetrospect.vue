@@ -146,11 +146,11 @@ export default {
           }
           var startTime = new Date(doffingTime);
           var TimeEnd = new Date(doffingTimeEnd);
-          var startTime1 = moment(new Date(startTime)).format(
+          /*           var startTime1 = moment(new Date(startTime)).format(
             "YYYY-MM-DD HH:mm"
           );
           var TimeEnd1 = moment(new Date(TimeEnd)).format("YYYY-MM-DD HH:mm");
-          console.log("开始时间" + startTime1 + "-----" + "结束" + TimeEnd1);
+          console.log("开始时间" + startTime1 + "-----" + "结束" + TimeEnd1); */
           this.$api
             .findSilkInfo({
               lineName: this.xianbieItem.lineName, //线别

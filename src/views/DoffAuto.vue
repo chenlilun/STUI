@@ -68,7 +68,7 @@ white-space:nowrap;">{{item.lineMachine+'-'+item.doffNo}}
                 </van-collapse-item>
             </div>
             <van-button type="danger" block hairline="hairline" v-if="hairline"
-                        style="margin:  15px auto;overflow: hidden ;display: inline" @click="dingDeng">落筒提交
+                        style="margin:  15px auto;overflow: hidden ;display: inline" @click="debounceDingDeng">落筒提交
             </van-button>
             <!--            <van-collapse-item title="标题2" name="2">内容</van-collapse-item>-->
             <!--            <van-collapse-item title="标题3" name="3">内容</van-collapse-item>-->
@@ -96,7 +96,7 @@ white-space:nowrap;">{{item.lineMachine+'-'+item.doffNo}}
             <div style="margin-top: 30px;margin-left: 8px">
                 <van-steps direction="vertical" :active="0">
                     <van-step>
-                        <van-button style="margin-top: 5px " type="danger"  @click="recover()">
+                        <van-button style="margin-top: 5px " type="danger"  @click="debounceRecover">
                             撤销落筒
                         </van-button>
                     </van-step>
@@ -123,6 +123,7 @@ white-space:nowrap;">{{item.lineMachine+'-'+item.doffNo}}
 
     import {Swipe, SwipeItem, Row, Col} from "vant";
     import moment from 'moment'
+    import { debounce } from "lodash";
     Toast.setDefaultOptions({ duration: 4000 });
     export default {
         name: "DoffAuto",
@@ -166,6 +167,8 @@ white-space:nowrap;">{{item.lineMachine+'-'+item.doffNo}}
                 finished: true,
                 refreshing: false,
                 currentScanMachineQrCode : '' ,
+                debounceRecover:debounce(this.recover,300),
+                debounceDingDeng:debounce(this.dingDeng,300),
             };
         },
         methods: {
@@ -216,6 +219,11 @@ white-space:nowrap;">{{item.lineMachine+'-'+item.doffNo}}
                 return info
             },
             recover(){
+                Toast.loading({
+                    message: '加载中...',
+                    forbidClick: true,
+                    duration: 0,
+                });
                 this.$api.canCleDoff({
                     silkCarCode: this.silkCarCode,
 
@@ -268,16 +276,11 @@ white-space:nowrap;">{{item.lineMachine+'-'+item.doffNo}}
                 console.log("aa" + val)
             },
             dingDeng() {
-                // let arr  = []
-                // // if( !this.silkCodeList|| this.silkCodeList.length==0||!this.silkCarCode){
-                // //     Toast("请输入完整信息")
-                // //     return
-                // // }
-                // this.silkCodeList.forEach(a=>{
-                //     arr.push({silkCode:a})
-                // })
-                // Toast(arr + "xx")
-                //不通批号不能提交
+                Toast.loading({
+                    message: '加载中...',
+                    forbidClick: true,
+                    duration: 0,
+                });
                 let batNo = ''
                 let isCan = true ;
                 if(this.data.silkCarRowColList){
@@ -320,7 +323,7 @@ white-space:nowrap;">{{item.lineMachine+'-'+item.doffNo}}
                 }
 
                 this.$api.manualDoff(this.data).then((res) => {
-
+                    Toast.clear()
                     if (res.data.status === '200') {
                         this.silkCodeList = []
                         this.hairline = false

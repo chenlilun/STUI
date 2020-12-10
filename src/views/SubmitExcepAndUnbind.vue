@@ -71,10 +71,10 @@ white-space:nowrap;">{{item.lineMachine+'-'+item.doffNo}}
         </div>
         <footer class="ftor">
             <van-button type="danger" block hairline="hairline" v-if="hairline&&juanRao"
-                        style="margin: 3px 3px;display: inline-block ; flex: 1" @click="dingDeng(false)">只提交异常
+                        style="margin: 3px 3px;display: inline-block ; flex: 1" @click="debounceDingDeng(false)">只提交异常
             </van-button>
             <van-button type="danger" block hairline="hairline" v-if="hairline"
-                        style="margin: 3px 3px;display: inline-block ; flex: 1" @click="dingDeng(true)">
+                        style="margin: 3px 3px;display: inline-block ; flex: 1" @click="debounceDingDeng(true)">
                 {{this.excepIndex===-1?'无异常解绑':'提交异常并解绑'}}
             </van-button>
         </footer>
@@ -111,7 +111,7 @@ white-space:nowrap;">{{item.lineMachine+'-'+item.doffNo}}
     import {Toast} from "vant";
 
     import {Swipe, SwipeItem, Row, Col} from "vant";
-
+    import { debounce } from "lodash";
     export default {
         name: "SubmitExcepAndUnbind",
         components: {
@@ -155,6 +155,7 @@ white-space:nowrap;">{{item.lineMachine+'-'+item.doffNo}}
                 loading: false,
                 finished: true,
                 refreshing: false,
+                debounceDingDeng:debounce(this.dingDeng,300),
             };
         },
         methods: {
@@ -197,7 +198,6 @@ white-space:nowrap;">{{item.lineMachine+'-'+item.doffNo}}
                     loadingType: 'spinner',
                     duration: 0
                 });
-                console.log("aaa")
 
                 this.$api.silkUnbind({
                     post: this.name,

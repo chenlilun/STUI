@@ -58,7 +58,7 @@
         </ul>
 
         <van-button type="danger" block hairline="hairline" v-if="hairline"
-                    style="margin:  15px auto;overflow: hidden ;display: inline" @click="dingDeng">落筒提交
+                    style="margin:  15px auto;overflow: hidden ;display: inline" @click="debounceDingDeng">落筒提交
         </van-button>
         <van-collapse v-model="activeName" accordion @change="change" v-if="false">
             <div v-for="(item, index ) in this.data.silkCarRowColList" :key="index">
@@ -85,7 +85,7 @@
             <div style="margin-top: 30px;margin-left: 8px">
                 <van-steps direction="vertical" :active="0">
                     <van-step>
-                        <van-button style="margin-top: 5px " type="danger"  @click="recover()">
+                        <van-button style="margin-top: 5px " type="danger"  @click="debounceRecover">
                             撤销落筒
                         </van-button>
                     </van-step>
@@ -124,7 +124,7 @@
     import {Toast} from "vant";
     import moment from 'moment'
     import {Swipe, SwipeItem, Row, Col} from "vant";
-
+    import { debounce } from "lodash";
     Toast.setDefaultOptions({duration: 4000});
     export default {
         name: "JoinSilkDoff",
@@ -172,7 +172,9 @@
                 finished: true,
                 refreshing: false,
                 currentScanMachineQrCode: '',
-                joinSilkMachine: []
+                joinSilkMachine: [],
+                debounceDingDeng:debounce(this.dingDeng,300),
+                debounceRecover:debounce(this.recover,300),
             };
         },
         methods: {
@@ -182,6 +184,11 @@
                 return moment(b).format('MM-DD HH:mm')
             },
             recover(){
+                Toast.loading({
+                    message: '加载中...',
+                    forbidClick: true,
+                    duration: 0,
+                });
                 this.$api.canCleDoff({
                     silkCarCode: this.silkCarCode,
 
@@ -291,16 +298,11 @@
                 console.log("aa" + val)
             },
             dingDeng() {
-                // let arr  = []
-                // // if( !this.silkCodeList|| this.silkCodeList.length==0||!this.silkCarCode){
-                // //     Toast("请输入完整信息")
-                // //     return
-                // // }
-                // this.silkCodeList.forEach(a=>{
-                //     arr.push({silkCode:a})
-                // })
-                // Toast(arr + "xx")
-                //不通批号不能提交
+                Toast.loading({
+                    message: '加载中...',
+                    forbidClick: true,
+                    duration: 0,
+                });
                 let batNo = ''
                 let isCan = true;
                 if (this.data.silkCarRowColList) {
@@ -342,7 +344,7 @@
                 }
 
                 this.$api.manualDoff(this.data).then((res) => {
-
+                    Toast.clear()
                     if (res.data.status === '200') {
                         this.silkCodeList = []
                         this.hairline = false

@@ -54,9 +54,12 @@
                 </div>
             </li>
         </ul>
-        <van-button type="danger" block hairline="hairline" v-if="!showSecond"
-                    style="margin: 6px auto ;display: block ; " @click="AppearanceConfirm()">外观确认
-        </van-button>
+
+
+            <van-button type="danger" block hairline="hairline" v-if="!showSecond"
+                        style="margin: 6px auto ;display: block ; " @click="debounceAppearanceConfirm">外观确认
+            </van-button>
+
         <footer class="ftor">
             <van-button type="danger" block hairline="hairline" v-if="showSecond&&juanRao"
                         style="margin: 3px 3px;display: inline-block ; flex: 1" @click="dingDeng()">定等
@@ -79,11 +82,11 @@
                         </div>
                         <h3>操作人:{{item.post+' ' +item.operator}}</h3>
                         <h4>时间:{{ getTime(item.operateTime) }}</h4>
-                        <van-button style="margin-top: 5px " type="danger" v-if="item.recover" @click="recover(item)">
+                        <van-button style="margin-top: 5px " type="danger" v-if="item.recover" @click="debounceRecover(item)">
                             撤销
                         </van-button>
                         <van-button style="margin-top: 5px;margin-left: 5px" type="danger"
-                                    @click="print(item)">补打标签
+                                    @click="debouncePrinter(item)">补打标签
                         </van-button>
                         <van-collapse v-model="activeNames">
                             <van-collapse-item title="操作丝锭" :name="index"><p v-for="(i, index ) in item.silkCodes"
@@ -116,7 +119,7 @@
     import {Toast} from "vant";
     import {Divider} from 'vant';
     import moment from 'moment'
-    // import { List } from "vant";
+    import { debounce } from "lodash";
     export default {
         name: "app",
         components: {
@@ -293,7 +296,10 @@
                 refreshing: false,
                 userId: '',
                 name: '',
-                silkCarRowColList: []
+                silkCarRowColList: [],
+                debounceAppearanceConfirm:debounce(this.AppearanceConfirm,300),
+                debounceRecover:debounce(this.recover,300),
+                debouncePrinter:debounce(this.print,300),
             };
         },
         methods: {
@@ -313,6 +319,12 @@
 
             },
             AppearanceConfirm() {
+                Toast.loading({
+                    message: '加载中...',
+                    forbidClick: true,
+                    duration: 0,
+                });
+                console.log("FFF")
                 this.$api.qualityProducts({
                     operatorId: this.userId,
                     silkCarCode: this.silkCarCode,
@@ -365,12 +377,11 @@
                 })
             },
             recover(item) {
-                // Toast.loading({
-                //     message: '撤销...',
-                //     forbidClick: true,
-                //     loadingType: 'spinner',
-                //     duration:0
-                // });
+                Toast.loading({
+                    message: '加载中...',
+                    forbidClick: true,
+                    duration: 0,
+                });
                 console.log("aaa")
                 let arr = []
                 arr.push(item)
@@ -393,13 +404,12 @@
                 });
             },
             print(item) {
-                // Toast.loading({
-                //     message: '撤销...',
-                //     forbidClick: true,
-                //     loadingType: 'spinner',
-                //     duration:0
-                // });
-                console.log("aaa")
+
+                Toast.loading({
+                    message: '加载中...',
+                    forbidClick: true,
+                    duration: 0,
+                });
                 let arr = []
                 arr.push(item)
 
@@ -408,12 +418,14 @@
                     lineName: this.silkCarRowColList[0].lineName
 
                 }).then((res) => {
+                    Toast.clear()
                     if (res.data.status === '200') {
                         //发送Mq打印信息了
                         Toast("打印成功，请在" + this.silkCarRowColList[0].lineName + "打印机查看查看")
                     } else {
                         Toast(res.data.msg)
                     }
+
                 });
             },
             find() {

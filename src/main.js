@@ -10,6 +10,9 @@ import { List } from 'vant'
 import api from './api/index.js'
 import Cookie from 'js-cookie'
 import myUtils from './util/myUtils'
+// 防抖节流
+// Vue.component('Debounce',Debounce)
+
 import { Col, Row } from 'vant'
 import { Tag } from 'vant'
 import { Collapse, CollapseItem } from 'vant'
@@ -17,6 +20,7 @@ import { Popup } from 'vant'
 import { Toast } from 'vant'
 import { Divider } from 'vant'
 import { Tab, Tabs } from 'vant'
+// Vue.use(Debounce)
 Vue.use(Tab)
 Vue.use(Tabs)
 Vue.use(Divider)

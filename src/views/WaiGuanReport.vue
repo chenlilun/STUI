@@ -41,12 +41,12 @@
             )
           }}
         </div>
-        <div class="col_item">{{ "纺位:" + getMachine(item.lineMachine) }}</div>
+        <div class="col_item">{{ "" + getMachine(item.lineMachine) }}</div>
         <div class="col_item">{{ "线别:" + getLine(item.lineMachine) }}</div>
       </div>
       <div class="onerow">
-        <div class="col_item">{{ "批号:" + item.batchNo }}</div>
-        <div class="col_item">{{ "规格:" + item.spec }}</div>
+        <div class="col_item">{{ "" + item.batchNo }}</div>
+        <div class="col_item">{{ "" + item.spec }}</div>
         <div class="col_item"></div>
       </div>
       <div class="onerow">
@@ -311,7 +311,7 @@ export default {
     },
   },
   created() {
-    this.userId = this.$route.query.userId; /*5f90616b0e6ef90b1af42832*/
+    this.userId = this.$route.query.userId; /*'5f90635c0e6ef90b1af4288a'*/
     this.name = this.$route.query.name;
     this.find();
   },

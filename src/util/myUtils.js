@@ -27,8 +27,21 @@ let checkIsTemBox = function checkIsSilk(code) {
         return false
     }
 }
+let checkClick = function(a) {
+    let flag = 0;
+
+        if (flag == 0) {
+            flag = 1;
+            setTimeout(function() {
+                flag = 0;
+            }, 500);
+        } else {
+            // showMsgDialog("请勿频繁点击！");
+        }
+        return flag
+};
 
 
 export default {
-    checkIsSilkCar ,checkIsSilk ,checkMachine,checkIsTemBox
+    checkIsSilkCar ,checkIsSilk ,checkMachine,checkIsTemBox,checkClick
 }

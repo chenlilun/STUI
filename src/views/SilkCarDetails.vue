@@ -331,6 +331,7 @@
 
                 }).then((res) => {
                     if (res.data.status === '200') {
+                        this.showSecond = true
                         this.find()
                         Toast.clear()
                         Toast.success(res.data.msg)

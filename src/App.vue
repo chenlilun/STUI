@@ -1,7 +1,12 @@
 <template>
-    <div id="app">
-      <router-view/>
-    </div>
+  <div id="app">
+    <keep-alive>
+      <router-view v-if="$route.meta.keepAlive">
+        <!-- 这里是会被缓存的视图组件，比如 Home！ -->
+      </router-view>
+    </keep-alive>
+    <router-view v-if="!$route.meta.keepAlive"></router-view>
+  </div>
 </template>
 
 
@@ -24,29 +29,29 @@ export default {
   margin-top: 1px;
 }
 .main2 {
-    margin: 5px 5px;
-    height: 40px;
-    display: flex;
-    background-color: #cccccc;
-    overflow: hidden;
-    border-radius: 6px;
+  margin: 5px 5px;
+  height: 40px;
+  display: flex;
+  background-color: #cccccc;
+  overflow: hidden;
+  border-radius: 6px;
 }
 
 .main2 > .left {
-    flex: 3;
-    padding-left: 8px;
-    line-height: 40px;
-    color: white;
+  flex: 3;
+  padding-left: 8px;
+  line-height: 40px;
+  color: white;
 }
 
 .main2 > .right {
-    flex: 1;
-    line-height: 40px;
-    color: red;
+  flex: 1;
+  line-height: 40px;
+  color: red;
 }
 element.style {
-    margin: 0px;
-    display: inline-block;
+  margin: 0px;
+  display: inline-block;
 }
 .van-field__label {
   -webkit-box-flex: 0;
@@ -159,34 +164,34 @@ footer > .copyRight {
   text-align: center;
 }
 .van-toast__text {
-    margin-top: 2.133vw;
-    font-size: 25px;
+  margin-top: 2.133vw;
+  font-size: 25px;
 }
 .van-cell__title > span {
-    float: left;
-    overflow: hidden;
-    font-size: 20px;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+  float: left;
+  overflow: hidden;
+  font-size: 20px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .van-field__control {
-    display: block;
-    box-sizing: border-box;
-    width: 100%;
-    min-width: 0;
-    margin: 0;
-    padding: 0;
-    color: red;
-    font-size: 20px;
-    line-height: inherit;
-    text-align: left;
-    background-color: transparent;
-    border: 0;
-    resize: none;
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  color: red;
+  font-size: 20px;
+  line-height: inherit;
+  text-align: left;
+  background-color: transparent;
+  border: 0;
+  resize: none;
 }
 .van-button--small {
-    height: 8.533vw;
-    padding: 0 2.133vw;
-    font-size: 4.2vw;
+  height: 8.533vw;
+  padding: 0 2.133vw;
+  font-size: 4.2vw;
 }
 </style>

@@ -128,7 +128,6 @@ export default {
   methods: {
     lookDetails(item) {
       console.log("item------" + JSON.stringify(item));
-
       localStorage.details = JSON.stringify(item);
       this.$router.push("/SilkCarRetrospectDetails");
     },

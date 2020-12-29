@@ -162,6 +162,10 @@ let router = new Router({
       path: '/SilkCarRetrospect',
       name: 'SilkCarRetrospect',
       component: SilkCarRetrospect,
+      meta: {
+        requireAuth: true,
+        keepAlive: true, //此组件不需要被缓存
+      },
     },
     {
       path: '/SilkCarRetrospectDetails',

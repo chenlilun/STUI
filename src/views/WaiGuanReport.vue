@@ -223,9 +223,16 @@ export default {
       }
     },
     getSilkCount(grade, list) {
+     grade =   grade=='A/0'?"A":grade
+     grade =   grade=='B/0'?"B":grade
+     grade =   grade=='C/0'?"C":grade
       let str = "0";
       list.forEach((a) => {
-        if (a.grade === grade) {
+         let b  =   a.grade
+        b =   b=='A/0'?"A":b
+        b =   b=='B/0'?"B":b
+        b =   b=='C/0'?"C":b
+        if (b=== grade) {
           str = a.spindleCount + "";
         }
       });
@@ -311,7 +318,7 @@ export default {
     },
   },
   created() {
-    this.userId = this.$route.query.userId; /*'5f90635c0e6ef90b1af4288a'*/
+    this.userId = this.$route.query.userId; /*'5f90890444fef9054dad610a'*/
     this.name = this.$route.query.name;
     this.find();
   },

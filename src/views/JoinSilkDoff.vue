@@ -329,7 +329,8 @@
 
                 this.data.silkCode = this.silkCarCode
                 this.data.userId = this.userId
-                this.data.grade = this.gradeData.find(a => a.firstRate).grade
+                // this.data.grade = this.gradeData.find(a => a.firstRate).grade
+                this.data.grade = 'AA'
                 // this.data.silkCarRowColList.forEach((a , index)=>{
                 //     if((typeof a.canModify === "undefined")||!a.canModify){
                 //         this.data.silkCarRowColList.splice(index,1)

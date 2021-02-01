@@ -157,7 +157,7 @@ export default {
             }
           } else if (this.banciResult.length == 2) {
             console.log("this.banciResult.length" + this.banciResult.length);
-            doffingTime = this.selectTime.getTime() + (8 * 60 - 10) * 60 * 1000;
+            doffingTime = this.selectTime.getTime() + (8 * 60 - 10) * 60 * 1000+8*60*60*1000;
             doffingTimeEnd = doffingTime + 24 * 60 * 60 * 1000;
           }
           var startTime = new Date(doffingTime);

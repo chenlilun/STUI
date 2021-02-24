@@ -49,11 +49,3 @@ var vue = new Vue({
   render: (h) => h(App),
 }).$mount('#app')
 export default vue
-
-// var vue = new Vue({
-//   el: '#app',
-//   router,
-//   components: { App },
-//   template: '<App/>'
-// })
-// export default vue

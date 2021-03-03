@@ -23,6 +23,7 @@ import ChoosePositionSilkCarPool from '../views/ChoosePositionSilkCarPool.vue'
 import SilkCarPoolFinal from '../views/SilkCarPoolFinal.vue'
 import SilkCarRetrospect from '../views/SilkCarRetrospect.vue'
 import SilkCarRetrospectDetails from '../views/SilkCarRetrospectDetails.vue'
+import DoffNew from '../views/doff/DoffNew.vue'
 Vue.use(Router)
 const originalPush = Router.prototype.push
 Router.prototype.push = function push(location) {
@@ -171,6 +172,11 @@ let router = new Router({
       path: '/SilkCarRetrospectDetails',
       name: 'SilkCarRetrospectDetails',
       component: SilkCarRetrospectDetails,
+    },
+    {
+      path: '/DoffNew',
+      name: 'DoffNew',
+      component: DoffNew,
     },
   ],
 })

@@ -1,8 +1,20 @@
 const autoprefixer = require('autoprefixer')
 const pxtoviewport = require('postcss-px-to-viewport')
+const path = require('path')
 
 module.exports = {
+  devServer: {
+    port: 8080, // 端口
+  },
   outputDir: 'dist',
+  // publicPath: process.env.NODE_ENV === 'production' ? '/vant-demo/' : '/',
+  pluginOptions: {
+    'style-resources-loader': {
+      preProcessor: 'less',
+      // vue-cli3 自动导入mixin
+      patterns: [path.resolve(__dirname, './src/assets/styles/mixin.less')],
+    },
+  },
   css: {
     loaderOptions: {
       postcss: {

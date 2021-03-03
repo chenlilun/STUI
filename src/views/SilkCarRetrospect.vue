@@ -1,26 +1,12 @@
 <template>
   <div id="app" class="main">
-    <van-nav-bar
-      title="丝锭追溯"
-      left-text="返回"
-      right-text=""
-      left-arrow
-      @click-left="onClickLeft"
-    />
+    <van-nav-bar title="丝锭追溯" left-text="返回" right-text left-arrow @click-left="onClickLeft" />
     <div class="index-page">
       <div>
         <!-- <van-button round block plain hairline type="primary">{{silkCarCode}}</van-button> -->
-        <van-field
-          v-model="silkCarCode"
-          center
-          clearable
-          label="丝锭二维码"
-          placeholder="请扫描丝锭二维码"
-        >
+        <van-field v-model="silkCarCode" center clearable label="丝锭二维码" placeholder="请扫描丝锭二维码">
           <template #button>
-            <van-button size="small" type="primary" @click="findsc"
-              >查询</van-button
-            >
+            <van-button size="small" type="primary" @click="findsc">查询</van-button>
           </template>
         </van-field>
       </div>
@@ -56,9 +42,7 @@
           <van-checkbox name="b">夜班</van-checkbox>
         </van-checkbox-group>
       </div>
-      <van-button size="small" type="primary" class="bt" @click="findSilkInfo"
-        >查询</van-button
-      >
+      <van-button size="small" type="primary" class="bt" @click="findSilkInfo">查询</van-button>
       <div class="car-list">
         <div
           class="car-item"
@@ -85,37 +69,29 @@
         @cancel="calendarShow = false"
       />
     </van-popup>
-    <van-action-sheet
-      v-model="xianbie"
-      :actions="selectLinesList"
-      @select="onSelectXianBie"
-    />
-    <van-action-sheet
-      v-model="jitai"
-      :actions="selectMachinesList"
-      @select="onSelectJiTai"
-    />
+    <van-action-sheet v-model="xianbie" :actions="selectLinesList" @select="onSelectXianBie" />
+    <van-action-sheet v-model="jitai" :actions="selectMachinesList" @select="onSelectJiTai" />
   </div>
 </template>
 
 <script>
-import { Toast } from "vant";
-import moment from "moment";
+import { Toast } from 'vant'
+import moment from 'moment'
 export default {
   components: {},
   data() {
     return {
       //班次 7.50 21.50  7.50
-      silkCarCode: "",
+      silkCarCode: '',
       xianbie: false,
       xianbieItem: {},
-      xianbieStr: "",
+      xianbieStr: '',
       jitai: false,
       jitaiItem: {},
-      jitaiStr: "",
-      timeDate: "",
+      jitaiStr: '',
+      timeDate: '',
       selectTimeDate: new Date(),
-      selectTime: "",
+      selectTime: '',
       calendarShow: false,
       minDate: new Date(2020, 9, 1),
       maxDate: new Date(2100, 10, 1),
@@ -123,50 +99,53 @@ export default {
       selectMachinesList: [],
       banciResult: [],
       selectCarList: [],
-    };
+    }
   },
   methods: {
     lookDetails(item) {
-      console.log("item------" + JSON.stringify(item));
-      localStorage.details = JSON.stringify(item);
-      this.$router.push("/SilkCarRetrospectDetails");
+      console.log('item------' + JSON.stringify(item))
+      localStorage.details = JSON.stringify(item)
+      this.$router.push('/SilkCarRetrospectDetails')
     },
     findSilkInfo() {
       if (this.xianbieItem.lineName && this.jitaiItem.machineName) {
-        if (this.timeDate != "" && this.banciResult.length > 0) {
+        if (this.timeDate != '' && this.banciResult.length > 0) {
           Toast.loading({
-            message: "加载中...",
+            message: '加载中...',
             forbidClick: true,
-          });
-          var doffingTime = "";
-          var doffingTimeEnd = "";
-          console.log("this.banciResult.length" + this.banciResult.length);
+          })
+          var doffingTime = ''
+          var doffingTimeEnd = ''
+          console.log('this.banciResult.length' + this.banciResult.length)
           if (this.banciResult.length == 1) {
-            console.log("this.banciResult.length-----" + this.banciResult);
-            console.log(this.selectTime.getTime());
+            console.log('this.banciResult.length-----' + this.banciResult)
+            console.log(this.selectTime.getTime())
             //白班 7.50 - 19.50
-            if (this.banciResult[0] == "a") {
+            if (this.banciResult[0] == 'a') {
               doffingTime =
-                this.selectTime.getTime() + (16 * 60 - 10) * 60 * 1000;
-              doffingTimeEnd = doffingTime + 12 * 60 * 60 * 1000;
+                this.selectTime.getTime() + (16 * 60 - 10) * 60 * 1000
+              doffingTimeEnd = doffingTime + 12 * 60 * 60 * 1000
               //夜班 19.50 - 7.50
-            } else if (this.banciResult[0] == "b") {
+            } else if (this.banciResult[0] == 'b') {
               doffingTime =
-                this.selectTime.getTime() + (30 * 60 - 10) * 60 * 1000;
-              doffingTimeEnd = doffingTime + 12 * 60 * 60 * 1000;
+                this.selectTime.getTime() + (30 * 60 - 10) * 60 * 1000
+              doffingTimeEnd = doffingTime + 12 * 60 * 60 * 1000
             }
           } else if (this.banciResult.length == 2) {
-            console.log("this.banciResult.length" + this.banciResult.length);
-            doffingTime = this.selectTime.getTime() + (8 * 60 - 10) * 60 * 1000+8*60*60*1000;
-            doffingTimeEnd = doffingTime + 24 * 60 * 60 * 1000;
+            console.log('this.banciResult.length' + this.banciResult.length)
+            doffingTime =
+              this.selectTime.getTime() +
+              (8 * 60 - 10) * 60 * 1000 +
+              8 * 60 * 60 * 1000
+            doffingTimeEnd = doffingTime + 24 * 60 * 60 * 1000
           }
-          var startTime = new Date(doffingTime);
-          var TimeEnd = new Date(doffingTimeEnd);
+          var startTime = new Date(doffingTime)
+          var TimeEnd = new Date(doffingTimeEnd)
           var startTime1 = moment(new Date(startTime)).format(
-            "YYYY-MM-DD HH:mm"
-          );
-          var TimeEnd1 = moment(new Date(TimeEnd)).format("YYYY-MM-DD HH:mm");
-          console.log("开始时间" + startTime + "-----" + "结束" + TimeEnd);
+            'YYYY-MM-DD HH:mm'
+          )
+          var TimeEnd1 = moment(new Date(TimeEnd)).format('YYYY-MM-DD HH:mm')
+          console.log('开始时间' + startTime + '-----' + '结束' + TimeEnd)
           this.$api
             .findSilkInfo({
               lineName: this.xianbieItem.lineName, //线别
@@ -178,7 +157,7 @@ export default {
             })
             .then(
               (res) => {
-                Toast.clear();
+                Toast.clear()
                 if (
                   res.data &&
                   res.data.data != null &&
@@ -194,46 +173,46 @@ export default {
                           item.silkReportVoList[0].doffingTime
                         ).getTime() -
                           8 * 60 * 60 * 1000
-                      ).format("YYYY-MM-DD HH:mm:ss");
-                      item.spec = item.silkReportVoList[0].spec;
+                      ).format('YYYY-MM-DD HH:mm:ss')
+                      item.spec = item.silkReportVoList[0].spec
                       item.dofferType =
-                        item.silkReportVoList[0].doffType == "AUTO"
-                          ? "自动"
-                          : "人工";
+                        item.silkReportVoList[0].doffType == 'AUTO'
+                          ? '自动'
+                          : '人工'
                       console.log(
-                        item.silkReportVoList[0].doffType + "-----" + "AUTO"
-                      );
+                        item.silkReportVoList[0].doffType + '-----' + 'AUTO'
+                      )
                     }
 
-                    return item;
-                  });
+                    return item
+                  })
                 }
 
                 if (this.selectCarList.length == 0) {
-                  Toast.success("没有查询到落次");
+                  Toast.success('没有查询到落次')
                 }
 
-                console.log(JSON.stringify(this.selectCarList) + "sss");
+                console.log(JSON.stringify(this.selectCarList) + 'sss')
                 // console.log(JSON.stringify(res));
               },
               (err) => {
-                Toast.success(err.message);
+                Toast.success(err.message)
               }
-            );
+            )
         } else {
-          Toast("请选择日期和班次");
+          Toast('请选择日期和班次')
         }
       } else {
-        Toast("请选择线别和机台");
+        Toast('请选择线别和机台')
       }
     },
     findsc() {
       this.$api
         .findSilkInfo({
-          lineName: "", //线别
-          machineName: "", //机台
-          doffingTime: "", //落筒开始时间
-          doffingTimeEnd: "", //落筒结束时间
+          lineName: '', //线别
+          machineName: '', //机台
+          doffingTime: '', //落筒开始时间
+          doffingTimeEnd: '', //落筒结束时间
           // doffNo: "1", //落次,可选
           silkCode: this.silkCarCode, //丝锭,可选
         })
@@ -251,107 +230,176 @@ export default {
                 item.doffingTime = moment(
                   new Date(item.silkReportVoList[0].doffingTime).getTime() -
                     8 * 60 * 60 * 1000
-                ).format("YYYY-MM-DD HH:mm:ss");
-                item.spec = item.silkReportVoList[0].spec;
+                ).format('YYYY-MM-DD HH:mm:ss')
+                item.spec = item.silkReportVoList[0].spec
                 item.dofferType =
-                  item.silkReportVoList[0].doffType == "AUTO" ? "自动" : "人工";
+                  item.silkReportVoList[0].doffType == 'AUTO' ? '自动' : '人工'
                 console.log(
-                  item.silkReportVoList[0].doffType + "-----" + "AUTO"
-                );
+                  item.silkReportVoList[0].doffType + '-----' + 'AUTO'
+                )
               }
 
-              return item;
-            });
+              return item
+            })
           } else {
-            Toast.success(res.msg);
+            Toast.success(res.msg)
           }
 
           if (this.selectCarList.length == 0) {
-            Toast.success("没有查询到落次");
+            Toast.success('没有查询到落次')
           }
 
-          console.log(JSON.stringify(this.selectCarList) + "sss");
+          console.log(JSON.stringify(this.selectCarList) + 'sss')
           // console.log(JSON.stringify(res));
-        });
+        })
     },
     callByAndroid(code) {
       // Toast("对了？" + code)
       if (code) {
         if (this.$myUtils.checkIsSilk(code)) {
-          this.silkCarCode = code;
+          this.silkCarCode = code
         } else {
-          Toast("请扫码丝锭");
+          Toast('请扫码丝锭')
         }
       }
     },
     onClickLeft() {
       // Toast("返回");
-      window.android.finish();
+      window.android.finish()
     },
     onConfirm(date) {
-      this.calendarShow = false;
-      this.selectTime = date;
-      this.timeDate = moment(date).format("YYYY-MM-DD");
+      this.calendarShow = false
+      this.selectTime = date
+      this.timeDate = moment(date).format('YYYY-MM-DD')
     },
     selectLines() {
       this.$api.selectLines(1).then((res) => {
-        if (res.data.status === "200") {
+        if (res.data.status === '200') {
           this.selectLinesList = res.data.data.map((item) => {
-            item.name = item.lineName;
-            return item;
-          });
+            item.name = item.lineName
+            return item
+          })
           //  console.log(JSON.stringify(this.selectLinesList));
         } else {
-          Toast(res.data.msg);
+          Toast(res.data.msg)
         }
-      });
+      })
     },
     selectMachines(id) {
       this.$api.selectMachines(id).then((res) => {
-        if (res.data.status === "200") {
+        if (res.data.status === '200') {
           this.selectMachinesList = res.data.data.map((item) => {
             item.name =
               item.line.workshop.workshop +
-              "-" +
+              '-' +
               item.line.lineName +
-              "-" +
-              item.machineName;
-            return item;
-          });
+              '-' +
+              item.machineName
+            return item
+          })
           // console.log(JSON.stringify(res.data));
         } else {
-          Toast(res.data.msg);
+          Toast(res.data.msg)
         }
-      });
+      })
     },
     onSelectXianBie(item) {
       // 默认情况下点击选项时不会自动收起
       // 可以通过 close-on-click-action 属性开启自动收起
-      this.xianbie = false;
-      this.xianbieStr = item.name;
-      this.xianbieItem = item;
-      this.selectMachines(item.id);
+      this.xianbie = false
+      this.xianbieStr = item.name
+      this.xianbieItem = item
+      this.selectMachines(item.id)
     },
     onSelectJiTai(item) {
       // 默认情况下点击选项时不会自动收起
       // 可以通过 close-on-click-action 属性开启自动收起
-      this.jitai = false;
-      this.jitaiItem = item;
-      this.jitaiStr = item.name;
+      this.jitai = false
+      this.jitaiItem = item
+      this.jitaiStr = item.name
       // this.selectMachines(item.id);
     },
   },
   created() {
-    this.userId = this.$route.query.userId; /*5f90616b0e6ef90b1af42832*/
-    this.name = this.$route.query.name;
-    this.selectLines();
+    this.userId = this.$route.query.userId /*5f90616b0e6ef90b1af42832*/
+    this.name = this.$route.query.name
+    this.selectLines()
   },
   mounted() {
-    window.callByAndroid = this.callByAndroid;
+    window.callByAndroid = this.callByAndroid
   },
-};
+}
 </script>
 
-<style lang = "scss">
-@import "./css/retrospect.scss";
+<style lang = "less">
+.main {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  background-color: #fff;
+  flex-direction: column;
+  align-content: center;
+  box-sizing: border-box;
+
+  .car-list {
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    box-sizing: border-box;
+    justify-content: center;
+    align-items: center;
+    .car-item {
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: flex-start;
+      margin-top: 10px;
+      padding: 10px;
+      width: 95%;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.15);
+    }
+  }
+
+  .ban-ci {
+    display: flex;
+    flex-direction: row;
+    height: 40px;
+    box-sizing: border-box;
+    padding: 1.667vw 4.267vw;
+    justify-content: space-between;
+    align-items: center;
+    width: 100vw;
+    span {
+      color: #323233;
+      font-size: 20px;
+      text-overflow: ellipsis;
+
+      white-space: nowrap;
+    }
+    .boxs {
+      display: flex;
+      flex-direction: row;
+    }
+  }
+  .index-page {
+    display: flex;
+    width: 100%;
+    height: 100%;
+
+    align-items: flex-end;
+    flex-direction: column;
+    .line {
+      margin-top: 5px;
+      height: 40px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .bt {
+      margin: 18px;
+    }
+  }
+}
 </style>

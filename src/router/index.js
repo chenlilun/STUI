@@ -1,184 +1,163 @@
 // @ts-nocheck
 import Vue from 'vue'
 import Router from 'vue-router'
-import Home from '../views/Home.vue'
-import SilkUnbind from '../views/SilkUnbind.vue'
-import SilkCarDetails from '../views/SilkCarDetails.vue'
-import SilkCarPool from '../views/SilkCarPool.vue'
-import SetGrade from '../views/SetGrade.vue'
-import DoffAuto from '../views/DoffAuto.vue'
-import DoffManMade from '../views/DoffManMade.vue'
-import ManuPack from '../views/ManuPack.vue'
-import TemBoxPack from '../views/TemBoxPack.vue'
-import PackInTemBox from '../views/PackInTemBox.vue'
-import SubmitExcepAndUnbind from '../views/SubmitExcepAndUnbind.vue'
-import DeleteWasteSilk from '../views/DeleteWasteSilk.vue'
-import ForceSilkCarPool from '../views/ForceSilkCarPool.vue'
-import PrintSilkCodes from '../views/PrintSilkCodes.vue'
-import JoinSilkDoff from '../views/JoinSilkDoff.vue'
-import WaiGuanReport from '../views/WaiGuanReport.vue'
-import DoffMatualNew from '../views/DoffMatualNew.vue'
-import DoffMatualJoinSilkNew from '../views/DoffMatualJoinSilkNew.vue'
-import ChoosePositionSilkCarPool from '../views/ChoosePositionSilkCarPool.vue'
-import SilkCarPoolFinal from '../views/SilkCarPoolFinal.vue'
-import SilkCarRetrospect from '../views/SilkCarRetrospect.vue'
-import SilkCarRetrospectDetails from '../views/SilkCarRetrospectDetails.vue'
-import DoffNew from '../views/doff/DoffNew.vue'
+import ChoosePositionSilkCarPool from '@/views/ChoosePositionSilkCarPool.vue'
+import DeleteWasteSilk from '@/views/DeleteWasteSilk.vue'
+import DoffNew from '@/views/doff/DoffNew.vue'
+import DoffAuto from '@/views/DoffAuto.vue'
+import DoffManMade from '@/views/DoffManMade.vue'
+import DoffMatualJoinSilkNew from '@/views/DoffMatualJoinSilkNew.vue'
+import DoffMatualNew from '@/views/DoffMatualNew.vue'
+import ForceSilkCarPool from '@/views/ForceSilkCarPool.vue'
+import Home from '@/views/Home.vue'
+import JoinSilkDoff from '@/views/JoinSilkDoff.vue'
+import ManuPack from '@/views/ManuPack.vue'
+import PackInTemBox from '@/views/PackInTemBox.vue'
+import PrintSilkCodes from '@/views/PrintSilkCodes.vue'
+import SetGrade from '@/views/SetGrade.vue'
+import SilkCarDetails from '@/views/SilkCarDetails.vue'
+import SilkCarPool from '@/views/SilkCarPool.vue'
+import SilkCarPoolFinal from '@/views/SilkCarPoolFinal.vue'
+import SilkCarRetrospect from '@/views/SilkCarRetrospect.vue'
+import SilkCarRetrospectDetails from '@/views/SilkCarRetrospectDetails.vue'
+import SilkUnbind from '@/views/SilkUnbind.vue'
+import SilkUnbind2 from '@/views/SilkUnbind2.vue'
+import SubmitExcepAndUnbind from '@/views/SubmitExcepAndUnbind.vue'
+import TemBoxPack from '@/views/TemBoxPack.vue'
+import WaiGuanReport from '@/views/WaiGuanReport.vue'
+
 Vue.use(Router)
 const originalPush = Router.prototype.push
 Router.prototype.push = function push(location) {
   return originalPush.call(this, location).catch((err) => err)
 }
-//
-//   const routes = [
-//   {
-//     path: '/',
-//     name: 'Home',
-//     component: Home
-//   },
-//   {
-//     path: '/SilkUnbind',
-//     name: 'SilkUnbind',
-//     component: SilkUnbind
-//   },
-//   {
-//     path: '/about',
-//     name: 'About',
-//     // route level code-splitting
-//     // this generates a separate chunk (about.[hash].js) for this route
-//     // which is lazy-loaded when the route is visited.
-//     component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
-//   }
-// ]
-//
-// const router = new VueRouter({
-//   routes
-// })
-//
-// export default router
 
-let router = new Router({
+let router = new Router({ 
   routes: [
-    {
-      path: '/',
-      name: 'Home',
-      component: Home,
+    { 
+      path: '/ChoosePositionSilkCarPool', 
+      name: 'ChoosePositionSilkCarPool', 
+      component: ChoosePositionSilkCarPool, 
     },
-    {
-      path: '/SilkUnbind',
-      name: 'SilkUnbind',
-      component: SilkUnbind,
+    { 
+      path: '/DeleteWasteSilk', 
+      name: 'DeleteWasteSilk', 
+      component: DeleteWasteSilk, 
     },
-    {
-      path: '/SilkCarDetails',
-      name: 'SilkCarDetails',
-      component: SilkCarDetails,
+    { 
+      path: '/doff/DoffNew', 
+      name: 'DoffNew', 
+      component: DoffNew, 
     },
-    {
-      path: '/SilkCarPool',
-      name: 'SilkCarPool',
-      component: SilkCarPool,
+    { 
+      path: '/DoffAuto', 
+      name: 'DoffAuto', 
+      component: DoffAuto, 
     },
-    {
-      path: '/SetGrade',
-      name: 'SetGrade',
-      component: SetGrade,
+    { 
+      path: '/DoffManMade', 
+      name: 'DoffManMade', 
+      component: DoffManMade, 
     },
-    {
-      path: '/DoffAuto',
-      name: 'DoffAuto',
-      component: DoffAuto,
+    { 
+      path: '/DoffMatualJoinSilkNew', 
+      name: 'DoffMatualJoinSilkNew', 
+      component: DoffMatualJoinSilkNew, 
     },
-    {
-      path: '/DoffManMade',
-      name: 'DoffManMade',
-      component: DoffManMade,
+    { 
+      path: '/DoffMatualNew', 
+      name: 'DoffMatualNew', 
+      component: DoffMatualNew, 
     },
-    {
-      path: '/ManuPack',
-      name: 'ManuPack.vue',
-      component: ManuPack,
+    { 
+      path: '/ForceSilkCarPool', 
+      name: 'ForceSilkCarPool', 
+      component: ForceSilkCarPool, 
     },
-    {
-      path: '/SubmitExcepAndUnbind',
-      name: 'SubmitExcepAndUnbind.vue',
-      component: SubmitExcepAndUnbind,
+    { 
+      path: '/', 
+      name: 'Home', 
+      component: Home, 
     },
-    {
-      path: '/TemBoxPack',
-      name: 'TemBoxPack.vue',
-      component: TemBoxPack,
+    { 
+      path: '/JoinSilkDoff', 
+      name: 'JoinSilkDoff', 
+      component: JoinSilkDoff, 
     },
-    {
-      path: '/PackInTemBox',
-      name: 'PackInTemBox.vue',
-      component: PackInTemBox,
+    { 
+      path: '/ManuPack', 
+      name: 'ManuPack', 
+      component: ManuPack, 
     },
-    {
-      path: '/DeleteWasteSilk',
-      name: 'DeleteWasteSilk.vue',
-      component: DeleteWasteSilk,
+    { 
+      path: '/PackInTemBox', 
+      name: 'PackInTemBox', 
+      component: PackInTemBox, 
     },
-    {
-      path: '/ForceSilkCarPool',
-      name: 'ForceSilkCarPool.vue',
-      component: ForceSilkCarPool,
+    { 
+      path: '/PrintSilkCodes', 
+      name: 'PrintSilkCodes', 
+      component: PrintSilkCodes, 
     },
-    {
-      path: '/PrintSilkCodes',
-      name: 'PrintSilkCodes.vue',
-      component: PrintSilkCodes,
+    { 
+      path: '/SetGrade', 
+      name: 'SetGrade', 
+      component: SetGrade, 
     },
-    {
-      path: '/JoinSilkDoff',
-      name: 'JoinSilkDoff.vue',
-      component: JoinSilkDoff,
+    { 
+      path: '/SilkCarDetails', 
+      name: 'SilkCarDetails', 
+      component: SilkCarDetails, 
     },
-    {
-      path: '/WaiGuanReport',
-      name: 'WaiGuanReport.vue',
-      component: WaiGuanReport,
+    { 
+      path: '/SilkCarPool', 
+      name: 'SilkCarPool', 
+      component: SilkCarPool, 
     },
-    {
-      path: '/DoffMatualNew',
-      name: 'DoffMatualNew.vue',
-      component: DoffMatualNew,
+    { 
+      path: '/SilkCarPoolFinal', 
+      name: 'SilkCarPoolFinal', 
+      component: SilkCarPoolFinal, 
     },
-    {
-      path: '/DoffMatualJoinSilkNew',
-      name: 'DoffMatualJoinSilkNew.vue',
-      component: DoffMatualJoinSilkNew,
+    { 
+      path: '/SilkCarRetrospect', 
+      name: 'SilkCarRetrospect', 
+      component: SilkCarRetrospect, 
+      meta: { 
+        keepAlive: true 
+      }
     },
-    {
-      path: '/ChoosePositionSilkCarPool',
-      name: 'ChoosePositionSilkCarPool.vue',
-      component: ChoosePositionSilkCarPool,
+    { 
+      path: '/SilkCarRetrospectDetails', 
+      name: 'SilkCarRetrospectDetails', 
+      component: SilkCarRetrospectDetails, 
     },
-    {
-      path: '/SilkCarPoolFinal',
-      name: 'SilkCarPoolFinal.vue',
-      component: SilkCarPoolFinal,
+    { 
+      path: '/SilkUnbind', 
+      name: 'SilkUnbind', 
+      component: SilkUnbind, 
     },
-    {
-      path: '/SilkCarRetrospect',
-      name: 'SilkCarRetrospect',
-      component: SilkCarRetrospect,
-      meta: {
-        requireAuth: true,
-        keepAlive: true, //此组件不需要被缓存
-      },
+    { 
+      path: '/SilkUnbind2', 
+      name: 'SilkUnbind2', 
+      component: SilkUnbind2, 
     },
-    {
-      path: '/SilkCarRetrospectDetails',
-      name: 'SilkCarRetrospectDetails',
-      component: SilkCarRetrospectDetails,
+    { 
+      path: '/SubmitExcepAndUnbind', 
+      name: 'SubmitExcepAndUnbind', 
+      component: SubmitExcepAndUnbind, 
     },
-    {
-      path: '/DoffNew',
-      name: 'DoffNew',
-      component: DoffNew,
+    { 
+      path: '/TemBoxPack', 
+      name: 'TemBoxPack', 
+      component: TemBoxPack, 
     },
-  ],
+    { 
+      path: '/WaiGuanReport', 
+      name: 'WaiGuanReport', 
+      component: WaiGuanReport, 
+    }
+  ] 
 })
 
 export default router

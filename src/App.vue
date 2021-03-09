@@ -12,16 +12,16 @@
 
 <script>
 // import HelloWorld from "@/components/HelloWorld.vue";
-import { Toast } from "vant";
+import { Toast } from 'vant'
 // import { List } from "vant";
 export default {
-  name: "App",
-};
+  name: 'App',
+}
 </script>
 
 <style>
 #app {
-  font-family: "Avenir", Helvetica, Arial, sans-serif;
+  font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
@@ -181,7 +181,6 @@ footer > .copyRight {
   min-width: 0;
   margin: 0;
   padding: 0;
-  color: red;
   font-size: 20px;
   line-height: inherit;
   text-align: left;

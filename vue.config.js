@@ -5,6 +5,7 @@ const path = require('path')
 module.exports = {
   devServer: {
     port: 8080, // 端口
+    disableHostCheck: true,
   },
   outputDir: 'dist',
   // publicPath: process.env.NODE_ENV === 'production' ? '/vant-demo/' : '/',

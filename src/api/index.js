@@ -447,4 +447,16 @@ export default {
     // console.log("data" +  data.toString())
     return axios.post(baseUrl + '/api/silkReport/getSilkInfo', data)
   },
+  // 扫丝车扫机台获取落筒规则+批号
+  findDoffRule(data) {
+    return axios.post(baseUrl + '/api/doffNew/findDoffRule', data)
+  },
+  // 获取落筒规则列表
+  getRulesByBatchNo(data) {
+    return axios.post(baseUrl + '/api/doffNew/getRulesByBatchNo', data)
+  },
+  // 保存落次
+  newManualDoff(data) {
+    return axios.post(baseUrl + '/api/doffNew/manualDoff', data)
+  },
 }

@@ -1,3 +1,4 @@
+// meta-requireAuth meta-keepAlive
 <template>
   <div id="app" class="main">
     <van-nav-bar title="丝锭追溯" left-text="返回" right-text left-arrow @click-left="onClickLeft" />

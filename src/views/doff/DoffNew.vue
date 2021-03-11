@@ -80,17 +80,11 @@
             <div class="doffnew_batchNo">{{item.mq.batchNo}}</div>
             <div v-if="item.mq.doffTime">{{item.mq.doffTime | timeFilter('MM-DD HH:mm')}}</div>
             <div v-if="item.netWeight" class="doffnew_weight">{{item.netWeight | weightFilter}}</div>
-            <van-button
-              @click="deleteDoff(item)"
-              v-if="item.status"
-              plain
-              size="mini"
-              type="danger"
-            >删除</van-button>
+            <van-button @click="deleteDoff(item)" v-if="item.status" size="mini" type="danger">删除</van-button>
             <van-button
               @click="changePosition(item)"
+              :disabled="hasDoffNotSubmit"
               v-else-if="item.mq.batchNo"
-              plain
               size="mini"
               type="warning"
             >修改位置</van-button>
@@ -98,7 +92,6 @@
               @click="saveDoff(item)"
               :disabled="!doffForm.machineName"
               v-else
-              plain
               size="mini"
               type="primary"
             >保存落次</van-button>
@@ -123,6 +116,7 @@
 </template>
 
 <script>
+import { debounce } from 'lodash'
 export default {
   components: {},
   data() {
@@ -142,6 +136,9 @@ export default {
       doffRulePicker: false,
       positionPicker: false,
       oldPosition: '',
+      isDoffFlag: false,
+      hasDoffNotSubmit: false,
+      onSubmit: debounce(this.saveDoffGroup, 300),
     }
   },
   filters: {
@@ -158,9 +155,15 @@ export default {
       return res
     },
   },
-  computed: {
-    isDoffFlag() {
-      return JSON.stringify(this.doffGroupList).indexOf('batchNo') > -1
+  watch: {
+    doffGroupList: {
+      deep: true,
+      immediate: true,
+      handler(newVal) {
+        this.isDoffFlag = JSON.stringify(newVal).indexOf('batchNo') > -1
+        this.hasDoffNotSubmit =
+          JSON.stringify(newVal).indexOf('"status":1') > -1
+      },
     },
   },
   created() {
@@ -216,7 +219,6 @@ export default {
       // 非首次落次
       if (this.isDoffFlag) return
       // 首次落次
-      // todo 落筒规则接口调用
       let res = await this.$api.getRulesByBatchNo({
         silkCarCode: this.doffForm.silkCarCode,
         silkCount,
@@ -286,39 +288,48 @@ export default {
     },
     // 点击修改位置
     changePosition(row) {
-      // todo 选择要更改的位置
       this.oldPosition = row.positionName
-      this.doffGroupList.forEach((v) => {
-        if (v.positionName === this.oldPosition) {
+      let list = [...this.doffGroupList]
+      list.forEach((v) => {
+        if (v.positionName === row.positionName) {
           v.disabled = true
         } else {
           v.disabled = false
         }
       })
+      this.doffGroupList = list
       this.positionPicker = true
     },
     // 保存位置修改
-    savePosition(row, index) {
-      this.positionPicker = false
-      let newIdx, oldIdx
-      this.doffGroupList.forEach((v, i) => {
-        if (v.positionName === this.oldPosition) {
-          oldIdx = i
-        } else if (v.positionName === row.positionName) {
-          newIdx = i
-        }
-      })
-      let list = [...this.doffGroupList]
-      let oldIdxPositionName = list[oldIdx].positionName
-      let newIdxPositionName = list[newIdx].positionName
-      // [old,new,x] =>  [new,old,x]
-      list[oldIdx].oldPositionName = oldIdxPositionName
-      list[oldIdx].positionName = newIdxPositionName
-      list[newIdx].oldPositionName = newIdxPositionName
-      list[newIdx].positionName = oldIdxPositionName
-      ;[list[oldIdx], list[newIdx]] = [list[newIdx], list[oldIdx]]
-      this.doffGroupList = list
-      this.onSubmit()
+    async savePosition(row, index) {
+      try {
+        this.positionPicker = false
+        let newIdx, oldIdx
+        this.doffGroupList.forEach((v, i) => {
+          if (v.positionName === this.oldPosition) {
+            oldIdx = i
+          } else if (v.positionName === row.positionName) {
+            newIdx = i
+          }
+        })
+        let list = [...this.doffGroupList]
+        let oldIdxPositionName = list[oldIdx].positionName
+        let newIdxPositionName = list[newIdx].positionName
+
+        let res = await this.$dialog.confirm({
+          title: '提示',
+          message: `确认将${oldIdxPositionName}与${newIdxPositionName}进行交换？`,
+        })
+
+        // [old,new,x] =>  [new,old,x]
+        list[oldIdx].oldPositionName = oldIdxPositionName
+        list[oldIdx].positionName = newIdxPositionName
+        list[newIdx].oldPositionName = newIdxPositionName
+        list[newIdx].positionName = oldIdxPositionName
+        ;[list[oldIdx], list[newIdx]] = [list[newIdx], list[oldIdx]]
+        this.doffGroupList = list
+        this.onSubmit()
+      } catch (error) {}
     },
     // 扫丝车扫机台获取落筒规则+批号
     async getScanInfo() {
@@ -339,11 +350,6 @@ export default {
           silkCarOnLinePositions,
         },
       } = res.data
-      // ! 已操作过落次保存 isDoffFlag:true
-      // todo 初次+二次落次 筛选切换
-      // if (this.isDoffFlag) {
-      //   return
-      // }
       if (status === '200') {
         if (batch) {
           // ! 已落筒 => 直接完善所有信息（除机台）
@@ -370,7 +376,8 @@ export default {
         }
       }
     },
-    async onSubmit() {
+    // 保存提交
+    async saveDoffGroup() {
       let { silkCarCode, doffRuleName, batchNo } = this.doffForm
       let params = {
         silkCarCode,

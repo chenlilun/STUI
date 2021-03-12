@@ -31,9 +31,9 @@
         <div>{{item.grade}}</div>
       </div>
     </li>
-    <ul class="sudoku_row">
+    <ul class="silkingot_list">
       <li
-        :class="['sudoku_item',silk.silkCode?'active':'']"
+        :class="['silkingot_item',silk.silkCode?'hasSilk':'']"
         v-for="(silk,index) in silks"
         :key="index"
         :style="{width:1/col*100+'%'}"
@@ -116,7 +116,6 @@
 
 <script>
 import { Toast } from 'vant'
-import { Divider } from 'vant'
 import moment from 'moment'
 import { debounce } from 'lodash'
 export default {
@@ -137,7 +136,7 @@ export default {
       capacity: '',
       show: false,
       events: [],
-      silkCarCode: '9700F32006',
+      silkCarCode: '',
       list: [],
       loading: false,
       finished: true,
@@ -300,50 +299,6 @@ export default {
       this.silkCarCode = code
       this.getSilkcarDetails(code)
     },
-    dealSilkCarList(data) {
-      let { row, col, layer, silkCarRowColList } = data
-      if (!(row && col && layer)) return []
-      this.col = col
-      let list = []
-
-      let sides = ['A', 'B']
-      for (let m = 0; m < sides.length; m++) {
-        for (let i = 1; i <= row; i++) {
-          for (let k = 1; k <= layer; k++) {
-            for (let j = 1; j <= col; j++) {
-              let temp = []
-              if (layer === 1) {
-                temp.push(sides[m], i, j)
-              } else {
-                temp.push(sides[m], i, j, k)
-              }
-              list.push({
-                showPosition: temp,
-                sideType: sides[m],
-                row: i,
-                col: j,
-                layer: k,
-              })
-            }
-          }
-        }
-      }
-
-      silkCarRowColList.forEach((v) => {
-        let { sideType, row, col, layer } = v
-        list.forEach((item) => {
-          if (
-            sideType === item.sideType &&
-            row === item.row &&
-            col === item.col &&
-            layer === item.layer
-          ) {
-            item = Object.assign(item, v)
-          }
-        })
-      })
-      return list
-    },
     getSilkcarDetails() {
       if (!this.silkCarCode) return
       this.silks = []
@@ -380,7 +335,11 @@ export default {
           })
           this.capacity = res.data.data.silkCarRowColList.length
           this.silkCarRowColList = res.data.data.silkCarRowColList
-          this.silks = this.dealSilkCarList(res.data.data)
+          /* 处理丝车展示数据 start */
+          let silkIngot = this.$myUtils.dealSilkIngotList(res.data.data)
+          this.silks = silkIngot.list
+          this.col = silkIngot.col
+          /* 处理丝车展示数据 end */
           if (
             res.data.data.silkCarOnLinePositions &&
             res.data.data.silkCarOnLinePositions.length > 0
@@ -418,7 +377,6 @@ export default {
   },
   created() {
     this.userId = this.$route.query.userId
-
     this.name = this.$route.query.name // roleName 落丝
     if (this.name && this.name === '落丝') {
       this.juanRao = false
@@ -431,115 +389,16 @@ export default {
 }
 </script>
 
-<style lang="less">
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 1px;
-}
-
+<style lang="less" scoped>
 .van-field__label {
   -webkit-box-flex: 0;
   -webkit-flex: none;
   flex: none;
   box-sizing: border-box;
-  /* width: 8.2em; */
   margin-right: 3.2vw;
   color: #646566;
   text-align: left;
   word-wrap: break-word;
-}
-
-/*顶部块样式*/
-header {
-  width: 100%;
-  /*设置为伸缩盒子*/
-  display: flex;
-}
-
-header > a {
-  /*width: 100%;*/
-  /*flex:设置当前子元素占据父容器剩余宽度的比例*/
-  flex: 1;
-}
-
-header > a > img {
-  width: 100%;
-}
-
-/*主体内容块样式*/
-main {
-  width: 100%;
-  padding: 0 10px;
-  /*设置盒模型*/
-  box-sizing: border-box;
-}
-
-main > .item {
-  width: 100%;
-  height: 150px;
-  background-color: #57c3ae;
-  border-radius: 10px;
-  margin-top: 10px;
-  /*设置为伸缩盒子*/
-  display: flex;
-}
-
-main > .item:nth-of-type(2) {
-  background-color: #33aa46;
-}
-
-main > .item:nth-of-type(3) {
-  background-color: #aa4b40;
-}
-
-main > .item:nth-of-type(4) {
-  background-color: #445faa;
-}
-
-main > .item > .left {
-  flex: 1;
-}
-
-main > .item > .right {
-  flex: 2;
-  /*设置换行显示*/
-  flex-wrap: wrap;
-  /*设置为伸缩盒子*/
-  display: flex;
-}
-
-main > .item > .right > a {
-  /*如果想让子元素换行显示，必须为子元素设置宽度*/
-  width: 25%;
-  box-sizing: border-box;
-  border-left: 1px solid #fff;
-  border-bottom: 1px solid #fff;
-  display: block;
-  color: #fff;
-  line-height: 50px;
-  text-align: center;
-  text-decoration: none;
-}
-
-main > .item > .right > a:nth-last-of-type(-n + 1) {
-  border-bottom: none;
-}
-
-main > .extra {
-  width: 100%;
-  display: flex;
-}
-
-main > .extra > a {
-  flex: 1;
-}
-
-main > .extra > a > img {
-  width: 100%;
 }
 
 .ftor {
@@ -568,65 +427,6 @@ main > .extra > a > img {
     box-sizing: border-box;
     color: brown;
     position: relative;
-  }
-}
-
-.doffType {
-  align-items: center;
-
-  font-size: 15px;
-  box-sizing: border-box;
-  color: brown;
-  position: relative;
-}
-
-.noSilk {
-  width: 100%;
-  height: 50px;
-  color: white;
-  border-radius: 8px;
-  padding: 1px;
-  top: 50%;
-  background-color: white;
-  line-height: 20px; /*让黄色div中的文字内容垂直居中*/
-  text-align: center;
-  background-color: grey;
-}
-
-.haveSilkOnDetail {
-  width: 100%;
-  height: 50px;
-  padding: 1px;
-  top: 50%;
-  background-color: white;
-  line-height: 20px; /*让黄色div中的文字内容垂直居中*/
-  text-align: center;
-}
-
-.sudoku_row {
-  display: flex;
-  align-items: center;
-  width: 100%;
-  flex-wrap: wrap;
-}
-
-.sudoku_item {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 46px;
-  flex-direction: column;
-  box-sizing: border-box;
-  font-size: 0.42rem;
-  position: relative;
-  background-color: #aaa;
-  border-radius: 8px;
-  color: #333;
-  line-height: 1.2;
-  &.active {
-    color: #fff;
-    background-color: lightseagreen;
-    margin-bottom: 1px;
   }
 }
 </style>

@@ -1,775 +1,423 @@
 <template>
-    <div id="app">
-        <van-nav-bar
-                title="拼车"
-                left-text="返回"
-                right-text="查看事件"
-                left-arrow
-                @click-left="onClickLeft"
-                @click-right="onClickRight"
-        />
+  <div id="app">
+    <van-nav-bar
+      title="拼车"
+      left-text="返回"
+      right-text="查看事件"
+      left-arrow
+      @click-left="onClickLeft"
+      @click-right="onClickRight"
+    />
 
-        <div style="margin: 10px;">
-            <!-- <van-button round block plain hairline type="primary">{{silkCarCode}}</van-button> -->
-
-            <van-field v-model="silkCarCode" center clearable label="丝车条码" placeholder="请扫描丝车条码">
-                <template #button>
-                    <van-button size="small" type="primary" @click="find">查询</van-button>
-                </template>
-            </van-field>
-        </div>
-        <div class="doffType" @click.prevent v-if="doffType!=''">落筒类型:{{this.doffType==='AUTO'?'自动落筒':'手工落筒'}}</div>
-        <div  style="background-color: #58727e;color: gold;height: 30px;line-height: 30px" v-if="this.chooseIndex!=-1">当前选择位置:{{ this.silks[this.chooseIndex].position}}</div>
-        <ul class="sudoku_row">
-
-            <li class="sudoku_item" :class="curSelect==silk.id?'opacity':''" v-for="(silk,index) in silks"
-                :key="index">
-                <!--                <img :src="sudoku.img_src" width="40" height="40" >-->
-
-                <div :class="getColor(silk ,index)" @click="chooseSilk(silk,index)">
-
-                    {{silk.position}}
-                    <div style="font-size: 1px">
-                        {{silk.info}}
-<!--                        {{'..'+silk.silkCode.substr(silk.silkCode.length-8,silk.silkCode.length-1)}}-->
-                    </div>
-                    <div style="color: white; border: 1px solid red; border-radius: 6px;background-color: red"
-                         v-if="silk.silkCode!=''"
-                         @click="delSilk(index)"
-                    >
-                        删除
-                    </div>
-
-                </div>
-            </li>
-        </ul>
-
-
-        <van-button type="danger" block hairline="hairline" v-if="this.showButton"
-                    style="margin:  0;overflow: hidden ;display: inline" @click="dingDeng">拼车
-        </van-button>
-
-        <van-popup v-model="show"
-                   close-icon-position="top-left"
-                   closeable
-                   position="right" :style="{ height: '100%' , width : '70%'  }   ">
-            <div style="margin-top: 30px;margin-left: 8px">
-                <van-steps direction="vertical" :active="0">
-                    <van-step v-for="(item  , index) in events" :key="index">
-                        <div>
-                            <h3>操作类型:{{item.operate}}</h3>
-
-                        </div>
-                        <h3>操作人:{{item.post+' ' +item.operator}}</h3>
-                        <h4>时间:{{ getTime(item.operateTime) }}</h4>
-                        <van-collapse v-model="activeNames">
-                            <van-collapse-item title="操作丝锭" :name="index"><p v-for="(i, index ) in item.silkCodes"
-                                                                             :key="index"> {{i}}</p></van-collapse-item>
-                        </van-collapse>
-                        <van-button style="margin-top: 5px" type="danger" v-if="item.recover" @click="recover(item)" >撤销</van-button>
-                        <van-divider
-                                :style="{ color: '#1989fa', borderColor: '#1989fa', padding: '0 16px' }"
-                        >
-                            分割线
-                        </van-divider>
-                    </van-step>
-
-                </van-steps>
-            </div>
-
-
-        </van-popup>
+    <div style="margin: 10px;">
+      <van-field v-model="silkCarCode" center clearable label="丝车条码" placeholder="请扫描丝车条码">
+        <template #button>
+          <van-button size="small" type="primary" @click="getSilkcarDetails">查询</van-button>
+        </template>
+      </van-field>
     </div>
+    <div
+      class="doffType"
+      @click.prevent
+      v-if="doffType!=''"
+    >落筒类型:{{this.doffType==='AUTO'?'自动落筒':'手工落筒'}}</div>
+    <div
+      style="background-color: #58727e;color: gold;height: 30px;line-height: 30px"
+      v-if="chooseIndex!==-1"
+    >当前选择位置:{{ silks[chooseIndex].showPosition.join('-')}}</div>
+    <ul class="silkingot_list has-delete">
+      <li
+        v-for="(silk,index) in silks"
+        :class="['silkingot_item', chooseIndex===index?'choose':(silk.silkCode?'hasSilk':'')]"
+        @click="chooseSilk(silk,index)"
+        :key="index"
+        :style="{width:1/col*100+'%'}"
+      >
+        <div>{{silk.showPosition.join('-')}}</div>
+        <div v-if="silk.lineName">{{`${silk.lineName}-${silk.machineName}-${silk.doffNo}`}}</div>
+        <div v-if="silk.spindleNum">{{silk.spindleNum}}</div>
+        <div class="silkingot_item-delete" v-if="silk.silkCode" @click.stop="delSilk(silk,index)">删除</div>
+      </li>
+    </ul>
+
+    <van-button
+      type="danger"
+      block
+      v-if="isShowCarpooling"
+      style="margin:  0;overflow: hidden ;display: inline"
+      @click="dingDeng"
+    >拼车</van-button>
+
+    <van-popup
+      v-model="show"
+      close-icon-position="top-left"
+      closeable
+      position="right"
+      :style="{ height: '100%' , width : '70%'  }   "
+    >
+      <div style="margin-top: 30px;margin-left: 8px">
+        <van-steps direction="vertical" :active="0">
+          <van-step v-for="(item  , index) in events" :key="index">
+            <div>
+              <h3>操作类型:{{item.operate}}</h3>
+            </div>
+            <h3>操作人:{{item.post+' ' +item.operator}}</h3>
+            <h4>时间:{{ getTime(item.operateTime) }}</h4>
+            <van-collapse v-model="activeNames">
+              <van-collapse-item title="操作丝锭" :name="index">
+                <p v-for="(i, index ) in item.silkCodes" :key="index">{{i}}</p>
+              </van-collapse-item>
+            </van-collapse>
+            <van-button
+              style="margin-top: 5px"
+              type="danger"
+              v-if="item.recover"
+              @click="recover(item)"
+            >撤销</van-button>
+            <van-divider
+              :style="{ color: '#1989fa', borderColor: '#1989fa', padding: '0 16px' }"
+            >分割线</van-divider>
+          </van-step>
+        </van-steps>
+      </div>
+    </van-popup>
+  </div>
 </template>
 
 <script>
-    Array.prototype.pushNoRepeat = function () {
-        for (let i = 0; i < arguments.length; i++) {
-            let ele = arguments[i];
-            if (this.indexOf(ele) == -1) {
-                this.push(ele);
-            }
-        }
-    };
-    function getArrayIndex(arr, obj) {
-        var i = arr.length;
-        while (i--) {
-            if (arr[i] === obj) {
-                return i;
-            }
-        }
-        return -1;
+Array.prototype.pushNoRepeat = function () {
+  for (let i = 0; i < arguments.length; i++) {
+    let ele = arguments[i]
+    if (this.indexOf(ele) == -1) {
+      this.push(ele)
     }
-    function up(x,y){
-        return x.id -y.id;
+  }
+}
+import { Toast } from 'vant'
+import { Dialog } from 'vant'
+import { Swipe, SwipeItem, Row, Col } from 'vant'
+
+import moment from 'moment'
+export default {
+  name: 'ForceSilkCarPool',
+  components: {
+    [Swipe.name]: Swipe,
+    [SwipeItem.name]: SwipeItem,
+    [Row.name]: Row,
+    [Col.name]: Col,
+  },
+  data() {
+    return {
+      events: [],
+      chooseIndex: -1,
+      silks: [],
+      curSelect: null,
+      weiPosition: -1,
+      weiList: [
+        {
+          doffNo: '车',
+          lineMachine: '整',
+        },
+      ],
+      userId: '',
+      name: '',
+      silkCodeList: [],
+      data: '',
+      gradeData: [],
+      radio: '1',
+      showDoff: false,
+      lineWeiDoff: '',
+      date: '',
+      capacity: '',
+      show: false,
+      silkCarCode: '',
+      list: [],
+      loading: false,
+      finished: true,
+      refreshing: false,
+      activeNames: ['0'],
+      activeNameArray: [],
+      doffType: '',
+      orginSilkCarRowColList: [],
+      isShowCarpooling: false,
+      col: 1,
+      chooseIndexList: [],
     }
-    // import HelloWorld from "@/components/HelloWorld.vue";
-    import {Toast} from "vant";
-    import { Dialog } from 'vant';
-    import {Swipe, SwipeItem, Row, Col} from "vant";
-    import Vue from 'vue';
-    import {Grid, GridItem} from 'vant';
+  },
+  watch: {
+    silks: {
+      deep: true,
+      immediate: true,
+      handler(newVal) {
+        for (let i = 0; i < newVal.length; i++) {
+          const el = newVal[i]
+          if (el.silkCode) {
+            this.isShowCarpooling = true
+            break
+          }
+        }
+      },
+    },
+  },
+  methods: {
+    getTime: function (date) {
+      let a = new Date(date)
+      let b = a.setHours(a.getHours() - 8)
+      return moment(b).format('YYYY-MM-DD HH:mm:ss')
+    },
+    delSilk(item, index) {
+      let { showPosition, position, row, col, layer } = item
+      this.silks.splice(index, 1, { showPosition, position, row, col, layer })
+      this.chooseIndex = -1
+    },
+    chooseSilk(silk, index) {
+      if (silk.silkCode) {
+        Toast('请先删除再更换该位置丝锭')
+      } else {
+        this.chooseIndex = index
+      }
+    },
+    dingDeng() {
+      //找出原先在车上但是后面没有在车上的丝锭
+      let silkCodes = []
 
-    import moment from 'moment'
-    export default {
-        name: "ForceSilkCarPool",
-        components: {
-            [Swipe.name]: Swipe,
-            [SwipeItem.name]: SwipeItem,
-            [Row.name]: Row,
-            [Col.name]: Col
+      let arr = []
+      //去掉重复提交的丝锭
+      for (let a of this.silks) {
+        if (a.silkCode /*&&this.isAddOrModify(a)*/) {
+          let { silkCode, position } = a
+          arr.push({ silkCode, position })
+        }
+      }
+      if (arr.length > 0) {
+        this.orginSilkCarRowColList.forEach((a) => {
+          let ite = arr.find((item) => {
+            return item.silkCode == a.silkCode
+          })
+          if (typeof ite == undefined) {
+            silkCodes.push(a.silkCode)
+          }
+        })
+      }
 
-        },
-        data() {
-            return {
-                events: [],
-                chooseIndex: -1,
-                silks: [{
-                    id: 0,
-                    position: 'A11',
-                    silkCode: '',
-                    info:''
-                }, {
-                    id: 1,
-                    position: 'A12',
-                    silkCode: '',
-                    info:''
-                }, {
-                    id: 2,
-                    position: 'A13',
-                    silkCode: '',
-                    info:''
-                }, {
-                    id: 3,
-                    position: 'A14',
-                    silkCode: '',
-                    info:''
-                }, {
-                    id: 4,
-                    position: 'A15',
-                    silkCode: '',
-                    info:''
-                }, {
-                    id: 9,
-                    position: 'A21',
-                    silkCode: '',
-                    info:''
-                }, {
-                    id: 8,
-                    position: 'A22',
-                    silkCode: '',
-                    info:''
-                }, {
-                    id: 7,
-                    position: 'A23',
-                    silkCode: '',
-                    info:''
-                }, {
-                    id: 6,
-                    position: 'A24',
-                    silkCode: '',
-                    info:''
-                }, {
-                    id: 5,
-                    position: 'A25',
-                    silkCode: '',
-                    info:''
-                }, {
-                    id: 10,
-                    position: 'A31',
-                    silkCode: '',
-                    info:''
-                }, {
-                    id: 11,
-                    position: 'A32',
-                    silkCode: '',
-                    info:''
-                }, {
-                    id: 12,
-                    position: 'A33',
-                    silkCode: '',
-                    info:''
-                }, {
-                    id: 13,
-                    position: 'A34',
-                    silkCode: '',
-                    info:''
-                }, {
-                    id: 14,
-                    position: 'A35',
-                    silkCode: '',
-                    info:''
-                }, {
-                    id: 15,
-                    position: 'B11',
-                    silkCode: '',
-                    info:''
-                }, {
-                    id: 16,
-                    position: 'B12',
-                    silkCode: '',
-                    info:''
-                }, {
-                    id: 17,
-                    position: 'B13',
-                    silkCode: '',
-                    info:''
-                }, {
-                    id: 18,
-                    position: 'B14',
-                    silkCode: '',
-                    info:''
-                }, {
-                    id: 19,
-                    position: 'B15',
-                    silkCode: '',
-                    info:''
-                }, {
-                    id: 24,
-                    position: 'B21',
-                    silkCode: '',
-                    info:''
-                }, {
-                    id: 23,
-                    position: 'B22',
-                    silkCode: '',
-                    info:''
-                }, {
-                    id: 22,
-                    position: 'B23',
-                    silkCode: '',
-                    info:''
-                }, {
-                    id: 21,
-                    position: 'B24',
-                    silkCode: '',
-                    info:''
-                }, {
-                    id: 20,
-                    position: 'B25',
-                    silkCode: '',
-                    info:''
-                }, {
-                    id: 25,
-                    position: 'B31',
-                    silkCode: '',
-                    info:''
-                }, {
-                    id: 26,
-                    position: 'B32',
-                    silkCode: '',
-                    info:''
-                }, {
-                    id: 27,
-                    position: 'B33',
-                    silkCode: '',
-                    info:''
-                }, {
-                    id: 28,
-                    position: 'B34',
-                    silkCode: '',
-                    info:''
-                }, {
-                    id: 29,
-                    position: 'B35',
-                    silkCode: '',
-                    info:''
-                }],
-                curSelect: null,
-                weiPosition: -1,
-                weiList: [
-                    {
-                        "doffNo": "车",
-                        "lineMachine": "整",
-                    }],
-                userId: '',
-                hairline: this.showButton,
-                name: '',
-                silkCodeList: [],
-                data: '',
-                gradeData: [],
-                radio: '1',
-                showDoff: false,
-                lineWeiDoff: "",
-                date: "",
-                capacity: "",
-                show: false,
-                silkCarCode: "",
-                list: [],
-                loading: false,
-                finished: true,
-                refreshing: false,
-                activeNames: ['0'],
-                activeNameArray: [],
-                doffType:'',
-                orginSilkCarRowColList:[]
-            };
-        },
-        methods: {
+      if (arr.length > 0) {
+        this.$api
+          .newSilkCarPooling({
+            operator: /*'D7乙班包装工'*/ this.name,
+            id: this.data.id,
+            silkCarCode: this.silkCarCode,
+            operatorId: this.userId /*'5f904e116c9f1a52e806ac1c'*/,
+            forceSilkCarPooingVoList: arr,
+            silkCode: silkCodes,
+            // grade: this.gradeData.find(a => a.firstRate).grade
+          })
+          .then((res) => {
+            Toast(res.data.status)
+            if (res.data.status === '200') {
+              this.data = ''
+              this.chooseIndex = -1
+              this.silkCarCode = ''
+              this.orginSilkCarRowColList = []
+              for (let i = 0; i < this.silks.length; i++) {
+                this.silks[i].silkCode = ''
+                this.silks[i].info = ''
+              }
 
-
-            getTime: function (date) {
-                let a  =  new Date(date)
-                let b  =     a.setHours(a.getHours() -8)
-                return moment(b).format('YYYY-MM-DD HH:mm:ss')
-            },
-            showButton(){
-                let  a = false
-                console.log('aaa',a)
-                for (let i = 0; i < this.silks.length; i++) {
-                    if(this.silks[i].silkCode!=''){
-                        a = true
-                    }
-                }
-                return a
-            },
-            delSilk(index) {
-
-                this.silks[index].silkCode = ''
-                this.chooseIndex = -1
-            },
-            chooseSilk(silk, index) {
-                if (silk.silkCode != '') {
-                    Toast('请先删除再更换该位置丝锭')
-                } else {
-                    console.log("aaaddd", index)
-                    this.chooseIndex = index
-                    console.log("aaaddd2", this.chooseIndex)
-                }
-            },
-            getColor(item, index) {
-                if (this.chooseIndex === index) {
-                    console.log("aa", this.chooseIndex)
-                    return 'chooseSilkStyle'
-                }
-                if (item.silkCode) {
-                    return 'haveSilk'
-                } else if ('' === item.silkCode) {
-                    return 'white'
-                }
-
-            },
-            touchstart: function (e) {
-                var that = this;
-                var list = that.sudokus;
-                for (var i = 0, len = list.length; i < len; ++i) {
-                    if (list[i].id == e) {
-                        that.curSelect = i;
-                    }
-                }
-            }, touchend: function () {
-                var that = this;
-                that.curSelect = null;
-            },
-            dingDeng() {
-                // let arr  = []
-                // // if( !this.silkCodeList|| this.silkCodeList.length==0||!this.silkCarCode){
-                // //     Toast("请输入完整信息")
-                // //     return
-                // // }
-                // this.silkCodeList.forEach(a=>{
-                //     arr.push({silkCode:a})
-                // })
-                // Toast(arr + "xx")
-                //找出原先在车上但是后面没有在车上的丝锭
-                let silkCodes = []
-
-
-
-                let arr = []
-                //去掉重复提交的丝锭
-
-            /*    this.silks.forEach(a=>{
-                    if(a.silkCode){
-                        arr.push(a)
-                    }
-                })*/
-                for(let a of this.silks){
-
-                    if(a.silkCode/*&&this.isAddOrModify(a)*/){
-                        arr.push(a)
-                    }
-
-                }
-                if(arr.length>0){
-                    this.orginSilkCarRowColList.forEach(a=>{
-                        let ite = arr.find(item => {
-                            return item.silkCode == a.silkCode;
-                        });
-                        if(typeof(ite) == undefined){
-                            silkCodes.push(a.silkCode)
-                        }
-             /*
-                            this.arr.find(item => {
-                                return item.silkCode == a.silkCode;)*/
+              Toast.success(res.data.msg)
+            } else if (res.data.status === '300') {
+              Dialog.confirm({
+                title: '存在没有解绑的丝锭',
+                message: res.data.msg + '立即解绑？',
+              })
+                .then(() => {
+                  let arr = []
+                  arr.push({ silkCode: res.data.data.unbindSilkCode })
+                  this.$api
+                    .silkUnbind({
+                      post: this.name /*"D7乙班包装工"*/,
+                      grade: res.data.data.grade,
+                      silkCarCode: res.data.data.unbindSilkCarCode,
+                      modifier: this.userId /*'5f904e116c9f1a52e806ac1c'*/,
+                      silkCarRowColList: arr,
+                      separateFlag: true,
                     })
-                }
-
-                if(arr.length>0){
-                    this.$api.newSilkCarPooling({
-                        operator: /*'D7乙班包装工'*/this.name,
-                        id: this.data.id,
-                        silkCarCode: this.silkCarCode,
-                        operatorId: this.userId/*'5f904e116c9f1a52e806ac1c'*/,
-                        forceSilkCarPooingVoList:arr,
-                        silkCode:silkCodes
-                        // grade: this.gradeData.find(a => a.firstRate).grade
-                    }).then((res) => {
-                        Toast(res.data.status)
-                        if (res.data.status === '200') {
-                            this.data = ''
-                            this.chooseIndex = -1
-                            this.silkCarCode = ''
-                            this.orginSilkCarRowColList = []
-                            for (let i = 0; i < this.silks.length; i++) {
-                                this.silks[i].silkCode = ''
-                                this.silks[i].info = ''
-                            }
-
-                            Toast.success(res.data.msg)
-                        }  else if (res.data.status === '300') {
-                            Dialog.confirm({
-                                title: '存在没有解绑的丝锭',
-                                message: res.data.msg+'立即解绑？',
-                            })
-                                .then(() => {
-                                    let arr = []
-                                    arr.push({silkCode:res.data.data.unbindSilkCode})
-                                    this.$api.silkUnbind({
-                                        post: this.name/*"D7乙班包装工"*/,
-                                        grade: res.data.data.grade,
-                                        silkCarCode: res.data.data.unbindSilkCarCode,
-                                        modifier: this.userId/*'5f904e116c9f1a52e806ac1c'*/,
-                                        silkCarRowColList: arr,
-                                        separateFlag: true,
-                                    }).then((res) => {
-                                        if (res.data.status === '200') {
-
-                                            Toast.success(res.data.msg+'请重新提交拼车')
-                                        } else {
-                                            Toast.clear()
-                                            Toast(res.data.msg)
-                                        }
-                                    });
-                                })
-                                .catch(() => {
-                                    // on cancel
-                                });
-                        } else {
-                            Toast(res.data.msg)
-                        }
-                    });
-                }else {
-
-                    Toast("请扫描要拼车的丝锭")
-                }
-
-            },
-            isAddOrModify(a){
-                let is = true
-                this.orginSilkCarRowColList.forEach(b=>{
-                    if((b.sideType+b.row+b.col+'')===a.position&&a.silkCode===b.silkCode){
-                            is = false
-                    }
-                })
-                return is
-
-            },
-            deleteSilk(index) {
-                this.silkCodeList.splice(index, 1)
-                console.log(this.silkCodeList, "444232")
-            },
-            chooseOne(clickIndex) {
-                this.gradeData.forEach((e, index) => {
-                    if (index === clickIndex) {
-                        this.gradeData[index].firstRate = true
-                    } else {
-                        this.gradeData[index].firstRate = false
-                    }
-
-                })
-
-            },
-            chooseWei(clickIndex) {
-                this.weiPosition = clickIndex
-                this.silkCodeList = []
-                if (clickIndex === 0) {
-                    this.data.silkCarRowColList.forEach(b => {
-                        this.silkCodeList.pushNoRepeat(b.silkCode)
+                    .then((res) => {
+                      if (res.data.status === '200') {
+                        Toast.success(res.data.msg + '请重新提交拼车')
+                      } else {
+                        Toast.clear()
+                        Toast(res.data.msg)
+                      }
                     })
-                } else {
-                    this.data.silkCarRowColList.filter(a => a.orderBy == this.weiList[clickIndex].orderBy).forEach(b => {
-                        this.silkCodeList.pushNoRepeat(b.silkCode)
-                    })
-                }
-
-            },
-            find() {
-                if (this.silkCarCode) {
-                    this.getSilkcarDetails(this.silkCarCode);
-                }
-            },
-            onClickLeft() {
-                Toast("返回");
-                window.android.finish();
-            },
-            onClickRight() {
-                // this.callByAndroid('0J50401A00111D')
-                this.show = true
-            },
-            callByAndroid(code) {
-                // Toast("对了？" + code)
-                if (code) {
-                    if (this.$myUtils.checkIsSilkCar(code)) { // 丝车
-                        this.silkCarCode = code;
-                        this.getSilkcarDetails(code);
-                    } else if (this.$myUtils.checkIsSilk(code)) { //丝锭
-                        if (this.silkCarCode) {
-                            // Toast(JSON.stringify(this.data.silkCarRowColList+'sssss' ))
-                            if (this.chooseIndex === -1) {
-                                Toast("请先选择位置")
-                                return
-                            }
-                            let arr = []
-                            this.silks.forEach(a => {
-                                if (a.silkCode) {
-                                    arr.push({silkCode: a.silkCode})
-                                }
-                            })
-                            if (this.isContentThisSilk(code, arr)) {
-                                // 解绑的丝锭数组
-
-
-                                // this.silkCodeList.pushNoRepeat({"silkCode": code})
-                                // this.silkCodeList.pushNoRepeat(code)
-                                this.silks[this.chooseIndex].silkCode = code
-                                // this.chooseIndex = -1
-                                this.setChooseIndex(this.silks,this.chooseIndex)
-
-                            } else {
-                                Toast("丝锭已经在车上了")
-                            }
-                        } else {
-                            Toast('请先扫描丝车')
-                        }
-
-
-
-
-                    } else {
-                        Toast('不符合规则')
-                    }
-                }
-
-            },
-            setChooseIndex(silks,currentIndex){
-                // let arr = this.silks
-                // let a  =  silks.sort(up)
-
-               let a =  this.silks[currentIndex].id  // 获取当前索引的id号
-                for (let j = a+1; j < silks.length; j++) {
-                    for (let i = 0; i < silks.length; i++) {
-                        if(!silks[i].silkCode&&!silks[j].silkCode&&j==silks[i].id){
-                            this.chooseIndex = i
-                            return
-                        }
-                    }
-                }
-                //
-                // for (let i = 0; i < silks.length; i++) {
-                //     if(!silks[i].silkCode){
-                //         this.chooseIndex = silks[i].id
-                //             break
-                //     }
-                // }
-            },
-            isContentThisSilk(silk, list) {
-                if (!(list instanceof Array)) return true
-                let is = true
-                list.forEach(a => {
-                    if (a.silkCode === silk) {
-                        is = false
-                        Toast("不要重复扫码")
-                    }
                 })
-                return is
-            },
-            getSilkcarDetails(code) {
-              // this.getSilks()
-                this.doffType = ''
-                for (let i = 0; i < this.silks.length; i++) {
-                    this.silks[i].silkCode = ''
-                    this.silks[i].info = ''
-
-                }
-                this.chooseIndex = -1
-                this.$api.getSilkss(code).then((res) => {
-                    if (res.data.status === '200') {
-                        this.data = res.data.data;
-                        this.doffType = res.data.data.doffType
-                        this.events = res.data.data.events
-                        if (this.events && this.events.length > 0) {
-
-                            this.events.forEach(a => {
-                                this.activeNameArray.push(this.activeName)
-                            })
-                        }
-                        if(this.data.silkCarRowColList.length>0){
-                            this.orginSilkCarRowColList = this.data.silkCarRowColList ;
-                            let arr = this.data.silkCarRowColList ;
-                            for (let i = 0; i < arr.length; i++) {
-                                for (let j = 0; j < this.silks.length; j++) {
-                                    if((arr[i].sideType+arr[i].row+arr[i].col)===this.silks[j].position){
-                                        this.silks[j].silkCode = arr[i].silkCode
-                                        this.silks[j].info = arr[i].lineName+'-'+arr[i].machineName+'-'+arr[i].doffNo+'-'+arr[i].spindleNum
-                                    }
-                                }
-                            }
-
-                        }
-
-
-                    } else {
-                        this.silkCodeList = []
-                        this.orginSilkCarRowColList = []
-                    }
-                    console.log(res.data);
-                });
-            },
-
-            getDoff(arr) {
-                let s = "";
-                arr.forEach((e) => {
-                    let a = e.lineMachine + "/" + e.doffNo + "  ";
-                    s = s + a;
-                });
-                return s;
-            },
-            getGrades() {
-                this.$api.getGrades().then((res) => {
-                    if (res.data.code === 200) {
-                        this.gradeData = res.data.queryResult.list;
-                    } else {
-                        Toast(res.data.message)
-                        // console.log(res.data.queryResult , "aa")
-
-                    }
-                });
+                .catch(() => {
+                  // on cancel
+                })
+            } else {
+              Toast(res.data.msg)
             }
+          })
+      } else {
+        Toast('请扫描要拼车的丝锭')
+      }
+    },
+    isAddOrModify(a) {
+      let is = true
+      this.orginSilkCarRowColList.forEach((b) => {
+        if (
+          b.sideType + b.row + b.col + '' === a.position &&
+          a.silkCode === b.silkCode
+        ) {
+          is = false
+        }
+      })
+      return is
+    },
+    chooseWei(clickIndex) {
+      this.weiPosition = clickIndex
+      this.silkCodeList = []
+      if (clickIndex === 0) {
+        this.data.silkCarRowColList.forEach((b) => {
+          this.silkCodeList.pushNoRepeat(b.silkCode)
+        })
+      } else {
+        this.data.silkCarRowColList
+          .filter((a) => a.orderBy == this.weiList[clickIndex].orderBy)
+          .forEach((b) => {
+            this.silkCodeList.pushNoRepeat(b.silkCode)
+          })
+      }
+    },
+    onClickLeft() {
+      Toast('返回')
+      window.android.finish()
+    },
+    onClickRight() {
+      // this.callByAndroid('0J50401A00111D')
+      this.show = true
+    },
+    callByAndroid(code) {
+      if (code) {
+        if (this.$myUtils.checkIsSilkCar(code)) {
+          // 丝车
+          this.silkCarCode = code
+          this.getSilkcarDetails()
+        } else if (this.$myUtils.checkIsSilk(code)) {
+          //丝锭
+          if (this.silkCarCode) {
+            if (this.chooseIndex === -1) {
+              Toast('请先选择位置')
+              return
+            }
+            if (JSON.stringify(this.silks).indexOf(code) === -1) {
+              // 解绑的丝锭数组
+              this.silks[this.chooseIndex].silkCode = code
+              this.chooseIndex = this.findNextChooseIndex()
+            } else {
+              Toast('丝锭已经在车上了')
+            }
+          } else {
+            Toast('请先扫描丝车')
+          }
+        } else {
+          Toast('不符合规则')
+        }
+      }
+    },
+    // 自动选择下一个空位
+    findNextChooseIndex() {
+      let curIdx = this.chooseIndexList.findIndex((v) => v === this.chooseIndex)
+      for (let i = curIdx + 1; i < this.chooseIndexList.length; i++) {
+        const v = this.chooseIndexList[i]
+        if (!this.silks[v].silkCode) {
+          return v
+        }
+      }
+      return -1
+    },
+    // 生成S型索引数组
+    generateSIndexArray(row = 3, col = 5, layer = 1) {
+      let sum = row * col * layer * 2
+      let temp = []
+      for (let i = 0; i < 30; i++) {
+        let line = parseInt(i / 5, 10)
+        let isSingle = line % 2 === 0
+        let remainder = i % 5
+        if (isSingle) {
+          temp.push(i)
+        } else {
+          temp.push(i + 4 - remainder * 2)
+        }
+      }
+      return temp
+    },
+    getSilkcarDetails() {
+      if (!this.silkCarCode) return
+      this.doffType = ''
+      this.silks = []
+      this.chooseIndex = -1
+      this.chooseIndexList = []
+      this.$api.getSilkss(this.silkCarCode).then((res) => {
+        let { status, msg, data } = res.data
+        if (status === '200') {
+          this.data = data
+          this.doffType = data.doffType
+          this.events = data.events
+          if (this.events && this.events.length > 0) {
+            this.events.forEach((a) => {
+              this.activeNameArray.push(this.activeName)
+            })
+          }
 
-        },
-        created() {
-
-            this.userId = this.$route.query.userId
-            this.name = this.$route.query.name
-            this.getGrades()
-
-        },
-        mounted() {
-            window.callByAndroid = this.callByAndroid;
-        },
-    };
+          this.orginSilkCarRowColList = data.silkCarRowColList || []
+          /* 处理丝车展示数据 start */
+          let { list, row, col, layer } = this.$myUtils.dealSilkIngotList(data)
+          this.silks = list
+          this.col = col
+          this.chooseIndexList = this.generateSIndexArray(row, col, layer)
+          /* 处理丝车展示数据 end */
+        } else {
+          this.$toast.fail(msg)
+          this.silkCodeList = []
+          this.orginSilkCarRowColList = []
+        }
+      })
+    },
+    getDoff(arr) {
+      let s = ''
+      arr.forEach((e) => {
+        let a = e.lineMachine + '/' + e.doffNo + '  '
+        s = s + a
+      })
+      return s
+    },
+    getGrades() {
+      this.$api.getGrades().then((res) => {
+        if (res.data.code === 200) {
+          this.gradeData = res.data.queryResult.list
+        } else {
+          Toast(res.data.message)
+        }
+      })
+    },
+  },
+  created() {
+    this.userId = this.$route.query.userId
+    this.name = this.$route.query.name
+    this.getGrades()
+  },
+  mounted() {
+    window.callByAndroid = this.callByAndroid
+  },
+}
 </script>
 
 <style>
-    .sudoku_row {
-        display: flex;
-        align-items: center;
-        width: 100%;
-        flex-wrap: wrap;
-    }
-    .doffType {
-
-        align-items: center;
-
-        font-size: 15px;
-        box-sizing: border-box;
-        color: brown;
-        position: relative;
-    }
-    .sudoku_item {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        flex-direction: column;
-        width: 20%;
-        padding-bottom: 3px;
-        box-sizing: border-box;
-        font-size: 0.42rem;
-        color: #111;
-        position: relative;
-    }
-
-    .opacity {
-        opacity: 0.4;
-        background: #e5e5e5;
-    }
-
-    .sudoku_item img {
-        margin-bottom: 3px;
-        display: block;
-    }
-
-    .main2 {
-        margin: 5px 5px;
-        height: 40px;
-        display: flex;
-        /*background-color: #33aa46;*/
-        background-color: grey;
-        overflow: hidden;
-        border-radius: 6px;
-    }
-
-    .main2 > .left {
-        flex: 3;
-        line-height: 40px;
-        padding-left: 8px;
-        color: white;
-    }
-
-    .main2 > .right {
-        flex: 1;
-        line-height: 40px;
-        color: red;
-    }
-
-    .white {
-        width: 100%;
-        height: 70px;
-        color: white;
-        border-radius: 8px;
-        padding: 1px;
-        top: 50%;
-        background-color: white;
-        line-height: 50px; /*让黄色div中的文字内容垂直居中*/
-        text-align: center;
-        background-color: grey;
-    }
-
-    .haveSilk {
-        width: 100%;
-        height: 70px;
-        color: white;
-        border-radius: 8px;
-        padding: 1px;
-        top: 50%;
-        background-color: white;
-        line-height: 20px; /*让黄色div中的文字内容垂直居中*/
-        text-align: center;
-        background-color: lightseagreen;
-    }
-
-    .chooseSilkStyle {
-        width: 100%;
-        height: 70px;
-        color: white;
-        border-radius: 8px;
-        padding: 1px;
-        top: 50%;
-        background-color: white;
-        line-height: 20px; /*让黄色div中的文字内容垂直居中*/
-        text-align: center;
-        background-color: gold;
-    }
-
+.doffType {
+  align-items: center;
+  font-size: 15px;
+  box-sizing: border-box;
+  color: brown;
+  position: relative;
+}
 </style>

@@ -175,13 +175,13 @@ export default {
   methods: {
     /* 测试 start */
     scanSilkcar() {
-      this.doffForm.silkCarCode = '9700P600003'
+      this.doffForm.silkCarCode = '9700F32006'
       this.resetLevel(1)
       this.getScanInfo()
     },
     scanMachine() {
       let index = +window.sessionStorage.index
-      let arr = ['C5,1B', 'C5,2A', 'C5,1A']
+      let arr = ['D3,10B', 'D3,24B']
       window.sessionStorage.index = index + 1
       this.doffForm.machineName = arr[index]
       // 初次扫机台

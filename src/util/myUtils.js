@@ -53,7 +53,7 @@ let checkCodeType = function(code) {
 }
 
 let dealSilkIngotList = function(data) {
-  let { row, col, layer, silkCarRowColList } = data
+  let { row, col, layer, silkCarRowColList = [] } = data
   !row && (row = 3)
   !col && (col = 5)
   !layer && (layer = 1)

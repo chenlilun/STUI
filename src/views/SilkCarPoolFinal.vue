@@ -351,37 +351,46 @@ export default {
       }
       return temp
     },
-    getSilkcarDetails() {
+    async getSilkcarDetails() {
       if (!this.silkCarCode) return
       this.doffType = ''
       this.silks = []
       this.chooseIndex = -1
       this.chooseIndexList = []
-      this.$api.getSilkss(this.silkCarCode).then((res) => {
-        let { status, msg, data } = res.data
-        if (status === '200') {
-          this.data = data
-          this.doffType = data.doffType
-          this.events = data.events
-          if (this.events && this.events.length > 0) {
-            this.events.forEach((a) => {
-              this.activeNameArray.push(this.activeName)
-            })
-          }
-
-          this.orginSilkCarRowColList = data.silkCarRowColList || []
-          /* 处理丝车展示数据 start */
-          let { list, row, col, layer } = this.$myUtils.dealSilkIngotList(data)
-          this.silks = list
-          this.col = col
-          this.chooseIndexList = this.generateSIndexArray(row, col, layer)
-          /* 处理丝车展示数据 end */
-        } else {
-          this.$toast.fail(msg)
-          this.silkCodeList = []
-          this.orginSilkCarRowColList = []
+      let res = await this.$api.getSilkss(this.silkCarCode)
+      let { status, msg, data } = res.data
+      if (status === '200') {
+        this.data = data
+        this.doffType = data.doffType
+        this.events = data.events
+        if (this.events && this.events.length > 0) {
+          this.events.forEach((a) => {
+            this.activeNameArray.push(this.activeName)
+          })
         }
-      })
+
+        this.orginSilkCarRowColList = data.silkCarRowColList || []
+        /* 处理丝车展示数据 start */
+        let { list, row, col, layer } = this.$myUtils.dealSilkIngotList(data)
+        this.silks = list
+        this.col = col
+        this.chooseIndexList = this.generateSIndexArray(row, col, layer)
+        /* 处理丝车展示数据 end */
+      } else {
+        let emptySilkCar = await this.$api.findCarBySilkCarCode(
+          this.silkCarCode
+        )
+        /* 处理丝车展示数据 start */
+        let { list, row, col, layer } = this.$myUtils.dealSilkIngotList(
+          emptySilkCar.data.data
+        )
+        this.silks = list
+        this.col = col
+        this.chooseIndexList = this.generateSIndexArray(row, col, layer)
+        /* 处理丝车展示数据 end */
+        this.silkCodeList = []
+        this.orginSilkCarRowColList = []
+      }
     },
     getDoff(arr) {
       let s = ''

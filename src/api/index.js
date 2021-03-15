@@ -315,6 +315,10 @@ export default {
     // console.log("data" +  data.toString())
     return axios.post(baseUrl + '/api/silkCarOnline/get/' + code)
   },
+  // 根据丝车编号获取丝车信息
+  findCarBySilkCarCode(code) {
+    return axios.get(baseUrl + '/api/silkCar/findCarBySilkCarCode/' + code)
+  },
   // 根据机台获取废丝
   getWasteSilk(code) {
     // console.log("data" +  data.toString())
